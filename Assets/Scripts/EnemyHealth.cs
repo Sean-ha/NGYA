@@ -7,17 +7,19 @@ public class EnemyHealth : MonoBehaviour
 {
 	public float maxHealth;
 
+	private ParticleSystem hitParticles;
 	private float currentHealth;
 
 	private void Awake()
 	{
 		currentHealth = maxHealth;
+		hitParticles = transform.GetChild(0).GetComponent<ParticleSystem>();
 	}
 
 	public void TakeDamage(float toTake)
 	{
 		currentHealth -= toTake;
-		transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+		hitParticles.Play();
 
 		if (currentHealth <= 0)
 		{

@@ -10,6 +10,7 @@ public class BasicProjectile : Projectile
 	public GameObject temp;
 
 	private Rigidbody2D rb;
+	private ParticleSystem hitParticles;
 
 	private float speed;
 	// In radians
@@ -18,6 +19,7 @@ public class BasicProjectile : Projectile
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
+		hitParticles = transform.GetChild(0).GetComponent<ParticleSystem>();
 	}
 
 	private void FixedUpdate()
@@ -57,6 +59,9 @@ public class BasicProjectile : Projectile
 
 			Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
 			collision.GetComponent<Rigidbody2D>().AddForce(push);
+
+			hitParticles.transform.parent = null;
+			hitParticles.Play();
 
 			LeanTween.cancel(gameObject);
 			Destroy(transform.parent.gameObject);

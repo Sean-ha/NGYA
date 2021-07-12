@@ -7,7 +7,7 @@ public class ShootManager : MonoBehaviour
 {
 	public Transform dotHolder;
 
-	private float shootCooldown = 0.1f;
+	private float shootCooldown = 0.25f;
 	private float currShootCooldown;
 
 	public UnityEvent onShoot { get; set; } = new UnityEvent();
@@ -28,6 +28,7 @@ public class ShootManager : MonoBehaviour
 
 		if (Input.GetMouseButton(0))
 		{
+			CameraShake.instance.ShakeCamera(0.1f, 0.05f);
 			if (currShootCooldown <= 0)
 			{
 				// Shoot
