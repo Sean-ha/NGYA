@@ -22,8 +22,9 @@ public class PlayerController : MonoBehaviour
 
 	private void Awake()
 	{
-		// TODO: Move this somewhere else probably
+		// TODO: Move this stuff somewhere else probably
 		Application.targetFrameRate = 60;
+		LeanTween.init(800);
 
 		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
@@ -110,5 +111,22 @@ public class PlayerController : MonoBehaviour
 		{
 			sr.sharedMaterial.SetFloat("_OffsetRedX", val);
 		});
+	}
+
+	/// <summary>
+	/// Get the position the player will be in 'time' seconds given their current movement
+	/// </summary>
+	/// <param name="time">Number of seconds</param>
+	/// <returns></returns>
+	public Vector2 GetForwardPosition(float time)
+	{
+		Vector2 vel = rb.velocity * time;
+		return (Vector2)transform.position + vel;
+	}
+
+	public Vector2 GetBackwardPosition(float time)
+	{
+		Vector2 vel = rb.velocity * time;
+		return (Vector2)transform.position - vel;
 	}
 }

@@ -44,13 +44,23 @@ public class CameraShake : MonoBehaviour
 		StartCoroutine(Shake());
 	}
 
-	public void ShakeCameraDirectional(float duration, float angle)
+	/// <summary>
+	/// Shake camera at the given angle (in degrees)
+	/// </summary>
+	/// <param name="angle">Angle in degrees</param>
+	public void ShakeCameraDirectional(float duration, float angle, float magnitude)
 	{
+		if (isShaking && magnitude < currentMagnitude)
+			return;
+
+		currentMagnitude = magnitude;
+		currentDuration = duration;
+
 		StopAllCoroutines();
 		cam.position = defaultPos; //Reset to original postion
 		cam.rotation = defaultRot; //Reset to original rotation
 
-		StartCoroutine(ShakeDirectional(duration, -angle));
+		StartCoroutine(ShakeDirectional(duration, -angle, magnitude));
 	}
 
 	private IEnumerator Shake()
@@ -108,12 +118,9 @@ public class CameraShake : MonoBehaviour
 		isShaking = false;
 	}
 
-	private IEnumerator ShakeDirectional(float duration, float angle)
+	private IEnumerator ShakeDirectional(float duration, float angle, float magnitude)
 	{
 		float counter = 0f;
-
-		//Shake Speed
-		const float speed = 0.08f;
 
 		float decreasePoint = duration / 2.5f;
 
@@ -125,7 +132,7 @@ public class CameraShake : MonoBehaviour
 		while (counter < duration)
 		{
 			counter += Time.deltaTime;
-			float decreaseSpeed = speed;
+			float decreaseSpeed = magnitude;
 
 			//Shake camera
 			Vector3 tempPos = defaultPos + dir * -0.6f * decreaseSpeed;
@@ -143,7 +150,7 @@ public class CameraShake : MonoBehaviour
 				while (counter <= decreasePoint)
 				{
 					counter += Time.deltaTime;
-					decreaseSpeed = Mathf.Lerp(speed, 0, counter / decreasePoint);
+					decreaseSpeed = Mathf.Lerp(magnitude, 0, counter / decreasePoint);
 
 					// Shake camera
 					tempPos = defaultPos + dir * Random.Range(-1f, 1f) * decreaseSpeed;

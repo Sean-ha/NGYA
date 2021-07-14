@@ -7,47 +7,76 @@ public class BasicProjectile : Projectile
 	[Tooltip("How hard to push the enemy hit by this projectile")]
 	public float pushForce;
 
-	public GameObject temp;
-
 	private Rigidbody2D rb;
-	private ParticleSystem hitParticles;
+	private Transform projectileSpriteChild;
 
-	private float speed;
+	private Vector2 destination;
 	// In radians
 	private float angle;
+	private bool isMoving;
+	private float timeToReach;
+
+	private int hitCount;
+	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
-		hitParticles = transform.GetChild(0).GetComponent<ParticleSystem>();
+		projectileSpriteChild = transform.GetChild(0);
+	}
+
+	private void OnEnable()
+	{
+		LeanTween.cancel(gameObject);
+		hitSet.Clear();
+		hitCount = 0;
+		projectileSpriteChild.localScale = new Vector3(1, 1, 1);
+	}
+
+	private void OnDisable()
+	{
+		isMoving = false;
 	}
 
 	private void FixedUpdate()
 	{
-		rb.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
-	}
-
-	public void SetProjectile(float speed, float angle)
-	{
-		this.speed = speed;
-		this.angle = Mathf.Deg2Rad * angle;
-
-		StartCoroutine(Shrink());
-	}
-
-	private IEnumerator Shrink()
-	{
-		for (int i = 0; i < 14; i++)
-			yield return null;
-
-		LeanTween.value(gameObject, speed, 0, 0.1f).setOnUpdate((float val) =>
+		if (isMoving)
 		{
-			speed = val;
+			Vector2 newPos = Vector2.Lerp(transform.position, destination, timeToReach);
+			rb.MovePosition(newPos);
+			timeToReach -= Time.fixedDeltaTime;
+
+			if (timeToReach <= 0)
+			{
+				LeanTween.scale(projectileSpriteChild.gameObject, new Vector3(0, 1, 1), 0.1f).setOnComplete(() => transform.gameObject.SetActive(false));
+			}
+		}
+	}
+
+	/// <summary>
+	/// Sets the projectile's fields and allows it to begin its travel
+	/// </summary>
+	/// <param name="angle">Angle in degrees</param>
+	public void SetProjectile(float speed, float angle, float damage, int numberOfTargets, float distance)
+	{
+		this.angle = Mathf.Deg2Rad * angle;
+		this.damage = damage;
+		this.numberOfTargets = numberOfTargets;
+		this.distance = distance;
+
+		destination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * distance);
+		timeToReach = distance / speed;
+		isMoving = true;
+
+		/*
+		LeanTween.value(gameObject, (Vector2)transform.position, destination, distance / speed).setEaseOutQuad().setOnUpdate((Vector2 val) =>
+		{
+			rb.MovePosition(val);
 		}).setOnComplete(() =>
 		{
-			LeanTween.scale(gameObject, new Vector3(0, 1, 1), 0.1f).setOnComplete(() => Destroy(transform.parent.gameObject));
+			LeanTween.scale(projectileSpriteChild.gameObject, new Vector3(0, 1, 1), 0.1f).setOnComplete(() => transform.gameObject.SetActive(false));
 		});
-		
+		*/
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -55,16 +84,30 @@ public class BasicProjectile : Projectile
 		// Enemy layer
 		if (collision.gameObject.layer == 7)
 		{
-			collision.GetComponent<EnemyHealth>().TakeDamage(damage);
+			// Do not collide with enemy projectiles
+			if (collision.gameObject.CompareTag("Projectile"))
+				return;
 
-			Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
-			collision.GetComponent<Rigidbody2D>().AddForce(push);
+			if (hitCount < numberOfTargets && !hitSet.Contains(collision.gameObject))
+			{
+				collision.GetComponent<EnemyHealth>().TakeDamage(damage);
 
-			hitParticles.transform.parent = null;
-			hitParticles.Play();
+				Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
+				collision.GetComponent<Rigidbody2D>().AddForce(push);
 
-			LeanTween.cancel(gameObject);
-			Destroy(transform.parent.gameObject);
+				ObjectPooler.instance.CreateHitParticles(Color.white, transform.position, Quaternion.identity);
+				ObjectPooler.instance.Create(Tag.CircleHitEffect, transform.position, Quaternion.identity);
+
+				hitSet.Add(collision.gameObject);
+				hitCount++;
+
+				// Disable projectile; it has hit the maximum number of enemies
+				if (hitCount >= numberOfTargets)
+				{
+					LeanTween.cancel(gameObject);
+					transform.gameObject.SetActive(false);
+				}
+			}
 		}
 	}
 }

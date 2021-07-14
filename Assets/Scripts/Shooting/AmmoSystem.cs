@@ -8,6 +8,7 @@ public class AmmoSystem : MonoBehaviour
 
 	public GameObject bulletTemplate;
 	public SpriteRenderer ammoOutline;
+	public SpriteRenderer ammoBackground;
 
 	private float firstBulletPosition;
 
@@ -19,7 +20,7 @@ public class AmmoSystem : MonoBehaviour
 	private Stack<GameObject> ammoStack = new Stack<GameObject>();
 
 	// Amount of ammo to get per second
-	private int ammoRegen = 5;
+	private int ammoRegen = 60;
 	private float ammoRegenRate;
 	private float currentAmmoRegen;
 
@@ -54,6 +55,7 @@ public class AmmoSystem : MonoBehaviour
 	private void UpdateMaxAmmoBar()
 	{
 		ammoOutline.size = new Vector2(1 + ammoUpgrades, ammoOutline.size.y);
+		ammoBackground.size = new Vector2(Mathf.FloorToInt(ammoOutline.size.x) - 0.04f, ammoBackground.size.y);
 	}
 
 	public bool RemoveAmmo()

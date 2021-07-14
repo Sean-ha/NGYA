@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class Spin : MonoBehaviour
 {
-	float angle = 0;
+	public float spinsPerSecond;
+
+	private float spinsPerFrame;
+	private float angle = 0;
+
+	private void Awake()
+	{
+		spinsPerFrame = spinsPerSecond * 360 / Application.targetFrameRate;
+	}
 
 	private void Update()
 	{
-		angle += 2;
+		if (angle > 360)
+			angle %= 360;
+
+		angle += spinsPerFrame;
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 }

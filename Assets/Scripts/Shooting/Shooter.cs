@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Shooter : MonoBehaviour
 {
 	/// <summary>
-	/// Returns the angle the current dot is at relative to the player body, in degrees
+	/// Returns the angle the current dot is at relative to the current body, in degrees
 	/// </summary>
 	public float GetAngle()
 	{
@@ -14,5 +14,5 @@ public abstract class Shooter : MonoBehaviour
 		return Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 	}
 
-	public abstract void Shoot();
+	public abstract void Shoot(float damage, float bulletDistance, int numberOfTargets);
 }
