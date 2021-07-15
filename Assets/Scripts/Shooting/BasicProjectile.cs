@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BasicProjectile : Projectile
 {
@@ -27,7 +28,7 @@ public class BasicProjectile : Projectile
 
 	private void OnEnable()
 	{
-		LeanTween.cancel(gameObject);
+		CancelTweens();
 		hitSet.Clear();
 		hitCount = 0;
 		projectileSpriteChild.localScale = new Vector3(1, 1, 1);
@@ -38,6 +39,7 @@ public class BasicProjectile : Projectile
 		isMoving = false;
 	}
 
+	/*
 	private void FixedUpdate()
 	{
 		if (isMoving)
@@ -52,6 +54,7 @@ public class BasicProjectile : Projectile
 			}
 		}
 	}
+	*/
 
 	/// <summary>
 	/// Sets the projectile's fields and allows it to begin its travel
@@ -66,17 +69,12 @@ public class BasicProjectile : Projectile
 
 		destination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * distance);
 		timeToReach = distance / speed;
-		isMoving = true;
-
-		/*
-		LeanTween.value(gameObject, (Vector2)transform.position, destination, distance / speed).setEaseOutQuad().setOnUpdate((Vector2 val) =>
+		// isMoving = true;
+		
+		rb.DOMove(destination, timeToReach).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
 		{
-			rb.MovePosition(val);
-		}).setOnComplete(() =>
-		{
-			LeanTween.scale(projectileSpriteChild.gameObject, new Vector3(0, 1, 1), 0.1f).setOnComplete(() => transform.gameObject.SetActive(false));
-		});
-		*/
+			projectileSpriteChild.DOScaleX(0, 0.1f).onComplete += () => gameObject.SetActive(false);
+		};
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -104,10 +102,17 @@ public class BasicProjectile : Projectile
 				// Disable projectile; it has hit the maximum number of enemies
 				if (hitCount >= numberOfTargets)
 				{
-					LeanTween.cancel(gameObject);
+					CancelTweens();
+
 					transform.gameObject.SetActive(false);
 				}
 			}
 		}
+	}
+
+	private void CancelTweens()
+	{
+		DOTween.Kill(rb);
+		DOTween.Kill(projectileSpriteChild);
 	}
 }

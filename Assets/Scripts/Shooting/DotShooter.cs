@@ -19,7 +19,7 @@ public class DotShooter : Shooter
 			LeanTween.scale(gameObject, new Vector3(0.2f, 0.2f, 1), 0.05f);
 		});
 		GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(angle, Vector3.forward));
-		proj.transform.GetComponentInChildren<BasicProjectile>().SetProjectile(shotSpeed, angle, damage, numberOfTargets, bulletDistance);
+		proj.GetComponent<BasicProjectile>().SetProjectile(shotSpeed, angle, damage, numberOfTargets, bulletDistance);
 
 		// Ammo shell
 		GameObject shell = ObjectPooler.instance.Create(Tag.AmmoShell, transform.position, Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward));

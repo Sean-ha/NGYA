@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
@@ -70,10 +71,8 @@ public class PlayerController : MonoBehaviour
 				Vector2 diff = (transform.position - collision.transform.position).normalized;
 				Vector2 destination = (Vector2)transform.position + (diff * knockBackForce);
 
-				LeanTween.value(gameObject, (Vector2)transform.position, destination, 0.3f).setEaseOutQuad().setOnUpdateVector2((Vector2 val) =>
-				{
-					rb.MovePosition(val);
-				});
+				rb.DOMove(destination, 0.3f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed);
+
 				currentInvincibility = invincibilityDuration;
 			}
 		}
