@@ -1,16 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class CircleHitEffect : MonoBehaviour
 {
-	public float maxScale;
+	public float startSize;
 	public float timeToScale = 0.1f;
 
-	private void OnEnable()
+	private SpriteRenderer sr;
+
+	private void Awake()
 	{
-		LeanTween.cancel(gameObject);
-		transform.localScale = new Vector3(maxScale, maxScale, 1);
-		LeanTween.scale(gameObject, new Vector3(0, 0, 1), timeToScale).setOnComplete(() => gameObject.SetActive(false));
+		sr = GetComponent<SpriteRenderer>();
+	}
+
+	private void StartTween()
+	{
+		transform.DOKill();
+		transform.localScale = new Vector3(startSize, startSize, 1);
+		transform.DOScale(new Vector3(0, 0, 1), timeToScale).onComplete += () => gameObject.SetActive(false);
+	}
+
+	public void SetHitEffect(Color color, float startSize, float timeToShrink)
+	{
+		sr.color = color;
+		this.startSize = startSize;
+		timeToScale = timeToShrink;
+
+		StartTween();
 	}
 }

@@ -5,8 +5,6 @@ using UnityEngine;
 // Script for making sprite flash white. Sprite requires DropShadow... material
 public class FlashWhite : MonoBehaviour
 {
-	// Time for sprite to be white
-	private const float WHITE_TIME = 0.08f;
 	private SpriteRenderer sr;
 	private MaterialPropertyBlock block;
 
@@ -23,6 +21,7 @@ public class FlashWhite : MonoBehaviour
 		sr.SetPropertyBlock(block);
 	}
 
+	// Default time
 	public void InitiateWhiteFlash()
 	{
 		sr.GetPropertyBlock(block);
@@ -30,12 +29,26 @@ public class FlashWhite : MonoBehaviour
 		sr.SetPropertyBlock(block);
 
 		if (gameObject.activeInHierarchy)
-			StartCoroutine(StopFlash());
+			StartCoroutine(StopFlash(0.1f));
 	}
 
-	private IEnumerator StopFlash()
+	/// <summary>
+	/// Sprite turns white for given amount of time before turning back to normal
+	/// </summary>
+	/// <param name="whiteTime"></param>
+	public void InitiateWhiteFlash(float whiteTime = 0.1f)
 	{
-		yield return new WaitForSeconds(WHITE_TIME);
+		sr.GetPropertyBlock(block);
+		block.SetFloat("_FlashAmount", 1f);
+		sr.SetPropertyBlock(block);
+
+		if (gameObject.activeInHierarchy)
+			StartCoroutine(StopFlash(whiteTime));
+	}
+
+	private IEnumerator StopFlash(float whiteTime)
+	{
+		yield return new WaitForSeconds(whiteTime);
 
 		sr.GetPropertyBlock(block);
 		block.SetFloat("_FlashAmount", 0f);

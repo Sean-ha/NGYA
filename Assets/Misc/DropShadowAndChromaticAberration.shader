@@ -30,7 +30,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 		{
 			Tags
 			{
-				"Queue" = "Background"
+				"Queue" = "Transparent"
 				"IgnoreProjector" = "True"
 				"RenderType" = "Transparent"
 				"PreviewType" = "Plane"

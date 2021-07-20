@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.Events;
 
 // AI for basic moving towards player behavior
 public class MoveTowardsPlayer : MonoBehaviour
 {
 	public float speed;
 	public TowardsPlayerTargetType targetType;
+	public UnityEvent onWallBump;
 
 	private PlayerController player;
 	private Rigidbody2D rb;
@@ -35,5 +38,18 @@ public class MoveTowardsPlayer : MonoBehaviour
 			playerPos = player.GetBackwardPosition(.5f);
 		Vector2 diff = playerPos - (Vector2)transform.position;
 		rb.AddForce(diff.normalized * speed);
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		// Wall layer
+		if (collision.gameObject.layer == 9)
+		{
+			// Bounce against wall
+			Vector2 bounceForce = collision.GetContact(0).normal * 70;
+			rb.AddForce(bounceForce);
+
+			onWallBump.Invoke();
+		}
 	}
 }

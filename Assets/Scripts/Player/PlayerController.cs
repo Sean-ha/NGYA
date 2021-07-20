@@ -25,7 +25,9 @@ public class PlayerController : MonoBehaviour
 	{
 		// TODO: Move this stuff somewhere else probably
 		Application.targetFrameRate = 60;
-		LeanTween.init(800);
+		DOTween.Init(useSafeMode:false).SetCapacity(500, 50);
+		DOTween.defaultEaseType = Ease.Linear;
+		DOTween.useSafeMode = true;
 
 		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
@@ -45,6 +47,15 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInvincibility -= Time.deltaTime;
 		}
+
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			Time.timeScale = 5;
+		}
+		else if (Input.GetKeyUp(KeyCode.LeftShift))
+		{
+			Time.timeScale = 1;
+		}
 	}
 
 	private void FixedUpdate()
@@ -63,7 +74,8 @@ public class PlayerController : MonoBehaviour
 		{
 			if (currentInvincibility <= 0)
 			{
-				healthSystem.TakeDamage(10);
+				float toTake = collision.GetComponent<Damager>().damage;
+				healthSystem.TakeDamage(toTake);
 				TakeDamageEffects();
 				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
 

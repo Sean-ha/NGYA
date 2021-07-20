@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class HealthSystem : MonoBehaviour
 
 	public void TakeDamage(float damage)
 	{
-		LeanTween.cancel(whiteBarTweenId);
+		DOTween.Kill(gameObject);
 		currentHealth -= damage;
 
 		// Handles white bar
@@ -44,10 +45,8 @@ public class HealthSystem : MonoBehaviour
 		whiteBar.transform.position = new Vector2(whiteBarPosition, whiteBar.transform.position.y);
 		float newOldDiff = oldCurrHealth - newCurrHealth;
 		whiteBar.size = new Vector2(newOldDiff, whiteBar.size.y);
-		whiteBarTweenId = LeanTween.value(gameObject, newOldDiff, 0, 1).setEaseOutQuad().setOnUpdate((float val) =>
-		{
-			whiteBar.size = new Vector2(val, whiteBar.size.y);
-		}).id;
+
+		DOTween.To(() => newOldDiff, (float val) => whiteBar.size = new Vector2(val, whiteBar.size.y), 0, 1).SetEase(Ease.OutQuad).target = gameObject;
 
 		if (currentHealth <= 0)
 		{

@@ -47,6 +47,10 @@ public class ObjectPooler : MonoBehaviour
 		{
 			print("ERROR: DON'T CREATE PARTICLE HIT EFFECTS FROM HERE!!!");
 		}
+		else if (tag == Tag.CircleHitEffect)
+		{
+			print("ERROR: DON'T CREATE CIRCLE HIT EFFECTS FROM HERE!!!!");
+		}
 #endif
 
 		if (!poolDictionary.ContainsKey(tag))
@@ -64,7 +68,7 @@ public class ObjectPooler : MonoBehaviour
 		return objectToSpawn;
 	}
 
-	public GameObject CreateHitParticles(Color color, Vector3 position, Quaternion rotation)
+	public GameObject CreateHitParticles(Color color, Vector3 position)
 	{
 		GameObject objectToSpawn = poolDictionary[Tag.ParticleHitEffects].Dequeue();
 
@@ -73,9 +77,25 @@ public class ObjectPooler : MonoBehaviour
 		main.startColor = color;
 
 		objectToSpawn.transform.position = position;
-		objectToSpawn.transform.rotation = rotation;
+		objectToSpawn.transform.rotation = Quaternion.identity;
 
 		poolDictionary[Tag.ParticleHitEffects].Enqueue(objectToSpawn);
+
+		return objectToSpawn;
+	}
+
+	public GameObject CreateCircleHitEffect(Color color, Vector3 position, float startSize, float timeToShrink = 0.2f)
+	{
+		GameObject objectToSpawn = poolDictionary[Tag.CircleHitEffect].Dequeue();
+
+		objectToSpawn.SetActive(true);
+
+		CircleHitEffect hitEffect = objectToSpawn.GetComponent<CircleHitEffect>();
+		hitEffect.SetHitEffect(color, startSize, timeToShrink);
+
+		objectToSpawn.transform.position = position;
+
+		poolDictionary[Tag.CircleHitEffect].Enqueue(objectToSpawn);
 
 		return objectToSpawn;
 	}

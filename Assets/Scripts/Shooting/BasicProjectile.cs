@@ -14,7 +14,6 @@ public class BasicProjectile : Projectile
 	private Vector2 destination;
 	// In radians
 	private float angle;
-	private bool isMoving;
 	private float timeToReach;
 
 	private int hitCount;
@@ -36,25 +35,8 @@ public class BasicProjectile : Projectile
 
 	private void OnDisable()
 	{
-		isMoving = false;
+		CancelTweens();
 	}
-
-	/*
-	private void FixedUpdate()
-	{
-		if (isMoving)
-		{
-			Vector2 newPos = Vector2.Lerp(transform.position, destination, timeToReach);
-			rb.MovePosition(newPos);
-			timeToReach -= Time.fixedDeltaTime;
-
-			if (timeToReach <= 0)
-			{
-				LeanTween.scale(projectileSpriteChild.gameObject, new Vector3(0, 1, 1), 0.1f).setOnComplete(() => transform.gameObject.SetActive(false));
-			}
-		}
-	}
-	*/
 
 	/// <summary>
 	/// Sets the projectile's fields and allows it to begin its travel
@@ -67,11 +49,14 @@ public class BasicProjectile : Projectile
 		this.numberOfTargets = numberOfTargets;
 		this.distance = distance;
 
+		float firstDistance = distance - 1;
+		Vector2 firstDestination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * firstDistance);
+		float timeToReachFirstDistance = firstDistance / speed;
+
 		destination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * distance);
-		timeToReach = distance / speed;
-		// isMoving = true;
-		
-		rb.DOMove(destination, timeToReach).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
+		float timeToReachFinal = distance / speed;
+
+		rb.DOMove(destination, timeToReachFinal).SetUpdate(UpdateType.Fixed).onComplete += () =>
 		{
 			projectileSpriteChild.DOScaleX(0, 0.1f).onComplete += () => gameObject.SetActive(false);
 		};
@@ -93,8 +78,8 @@ public class BasicProjectile : Projectile
 				Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
 				collision.GetComponent<Rigidbody2D>().AddForce(push);
 
-				ObjectPooler.instance.CreateHitParticles(Color.white, transform.position, Quaternion.identity);
-				ObjectPooler.instance.Create(Tag.CircleHitEffect, transform.position, Quaternion.identity);
+				ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
+				ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1f);
 
 				hitSet.Add(collision.gameObject);
 				hitCount++;
@@ -108,11 +93,20 @@ public class BasicProjectile : Projectile
 				}
 			}
 		}
+		// Wall layer
+		else if (collision.gameObject.layer == 9)
+		{
+			ObjectPooler.instance.CreateHitParticles(Color.white, collision.ClosestPoint(transform.position));
+			ObjectPooler.instance.CreateCircleHitEffect(Color.white, collision.ClosestPoint(transform.position), 1f);
+
+			CancelTweens();
+			transform.gameObject.SetActive(false);
+		}
 	}
 
 	private void CancelTweens()
 	{
-		DOTween.Kill(rb);
-		DOTween.Kill(projectileSpriteChild);
+		rb.DOKill();
+		projectileSpriteChild.DOKill();
 	}
 }

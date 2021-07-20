@@ -15,7 +15,7 @@ TagManager:
   - PlayerProjectile
   - Enemy
   - Player
-  - 
+  - Wall
   - 
   - 
   - 
@@ -44,4 +44,10 @@ TagManager:
     locked: 0
   - name: Above
     uniqueID: 3926357147
+    locked: 0
+  - name: Borders
+    uniqueID: 557766315
+    locked: 0
+  - name: UI
+    uniqueID: 1245659917
     locked: 0
