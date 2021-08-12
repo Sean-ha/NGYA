@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ObjectPooler : MonoBehaviour
@@ -45,11 +46,11 @@ public class ObjectPooler : MonoBehaviour
 #if UNITY_EDITOR
 		if (tag == Tag.ParticleHitEffects)
 		{
-			print("ERROR: DON'T CREATE PARTICLE HIT EFFECTS FROM HERE!!!");
+			Debug.LogError("ERROR: DON'T CREATE PARTICLE HIT EFFECTS FROM HERE!!!");
 		}
 		else if (tag == Tag.CircleHitEffect)
 		{
-			print("ERROR: DON'T CREATE CIRCLE HIT EFFECTS FROM HERE!!!!");
+			Debug.LogError("ERROR: DON'T CREATE CIRCLE HIT EFFECTS FROM HERE!!!!");
 		}
 #endif
 
@@ -59,9 +60,9 @@ public class ObjectPooler : MonoBehaviour
 		}
 		GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-		objectToSpawn.SetActive(true);
 		objectToSpawn.transform.position = position;
 		objectToSpawn.transform.rotation = rotation;
+		objectToSpawn.SetActive(true);
 
 		poolDictionary[tag].Enqueue(objectToSpawn);
 
@@ -99,6 +100,17 @@ public class ObjectPooler : MonoBehaviour
 
 		return objectToSpawn;
 	}
+
+	public GameObject CreateTextObject(Vector3 position, Quaternion rotation, Color color, float fontSize, string text)
+	{
+		GameObject created = Create(Tag.TextObject, position, rotation);
+		TextMeshPro textMesh = created.GetComponent<TextMeshPro>();
+		textMesh.color = color;
+		textMesh.fontSize = fontSize;
+		textMesh.text = text;
+
+		return created;
+	}
 }
 
 public enum Tag
@@ -107,5 +119,9 @@ public enum Tag
 	ParticleHitEffects,	// Classic particles from player projectiles, or enemies being hit
 	AmmoShell,	// Ammo shells for when player shoots
 	EnemyProjectile,	// Classic enemy projectile
-	CircleHitEffect, // Classic circle hit effect that shrinks upon enabling
+	CircleHitEffect, // Classic circle hit effect that shrinks upon enabling,
+	SmallExpShell,	// Exp shell that gives 1 exp
+	CircularEnemyProjectile,	// Circular shaped enemy projectile
+	TextObject,	// A text object (not in canvas)
+	LaserProjectile,	// Instant laser projectile attack
 }

@@ -31,7 +31,7 @@ public class DotShooter : Shooter
 		float shellAngle = angle + Random.Range(80, 130f);
 		float shellForce = Random.Range(1.4f, 2f);
 		float shellTime = Random.Range(0.4f, 0.6f);
-		float shellSpinTime = shellTime + Random.Range(0.1f, 0.3f);
+		float shellSpinTime = shellTime + Random.Range(0.15f, 0.3f);
 		float shellSpinAmount = Random.Range(480, 1080);
 		Vector2 shellDestination = new Vector2(Mathf.Cos(shellAngle * Mathf.Deg2Rad), Mathf.Sin(shellAngle * Mathf.Deg2Rad)) * shellForce;
 		shellDestination += (Vector2)shell.transform.position;

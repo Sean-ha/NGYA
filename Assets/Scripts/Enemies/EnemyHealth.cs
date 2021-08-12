@@ -66,4 +66,14 @@ public class EnemyHealth : MonoBehaviour
 	{
 		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, 1.5f);
 	}
+
+	public void PlayDeathHitCircleEffect(float size)
+	{
+		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, size);
+	}
+
+	public void PlaySound(int sound)
+	{
+		SoundManager.instance.PlaySound((SoundManager.Sound)sound);
+	}
 }

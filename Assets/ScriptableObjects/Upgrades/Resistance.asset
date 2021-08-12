@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2258317027a79748bf77a1eb3a4b762, type: 3}
+  m_Name: Resistance
+  m_EditorClassIdentifier: 
+  upgradeType: 10
+  upgradeName: resistance
+  upgradeSprite: {fileID: 21300000, guid: 3a67362974973ee41917c7a48d0773db, type: 3}
+  upgradeDescription: 'increase invincibility duration when getting hit.
+
+    take
+    10% less damage.'

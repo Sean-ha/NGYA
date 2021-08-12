@@ -1,0 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class CustomEvent : MonoBehaviour
+{
+	public UnityEvent customEvent;
+
+	public void InvokeEvent()
+	{
+		customEvent.Invoke();
+	}
+}

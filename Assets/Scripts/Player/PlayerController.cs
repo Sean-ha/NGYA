@@ -1,10 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
+using System.Collections;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+	public static PlayerController instance;
+
+	public GameObject levelUpText;
 	public float moveSpeed;
 
 	private HealthSystem healthSystem;
@@ -13,16 +15,28 @@ public class PlayerController : MonoBehaviour
 
 	private float horizontal;
 	private float vertical;
+	private bool canMove = true;
+	// If set to true, will zero out velocity on the next FixedUpdate.
+	private bool zeroVelocity;
+	private Coroutine disableMovementCR;
 
-	private float knockBackForce = 1f;
+	private float knockBackForce = 500f;
 
 	// Duration of invincibility in seconds
 	private float invincibilityDuration = 1f;
 	// Duration of current invincibility. <=0 means player can be hit.
 	private float currentInvincibility;
 
+	private Collider2D[] expShells = new Collider2D[10];
+	private int expShellLayer;
+
+	private GameObject levelUpSquare;
+	private GameObject levelUpParticles;
+
 	private void Awake()
 	{
+		instance = this;
+
 		// TODO: Move this stuff somewhere else probably
 		Application.targetFrameRate = 60;
 		DOTween.Init(useSafeMode:false).SetCapacity(500, 50);
@@ -31,6 +45,11 @@ public class PlayerController : MonoBehaviour
 
 		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
+
+		expShellLayer = LayerMask.GetMask("Exp");
+
+		levelUpSquare = transform.GetChild(0).gameObject;
+		levelUpParticles = transform.GetChild(1).gameObject;
 	}
 
 	private void Start()
@@ -56,11 +75,45 @@ public class PlayerController : MonoBehaviour
 		{
 			Time.timeScale = 1;
 		}
+
+		CheckForExp();
 	}
 
 	private void FixedUpdate()
 	{
-		rb.velocity = new Vector2(horizontal, vertical) * moveSpeed;
+		if (zeroVelocity)
+		{
+			rb.velocity = Vector2.zero;
+			zeroVelocity = false;
+		}
+		if (!canMove)
+			return;
+
+		Vector2 velVector = new Vector2(horizontal, vertical);
+		if (velVector.magnitude > 1)
+		{
+			velVector /= velVector.magnitude;
+		}
+		velVector *= moveSpeed;
+
+		rb.velocity = velVector;
+	}
+
+	private void CheckForExp()
+	{
+		Physics2D.OverlapCircleNonAlloc(transform.position, 0.2f, expShells, expShellLayer);
+
+		for (int i = 0; i < expShells.Length; i++)
+		{
+			if (expShells[i] != null)
+			{
+				ExpManager.instance.GainExp(expShells[i].GetComponent<ExpShell>().expAmount);
+				expShells[i].gameObject.SetActive(false);
+				expShells[i] = null;
+				// SoundManager.instance.PlayExpPickupSound();
+				SoundManager.instance.PlaySound(SoundManager.Sound.PickupExp);
+			}
+		}
 	}
 
 	private void OnCollisionStay2D(Collision2D collision)
@@ -78,12 +131,14 @@ public class PlayerController : MonoBehaviour
 				healthSystem.TakeDamage(toTake);
 				TakeDamageEffects();
 				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
+				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
 
 				// Get knocked back
 				Vector2 diff = (transform.position - collision.transform.position).normalized;
-				Vector2 destination = (Vector2)transform.position + (diff * knockBackForce);
-
-				rb.DOMove(destination, 0.3f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed);
+				// Vector2 destination = (Vector2)transform.position + (diff * knockBackForce);
+				Vector2 force = diff * knockBackForce;
+				DisableMovement(0.15f);
+				rb.AddForce(force);
 
 				currentInvincibility = invincibilityDuration;
 			}
@@ -108,6 +163,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	/*
 	private IEnumerator ChromaticAberration()
 	{
 		sr.sharedMaterial.SetFloat("_OffsetBlueX", -.1f);
@@ -122,6 +178,23 @@ public class PlayerController : MonoBehaviour
 		{
 			sr.sharedMaterial.SetFloat("_OffsetRedX", val);
 		});
+	}
+	*/
+
+	// Disables player movement for time seconds. Note that as soon as movement is disabled, the player abruptly stops moving.
+	private void DisableMovement(float time)
+	{
+		if (disableMovementCR != null)
+			StopCoroutine(disableMovementCR);
+		disableMovementCR = StartCoroutine(DisableMovementCR(time));
+	}
+
+	private IEnumerator DisableMovementCR(float time)
+	{
+		canMove = false;
+		zeroVelocity = true;
+		yield return new WaitForSeconds(time);
+		canMove = true;
 	}
 
 	/// <summary>
@@ -139,5 +212,18 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 vel = rb.velocity * time;
 		return (Vector2)transform.position - vel;
+	}
+
+	public void LevelUp()
+	{
+		levelUpSquare.SetActive(true);
+		levelUpParticles.SetActive(true);
+		Instantiate(levelUpText, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+		SoundManager.instance.PlaySound(SoundManager.Sound.LevelUp);
+
+		TimeManager.instance.SlowToPause(() =>
+		{
+			UpgradesManager.instance.DisplayUpgradesWindow();
+		});
 	}
 }

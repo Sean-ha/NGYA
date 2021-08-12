@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class BasicEnemyProjectile : Projectile
+public class BasicEnemyProjectile : EnemyProjectile
 {
 	private Rigidbody2D rb;
 	private Transform projectileSpriteChild;
@@ -13,6 +13,7 @@ public class BasicEnemyProjectile : Projectile
 	private Damager damager;
 
 	private Color projectileColor;
+	private Vector3 originalSpriteSize;
 
 	private void Awake()
 	{
@@ -20,16 +21,17 @@ public class BasicEnemyProjectile : Projectile
 		projectileSpriteChild = transform.GetChild(0);
 		damager = GetComponent<Damager>();
 
-		projectileColor = transform.GetComponentInChildren<SpriteRenderer>().color;
+		projectileColor = projectileSpriteChild.GetComponent<SpriteRenderer>().color;
+		originalSpriteSize = projectileSpriteChild.localScale;
 	}
 
 	private void OnEnable()
 	{
 		rb.DOKill();
-		projectileSpriteChild.localScale = new Vector3(1, 1, 1);
+		projectileSpriteChild.localScale = originalSpriteSize;
 	}
 
-	public void SetProjectile(float speed, float angle, float damage, float distance)
+	public override void SetProjectile(float speed, float angle, float damage, float distance)
 	{
 		this.angle = Mathf.Deg2Rad * angle;
 		this.damage = damage;
@@ -47,6 +49,7 @@ public class BasicEnemyProjectile : Projectile
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		// Wall layer
 		if (collision.gameObject.layer == 9)
 		{
 			ObjectPooler.instance.CreateHitParticles(projectileColor, collision.ClosestPoint(transform.position));

@@ -11,9 +11,12 @@ public class CameraShake : MonoBehaviour
 	private Vector3 defaultPos = new Vector3(0, 0, -10);
 	private Quaternion defaultRot = Quaternion.identity;
 
+	public bool canShake { get; set; } = true;
 	private bool isShaking;
 	private float currentDuration;
 	private float currentMagnitude;
+
+	private Coroutine shakeCR;
 
 	private void Awake()
 	{
@@ -26,11 +29,15 @@ public class CameraShake : MonoBehaviour
 	/// </summary>
 	public void ShakeCamera()
 	{
-		ShakeCamera(0.1f, 0.1f);
+		if (canShake)
+			ShakeCamera(0.1f, 0.1f);
 	}
 
 	public void ShakeCamera(float duration, float magnitude)
 	{
+		if (!canShake)
+			return;
+
 		if (isShaking && magnitude < currentMagnitude)
 			return;
 
@@ -41,7 +48,13 @@ public class CameraShake : MonoBehaviour
 		cam.position = defaultPos; //Reset to original postion
 		cam.rotation = defaultRot; //Reset to original rotation
 
-		StartCoroutine(Shake());
+		shakeCR = StartCoroutine(Shake());
+	}
+
+	public void CancelShake()
+	{
+		if (shakeCR != null)
+			StopCoroutine(shakeCR);
 	}
 
 	/// <summary>
@@ -50,6 +63,9 @@ public class CameraShake : MonoBehaviour
 	/// <param name="angle">Angle in degrees</param>
 	public void ShakeCameraDirectional(float duration, float angle, float magnitude)
 	{
+		if (!canShake)
+			return;
+
 		if (isShaking && magnitude < currentMagnitude)
 			return;
 
@@ -60,7 +76,7 @@ public class CameraShake : MonoBehaviour
 		cam.position = defaultPos; //Reset to original postion
 		cam.rotation = defaultRot; //Reset to original rotation
 
-		StartCoroutine(ShakeDirectional(duration, -angle, magnitude));
+		shakeCR = StartCoroutine(ShakeDirectional(duration, -angle, magnitude));
 	}
 
 	private IEnumerator Shake()

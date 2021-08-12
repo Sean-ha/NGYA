@@ -11,8 +11,8 @@ public class ShootManager : MonoBehaviour
 	public float damage;
 	public float bulletDistance;
 	public int pierceCount;
+	public float shootCooldown = 0.25f;
 
-	private float shootCooldown = 0.25f;
 	private float currShootCooldown;
 
 	// Parameters: damage, distance, pierce
@@ -30,6 +30,8 @@ public class ShootManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (TimeManager.IsPaused) return;
+
 		currShootCooldown -= Time.deltaTime;
 
 		if (Input.GetMouseButton(0))
@@ -40,6 +42,7 @@ public class ShootManager : MonoBehaviour
 			{
 				// Shoot
 				onShoot.Invoke(damage, bulletDistance, pierceCount);
+				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);
 				currShootCooldown = shootCooldown;
 			}
 		}

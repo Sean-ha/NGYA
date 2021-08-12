@@ -6,6 +6,8 @@ public class PointToCursor : MonoBehaviour
 {
 	private void Update()
 	{
+		if (TimeManager.IsPaused) return;
+
 		Vector2 pos = Input.mousePosition;
 		Vector2 worldPos = Camera.main.ScreenToWorldPoint(pos);
 

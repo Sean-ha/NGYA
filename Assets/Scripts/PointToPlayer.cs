@@ -8,7 +8,7 @@ public class PointToPlayer : MonoBehaviour
 
 	private void Start()
 	{
-		player = FindObjectOfType<PlayerController>().transform;
+		player = GameAssets.instance.player.transform;
 	}
 
 	private void Update()
@@ -19,5 +19,10 @@ public class PointToPlayer : MonoBehaviour
 		float angle = Mathf.Rad2Deg * Mathf.Atan2(diff.y, diff.x);
 
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+	}
+
+	public void ForceUpdate()
+	{
+		Update();
 	}
 }
