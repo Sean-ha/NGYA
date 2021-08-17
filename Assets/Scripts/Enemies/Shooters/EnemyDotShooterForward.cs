@@ -52,6 +52,8 @@ public class EnemyDotShooterForward : EnemyShooter
 
 	public override void Shoot()
 	{
+		onShoot.Invoke();
+
 		// Get rotation angle
 		float angle = GetAngle();
 

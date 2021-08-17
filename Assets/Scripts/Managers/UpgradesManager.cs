@@ -21,6 +21,8 @@ public class UpgradesManager : MonoBehaviour
 	private Transform[] upgradeCards = new Transform[3];
 
 	private HashSet<Upgrade> availableUpgrades;
+	private HashSet<Upgrade> obtainedUpgrades = new HashSet<Upgrade>();
+
 	private System.Random rand;
 
 	private void Awake()
@@ -31,6 +33,10 @@ public class UpgradesManager : MonoBehaviour
 
 		// Initialize available upgrades set
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
+
+		GainUpgradeEffect(Upgrade.TriggerFinger);
+		GainUpgradeEffect(Upgrade.Backbone);
+		GainUpgradeEffect(Upgrade.Unwavering);
 	}
 
 	private void Update()
@@ -82,11 +88,12 @@ public class UpgradesManager : MonoBehaviour
 									Destroy(currentCard.gameObject);
 								});
 						}
-
 						// TODO: Actually add the upgrade to your player
 						StartCoroutine(FinishChoosingUpgrades(currIndex));
 
-						availableUpgrades.Remove(upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade);
+						Upgrade selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
+						availableUpgrades.Remove(selected);
+						GainUpgradeEffect(selected);
 					}
 				}
 			}
@@ -211,5 +218,84 @@ public class UpgradesManager : MonoBehaviour
 
 		// Unpause game
 		TimeManager.instance.SlowToUnpause();
+	}
+
+	private void GainUpgradeEffect(Upgrade upgrade)
+	{
+		obtainedUpgrades.Add(upgrade);
+
+		switch (upgrade)
+		{
+			case Upgrade.Adrenaline:
+				PlayerController.instance.moveSpeed += 2f;
+				PlayerController.instance.onTakeDamage.AddListener(() =>
+				{
+					// TODO: Create some sort of effect to show adrenaline is taking effect, after taking damage ??
+
+					PlayerController.instance.moveSpeed += 6f;
+					DOTween.To(() => PlayerController.instance.moveSpeed, (float val) => PlayerController.instance.moveSpeed = val, PlayerController.instance.moveSpeed - 6, 0.95f);
+				});
+				break;
+
+			case Upgrade.Backbone:
+				DotBuilder.instance.BuildBackboneDot();
+				break;
+
+			case Upgrade.Blowback:
+
+				break;
+
+			case Upgrade.Brawl:
+				ShootManager.instance.BulletDistance = 2;
+				AmmoSystem.instance.AmmoRegenPerSecond += 6;
+				break;
+
+			case Upgrade.DeepBreaths:
+				PlayerController.instance.onStandStill.AddListener(() => AmmoSystem.instance.AmmoRegenPerSecond += 10);
+				PlayerController.instance.onCancelStandStill.AddListener(() => AmmoSystem.instance.AmmoRegenPerSecond -= 10);
+				break;
+
+			case Upgrade.Defender:
+
+				break;
+
+			case Upgrade.HeavyBullets:
+				ShootManager.instance.damage += 2;
+				DotBuilder.instance.ChangeBulletAmmoCost(1);
+				break;
+
+			case Upgrade.Inspire:
+
+				break;
+
+			case Upgrade.Love:
+
+				break;
+
+			case Upgrade.MagicBullets:
+				DotBuilder.instance.ChangeBulletAmmoConsumptionChance(0.25f);
+				break;
+
+			case Upgrade.Resistance:
+				PlayerController.instance.invincibilityDuration += 2.0f;
+				// TODO
+				break;
+
+			case Upgrade.Sight:
+				ShootManager.instance.BulletDistance += 6f;
+				break;
+			case Upgrade.Snipe:
+
+				break;
+			case Upgrade.TriggerFinger:
+				ShootManager.instance.ShootCooldown -= 0.075f;
+				AmmoSystem.instance.AmmoRegenPerSecond += 3;
+				break;
+
+			case Upgrade.Unwavering:
+				PlayerController.instance.knockBackForce = 0;
+				// TODO
+				break;
+		}
 	}
 }

@@ -11,8 +11,12 @@ public class DotShooter : Shooter
 
 	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
 	{
-		if (!AmmoSystem.instance.RemoveAmmo())
-			return;
+		float roll = Random.Range(0f, 1f);
+		if (roll >= ChanceToNotConsumeAmmo)
+		{
+			if (!AmmoSystem.instance.RemoveAmmo(ammoPerShot))
+				return;
+		}
 
 		// Get angle between player and mouse location
 		float angle = GetAngle();

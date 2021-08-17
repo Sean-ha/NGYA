@@ -52,8 +52,9 @@ public class BasicEnemyProjectile : EnemyProjectile
 		// Wall layer
 		if (collision.gameObject.layer == 9)
 		{
-			ObjectPooler.instance.CreateHitParticles(projectileColor, collision.ClosestPoint(transform.position));
-			ObjectPooler.instance.CreateCircleHitEffect(projectileColor, collision.ClosestPoint(transform.position), 1f);
+			Vector2 closestPoint = collision.ClosestPoint(transform.position);
+			ObjectPooler.instance.CreateHitParticles(projectileColor, closestPoint);
+			ObjectPooler.instance.CreateCircleHitEffect(projectileColor, closestPoint, 1f);
 
 			rb.DOKill();
 			transform.gameObject.SetActive(false);

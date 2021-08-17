@@ -9,5 +9,6 @@ public abstract class EnemyProjectile : MonoBehaviour
 	// Distance the projectile will travel
 	public float distance { get; set; }
 
-	public abstract void SetProjectile(float speed, float angle, float damage, float distance);
+	// Angle is in degrees
+	public abstract void SetProjectile(float speed, float dangle, float damage, float distance);
 }

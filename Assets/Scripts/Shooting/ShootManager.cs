@@ -6,12 +6,27 @@ using DG.Tweening;
 
 public class ShootManager : MonoBehaviour
 {
+	public static ShootManager instance;
+
 	public Transform dotHolder;
 
 	public float damage;
-	public float bulletDistance;
+
+	private float bulletDistance = 4;
+	public float BulletDistance 
+	{ 
+		get { return bulletDistance; }
+		set { bulletDistance = Mathf.Max(1, value); }
+	}
+
 	public int pierceCount;
-	public float shootCooldown = 0.25f;
+
+	private float shootCooldown = 0.25f;
+	public float ShootCooldown
+	{
+		get { return shootCooldown; }
+		set { shootCooldown = Mathf.Max(0.01f, value); }
+	}
 
 	private float currShootCooldown;
 
@@ -20,6 +35,7 @@ public class ShootManager : MonoBehaviour
 
 	private void Awake()
 	{
+		instance = this;
 		foreach (Transform child in dotHolder)
 		{
 			Shooter currShooter = child.GetComponent<Shooter>();

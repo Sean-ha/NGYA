@@ -96,8 +96,11 @@ public class BasicProjectile : Projectile
 		// Wall layer
 		else if (collision.gameObject.layer == 9)
 		{
-			ObjectPooler.instance.CreateHitParticles(Color.white, collision.ClosestPoint(transform.position));
-			ObjectPooler.instance.CreateCircleHitEffect(Color.white, collision.ClosestPoint(transform.position), 1f);
+			Vector2 closestPoint = collision.ClosestPoint(transform.position);
+
+			ObjectPooler.instance.CreateHitParticles(Color.white, closestPoint);
+			ObjectPooler.instance.CreateCircleHitEffect(Color.white, closestPoint, 1f);
+			SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHit);
 
 			CancelTweens();
 			transform.gameObject.SetActive(false);

@@ -20,7 +20,13 @@ public class AmmoSystem : MonoBehaviour
 	private Stack<GameObject> ammoStack = new Stack<GameObject>();
 
 	// Amount of ammo to get per second
-	private int ammoRegen = 60;
+	private int ammoRegenPerSecond = 3;
+	public int AmmoRegenPerSecond
+	{
+		get { return ammoRegenPerSecond; }
+		set { ammoRegenPerSecond = Mathf.Max(1, value); CalculateAmmoRegenRate(); }
+	}
+
 	private float ammoRegenRate;
 	private float currentAmmoRegen;
 
@@ -28,7 +34,7 @@ public class AmmoSystem : MonoBehaviour
 	{
 		instance = this;
 
-		ammoRegenRate = 1f / ammoRegen;
+		CalculateAmmoRegenRate();
 		maxAmmo = 20 + 20 * ammoUpgrades;
 
 		firstBulletPosition = bulletTemplate.transform.position.x;
@@ -58,16 +64,24 @@ public class AmmoSystem : MonoBehaviour
 		ammoBackground.size = new Vector2(Mathf.FloorToInt(ammoOutline.size.x) - 0.04f, ammoBackground.size.y);
 	}
 
-	public bool RemoveAmmo()
+	/// <summary>
+	/// Removes the specified number of ammo. Returns whether or not the ammo system has at least 'amount' number of bullets currently
+	/// </summary>
+	public bool RemoveAmmo(int amount)
 	{
-		if (RemoveAmmo(1) == 1)
-			return true;
-		else
+		if (currentAmmo < amount)
 			return false;
+
+		for (int i = 0; i < amount; i++)
+		{
+			Destroy(ammoStack.Pop());
+		}
+		currentAmmo -= amount;
+		return true;
 	}
 
 	// Returns the number of ammo removed
-	private int RemoveAmmo(int amount)
+	private int TryRemoveAmmo(int amount)
 	{
 		if (currentAmmo < amount)
 		{
@@ -114,5 +128,10 @@ public class AmmoSystem : MonoBehaviour
 				currentAmmoRegen += ammoRegenRate;
 			}
 		}
+	}
+
+	private void CalculateAmmoRegenRate()
+	{
+		ammoRegenRate = 1f / ammoRegenPerSecond;
 	}
 }

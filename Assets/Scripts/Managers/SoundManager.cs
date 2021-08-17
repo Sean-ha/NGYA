@@ -16,6 +16,8 @@ public class SoundManager : MonoBehaviour
       PickupExp = 4,
       ClickySound = 5,
       LevelUp = 6,
+      LaserCharge = 7,
+      LaserShoot = 8,
    }
 
    [System.Serializable]
@@ -68,13 +70,18 @@ public class SoundManager : MonoBehaviour
       }
    }
 
-   public void PlaySound(Sound sound)
+   public void PlaySound(Sound sound, bool randomizePitch = true)
    {
       if (!canPlayDict[sound])
          return;
 
       AudioSource toPlay = dict[sound].Dequeue();
-      toPlay.pitch = Random.Range(0.95f, 1.05f);
+
+      if (randomizePitch)
+         toPlay.pitch = Random.Range(0.95f, 1.05f);
+      else
+         toPlay.pitch = 1;
+
       toPlay.Play();
       dict[sound].Enqueue(toPlay);
       StartCoroutine(CannotPlaySound(sound));

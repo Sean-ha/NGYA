@@ -38,9 +38,14 @@ public class BombEnemyProjectile : MonoBehaviour
 
 	private void CreateExplosion()
 	{
-		CameraShake.instance.ShakeCamera(0.15f, 0.2f);
+		CameraShake.instance.ShakeCamera(0.2f, 0.3f);
 
-		ObjectPooler.instance.CreateCircleHitEffect(Color.red, transform.position, 3.5f);
+		// Creates circle effect that starts white and turns red
+		SpriteRenderer circleEffect = ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 3.5f).GetComponent<SpriteRenderer>();
+		Sequence seq = DOTween.Sequence();
+		seq.AppendInterval(0.05f);
+		seq.AppendCallback(() => circleEffect.color = Color.red);
+
 		Transform explosionParticles = transform.GetChild(0);
 		explosionParticles.gameObject.SetActive(true);
 		explosionParticles.parent = null;

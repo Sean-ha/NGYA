@@ -31,6 +31,9 @@ public class SniperEnemy : MonoBehaviour
 			// Shoot
 			CameraShake.instance.ShakeCamera(0.15f, 0.2f);
 			dotShooter.Shoot();
+			float rangle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+			Vector2 force = new Vector2(Mathf.Cos(rangle), Mathf.Sin(rangle)) * -4000f;
+			GetComponent<Rigidbody2D>().AddForce(force);
 			
 			yield return new WaitForSeconds(1.5f);
 

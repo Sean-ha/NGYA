@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
 	public GameObject levelUpText;
 	public float moveSpeed;
+
 
 	private HealthSystem healthSystem;
 	private Rigidbody2D rb;
@@ -20,18 +22,26 @@ public class PlayerController : MonoBehaviour
 	private bool zeroVelocity;
 	private Coroutine disableMovementCR;
 
-	private float knockBackForce = 500f;
+	public float knockBackForce { get; set; } = 500f;
 
 	// Duration of invincibility in seconds
-	private float invincibilityDuration = 1f;
+	public float invincibilityDuration { get; set; } = 1f;
 	// Duration of current invincibility. <=0 means player can be hit.
 	private float currentInvincibility;
+	public UnityEvent onTakeDamage { get; set; } = new UnityEvent();
 
 	private Collider2D[] expShells = new Collider2D[10];
 	private int expShellLayer;
 
 	private GameObject levelUpSquare;
 	private GameObject levelUpParticles;
+
+	// Time it takes for stand still effects to take effect
+	private float standStillDuration = 1.5f;
+	private float currentStandStillDuration;
+	public UnityEvent onStandStill { get; set; } = new UnityEvent();
+	// Invoked when player moves after standing still effect activates
+	public UnityEvent onCancelStandStill { get; set; } = new UnityEvent();
 
 	private void Awake()
 	{
@@ -50,6 +60,9 @@ public class PlayerController : MonoBehaviour
 
 		levelUpSquare = transform.GetChild(0).gameObject;
 		levelUpParticles = transform.GetChild(1).gameObject;
+
+		onStandStill.AddListener(() => print("STILL!!"));
+		onCancelStandStill.AddListener(() => print("moving again"));
 	}
 
 	private void Start()
@@ -67,6 +80,20 @@ public class PlayerController : MonoBehaviour
 			currentInvincibility -= Time.deltaTime;
 		}
 
+		if (horizontal == 0 && vertical == 0 && currentStandStillDuration < standStillDuration)
+		{
+			currentStandStillDuration += Time.deltaTime;
+			if (currentStandStillDuration >= standStillDuration)
+			{
+				onStandStill.Invoke();
+			}
+		}
+		else if (horizontal != 0 || vertical != 0)
+		{
+			CancelStandStill();
+		}
+
+#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
 			Time.timeScale = 5;
@@ -75,6 +102,17 @@ public class PlayerController : MonoBehaviour
 		{
 			Time.timeScale = 1;
 		}
+		if (Input.GetKeyDown(KeyCode.RightShift))
+		{
+			TimeManager.instance.SlowToPause(() =>
+			{
+			});
+		}
+		else if (Input.GetKeyUp(KeyCode.RightShift))
+		{
+			TimeManager.instance.SlowToUnpause();
+		}
+#endif
 
 		CheckForExp();
 	}
@@ -97,6 +135,14 @@ public class PlayerController : MonoBehaviour
 		velVector *= moveSpeed;
 
 		rb.velocity = velVector;
+	}
+
+	private void CancelStandStill()
+	{
+		if (currentStandStillDuration >= standStillDuration)
+			onCancelStandStill.Invoke();
+
+		currentStandStillDuration = 0;
 	}
 
 	private void CheckForExp()
@@ -133,12 +179,18 @@ public class PlayerController : MonoBehaviour
 				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
 				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
 
-				// Get knocked back
-				Vector2 diff = (transform.position - collision.transform.position).normalized;
-				// Vector2 destination = (Vector2)transform.position + (diff * knockBackForce);
-				Vector2 force = diff * knockBackForce;
-				DisableMovement(0.15f);
-				rb.AddForce(force);
+				if (!Mathf.Approximately(0, knockBackForce))
+				{
+					// Get knocked back (and cancel standstill)
+					Vector2 diff = (transform.position - collision.transform.position).normalized;
+					Vector2 force = diff * knockBackForce;
+
+					DisableMovement(0.15f);
+					rb.AddForce(force);
+					CancelStandStill();
+				}
+
+				onTakeDamage.Invoke();
 
 				currentInvincibility = invincibilityDuration;
 			}
@@ -154,7 +206,8 @@ public class PlayerController : MonoBehaviour
 
 	private IEnumerator BlinkSprite()
 	{
-		for (int i = 0; i < 5; i++)
+		int count = Mathf.RoundToInt(invincibilityDuration / 0.2f);
+		for (int i = 0; i < count; i++)
 		{
 			sr.enabled = false;
 			yield return new WaitForSeconds(0.1f);

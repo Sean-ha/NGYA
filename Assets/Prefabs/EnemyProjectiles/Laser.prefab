@@ -4889,7 +4889,7 @@ Transform:
   m_GameObject: {fileID: 7549017779547387134}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 15, y: 0, z: 0}
-  m_LocalScale: {x: 30, y: 0.3, z: 1}
+  m_LocalScale: {x: 30, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 7549017781300584509}
   m_RootOrder: 0
@@ -4956,6 +4956,8 @@ GameObject:
   - component: {fileID: 7549017779669795864}
   - component: {fileID: 7549017779669795865}
   - component: {fileID: 7549017779669795846}
+  - component: {fileID: 5745171907028680871}
+  - component: {fileID: 1508342863597057641}
   m_Layer: 7
   m_Name: Collider
   m_TagString: Projectile
@@ -5001,7 +5003,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 30, y: 0.3}
+  m_Size: {x: 30, y: 0.5}
   m_EdgeRadius: 0
 --- !u!114 &7549017779669795846
 MonoBehaviour:
@@ -5016,6 +5018,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+--- !u!114 &5745171907028680871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7549017779669795867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28d3f80fb60ae02429e02b0125c36f39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!50 &1508342863597057641
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7549017779669795867}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &7549017781072398946
 GameObject:
   m_ObjectHideFlags: 0
@@ -5042,7 +5077,7 @@ Transform:
   m_GameObject: {fileID: 7549017781072398946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1}
   m_Children: []
   m_Father: {fileID: 7549017781300584509}
   m_RootOrder: 1
@@ -5109,8 +5144,6 @@ GameObject:
   - component: {fileID: 7549017781114677557}
   - component: {fileID: 7549017781114677553}
   - component: {fileID: 7549017781114677552}
-  - component: {fileID: 7549017781114677555}
-  - component: {fileID: 7549017781114677554}
   m_Layer: 0
   m_Name: LaserParticleEffects
   m_TagString: Untagged
@@ -9904,45 +9937,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &7549017781114677555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549017781114677556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea84688ebd97d3b41b554a399bf18102, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onStop:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7549017781114677554}
-        m_TargetAssemblyTypeName: DestroyThis, Assembly-CSharp
-        m_MethodName: DestroyThisObject
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &7549017781114677554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549017781114677556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5cc2abd719d5e343b4442ef1bf1d367, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7549017781300584508
 GameObject:
   m_ObjectHideFlags: 0

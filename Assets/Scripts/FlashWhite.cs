@@ -5,31 +5,28 @@ using UnityEngine;
 // Script for making sprite flash white. Sprite requires DropShadow... material
 public class FlashWhite : MonoBehaviour
 {
-	private SpriteRenderer sr;
+	private Renderer rend;
 	private MaterialPropertyBlock block;
+
+	private Coroutine stopFlashCR;
 
 	private void Awake()
 	{
-		sr = GetComponent<SpriteRenderer>();
+		rend = GetComponent<Renderer>();
 		block = new MaterialPropertyBlock();
 	}
 
 	private void OnEnable()
 	{
-		sr.GetPropertyBlock(block);
+		rend.GetPropertyBlock(block);
 		block.SetFloat("_FlashAmount", 0f);
-		sr.SetPropertyBlock(block);
+		rend.SetPropertyBlock(block);
 	}
 
 	// Default time
 	public void InitiateWhiteFlash()
 	{
-		sr.GetPropertyBlock(block);
-		block.SetFloat("_FlashAmount", 1f);
-		sr.SetPropertyBlock(block);
-
-		if (gameObject.activeInHierarchy)
-			StartCoroutine(StopFlash(0.1f));
+		InitiateWhiteFlash(0.1f);
 	}
 
 	/// <summary>
@@ -38,20 +35,23 @@ public class FlashWhite : MonoBehaviour
 	/// <param name="whiteTime"></param>
 	public void InitiateWhiteFlash(float whiteTime = 0.1f)
 	{
-		sr.GetPropertyBlock(block);
+		if (stopFlashCR != null)
+			StopCoroutine(stopFlashCR);
+
+		rend.GetPropertyBlock(block);
 		block.SetFloat("_FlashAmount", 1f);
-		sr.SetPropertyBlock(block);
+		rend.SetPropertyBlock(block);
 
 		if (gameObject.activeInHierarchy)
-			StartCoroutine(StopFlash(whiteTime));
+			stopFlashCR = StartCoroutine(StopFlash(whiteTime));
 	}
 
 	private IEnumerator StopFlash(float whiteTime)
 	{
 		yield return new WaitForSeconds(whiteTime);
 
-		sr.GetPropertyBlock(block);
+		rend.GetPropertyBlock(block);
 		block.SetFloat("_FlashAmount", 0f);
-		sr.SetPropertyBlock(block);
+		rend.SetPropertyBlock(block);
 	}
 }

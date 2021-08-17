@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public abstract class EnemyShooter : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public abstract class EnemyShooter : MonoBehaviour
 	[Tooltip("Maximum distance shot can travel")]
 	public float bulletDistance;
 	public float damage;
+
+	public UnityEvent onShoot;
 
 	private Vector2 originalSize;
 
@@ -36,7 +39,7 @@ public abstract class EnemyShooter : MonoBehaviour
 	public void Scale()
 	{
 		transform.localScale = new Vector3(originalSize.x + 0.4f, originalSize.y + 0.4f, 1);
-		transform.DOScale(new Vector3(originalSize.x, originalSize.y, 1), 0.05f);
+		transform.DOScale(new Vector3(originalSize.x, originalSize.y, 1), 0.1f);
 	}
 
 	public abstract void Shoot();

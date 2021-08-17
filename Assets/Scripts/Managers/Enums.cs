@@ -27,3 +27,17 @@ public enum Upgrade
 	TriggerFinger = 13,
 	Unwavering = 14,
 }
+
+public enum Tag
+{
+	PlayerProjectile, // Classic player projectile
+	ParticleHitEffects,  // Classic particles from player projectiles, or enemies being hit
+	AmmoShell,  // Ammo shells for when player shoots
+	EnemyProjectile,  // Classic enemy projectile
+	CircleHitEffect, // Classic circle hit effect that shrinks upon enabling,
+	SmallExpShell, // Exp shell that gives 1 exp
+	CircularEnemyProjectile,   // Circular shaped enemy projectile
+	TextObject, // A text object (not in canvas)
+	LaserProjectile,  // Instant laser projectile attack
+	LaserSight,	// Laser sight to indicate where a laser will shoot from
+}

@@ -57,7 +57,7 @@ public class SpawnManager : MonoBehaviour
 			SoundManager.instance.PlaySound(SoundManager.Sound.ClickySound);
 
 			if (letter != ' ')
-				yield return new WaitForSeconds(0.25f);
+				yield return new WaitForSeconds(0.1f);
 		}
 
 		yield return new WaitForSeconds(1f);
@@ -86,10 +86,6 @@ public class SpawnManager : MonoBehaviour
 	private void SpawnWave()
 	{
 		List<WaveAndTime> possibleWaves = spawnsList[currentStage].waves;
-
-		// Last wave has been reached, now just wait for player to kill all enemies.
-		if (currentWave >= possibleWaves.Count)
-			return;
 
 		WaveAndTime chosenWave = possibleWaves[currentWave];
 
@@ -131,7 +127,9 @@ public class SpawnManager : MonoBehaviour
 			});
 		}
 
-		currentWaitingToSpawnCR = StartCoroutine(WaitingToSpawnNextWave());
+		// Don't start Coroutine for next wave if last wave has been reached.
+		if (currentWave != possibleWaves.Count - 1)
+			currentWaitingToSpawnCR = StartCoroutine(WaitingToSpawnNextWave());
 	}
 
 	private IEnumerator WaitingToSpawnNextWave()
@@ -168,13 +166,15 @@ public class SpawnManager : MonoBehaviour
 	public void EnemyIsKilled()
 	{
 		playerKillCountInCurrentStage++;
+
 		if (playerKillCountInCurrentStage == enemiesInCurrentStage)
 		{
 			if (currentWaitingToSpawnCR != null)
 				StopCoroutine(currentWaitingToSpawnCR);
 
-			// All enemies in last wave were defeated, move on to next stage.
-			if (currentWave >= spawnsList[currentStage].waves.Count)
+
+			// All enemies in final wave were defeated, move on to next stage.
+			if (currentWave >= spawnsList[currentStage].waves.Count - 1)
 			{
 				currentStage += 1;
 				StartCoroutine(StartCurrentStage());

@@ -11,6 +11,17 @@ public class EnemyLaserProjectile : EnemyProjectile
 	public ParticleSystem laserParticles;
 	public Collider2D coll;
 
+	private SpriteRenderer beamRectangleSR;
+	private SpriteRenderer circleEffectSR;
+	private FlashWhite particlesFW;
+
+	private void Awake()
+	{
+		beamRectangleSR = beamRectangle.GetComponent<SpriteRenderer>();
+		circleEffectSR = circleEffect.GetComponent<SpriteRenderer>();
+		particlesFW = laserParticles.GetComponent<FlashWhite>();
+	}
+
 	public override void SetProjectile(float speed, float angle, float damage, float distance)
 	{
 		ActivateLaser(damage);
@@ -18,12 +29,21 @@ public class EnemyLaserProjectile : EnemyProjectile
 
 	public void ActivateLaser(float damage)
 	{
+		Sequence seq = DOTween.Sequence();
+
 		coll.GetComponent<Damager>().damage = damage;
 
-		circleEffect.localScale = new Vector3(1, 1, 1);
+		circleEffectSR.color = Color.white;
+		seq.AppendInterval(0.09f);
+		seq.AppendCallback(() => circleEffectSR.color = Color.red);
+
+		circleEffect.localScale = new Vector3(1.75f, 1.75f, 1);
 		circleEffect.DOScale(new Vector3(0, 0, 1), 0.2f);
 
-		beamRectangle.localScale = new Vector3(beamRectangle.localScale.x, 0.3f, 1);
+		
+		beamRectangleSR.color = Color.white;
+		seq.AppendCallback(() => beamRectangleSR.color = Color.red);
+		beamRectangle.localScale = new Vector3(beamRectangle.localScale.x, 0.5f, 1);
 		beamRectangle.DOScale(new Vector3(beamRectangle.localScale.x, 0), 0.2f);
 
 		shootParticles.Play();
@@ -32,6 +52,7 @@ public class EnemyLaserProjectile : EnemyProjectile
 		laserParticles.transform.localPosition = new Vector2(0, 0);
 		laserParticles.Play();
 		laserParticles.transform.DOLocalMoveX(30, 0.1f);
+		
 
 		StartCoroutine(ColliderOnOff());
 	}

@@ -4,6 +4,15 @@ using UnityEngine;
 
 public abstract class Shooter : MonoBehaviour
 {
+	public int ammoPerShot = 1;
+
+	private float chanceToNotConsumeAmmo;
+	public float ChanceToNotConsumeAmmo
+	{
+		get { return chanceToNotConsumeAmmo; }
+		set { chanceToNotConsumeAmmo = Mathf.Min(value, 1); }
+	}
+
 	/// <summary>
 	/// Returns the angle the current dot is at relative to the current body, in degrees
 	/// </summary>
