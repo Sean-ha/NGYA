@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 924213405044832594}
   - component: {fileID: 924213405044832592}
   m_Layer: 0
-  m_Name: CircleHitEffect
+  m_Name: CircleHitEffectBig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayerID: -368610149
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cd2500ae263f1674792f77902fd94a0f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5e3c8a3a00651234e8c9e8fabfc8d770, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -32,6 +32,9 @@ TextureImporter:
   - first:
       213: -7800540512939485968
     second: GiantCircle_9
+  - first:
+      213: -8566091700487108214
+    second: GiantCircle_10
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -350,6 +353,27 @@ TextureImporter:
       bones: []
       spriteID: 0f4d2368bb9eeb390800000000000000
       internalID: -7800540512939485968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GiantCircle_10
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a894b07cbf02f1980800000000000000
+      internalID: -8566091700487108214
       vertices: []
       indices: 
       edges: []

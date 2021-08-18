@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &18251658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1986,67 +1986,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704250666}
   m_CullTransparentMesh: 1
---- !u!1001 &706794279
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5890379573132986030, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_Name
-      value: StationaryShooterEnemyHolder
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986030, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_RootOrder
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.83
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.56
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890379573132986031, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
 --- !u!1 &801034258
 GameObject:
   m_ObjectHideFlags: 0
@@ -2727,6 +2666,9 @@ MonoBehaviour:
   - tag: 9
     prefab: {fileID: 3187283341196719894, guid: bcb9b678f120e5349995640621f00eca, type: 3}
     size: 20
+  - tag: 10
+    prefab: {fileID: 924213405044832593, guid: a131c5f9a4874e44a935f78cac83cdce, type: 3}
+    size: 10
 --- !u!114 &1236945731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4421,6 +4363,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myAnimator: {fileID: 5029574117985545053}
+  myHealth: {fileID: 1188177263621223920}
+  myCollider: {fileID: 1188177263621223915}
+  bombObject: {fileID: 7890448985945380129, guid: d51a73ac382cc8447a7d0538b94c5dc8, type: 3}
+  phase2HealthThreshold: 290
+  phase3HealthThreshold: 280
+  phase1BulletDamage: 15
+  phase1LaserDamage: 15
+  phase2BombDamage: 15
+  phase3BombDamage: 0
 --- !u!114 &1188177263621223920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4434,7 +4385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
-  maxHealth: 200
+  maxHealth: 10
   onHit:
     m_PersistentCalls:
       m_Calls:
@@ -4486,53 +4437,29 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1188177263621223917}
+        m_TargetAssemblyTypeName: GiantCircleBoss, Assembly-CSharp
+        m_MethodName: CheckPhaseProgress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1188177263621223920}
-        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
-        m_MethodName: DestroyParent
+      - m_Target: {fileID: 1188177263621223917}
+        m_TargetAssemblyTypeName: GiantCircleBoss, Assembly-CSharp
+        m_MethodName: Die
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1188177263621223920}
-        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
-        m_MethodName: PlayDeathHitCircleEffect
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 2
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3581109939569242241}
-        m_TargetAssemblyTypeName: ExpDropper, Assembly-CSharp
-        m_MethodName: DropExp
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1188177263621223920}
-        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
-        m_MethodName: PlaySound
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4567,7 +4494,7 @@ Transform:
   m_Children:
   - {fileID: 1188177263621223922}
   m_Father: {fileID: 0}
-  m_RootOrder: 30
+  m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1188177263632913707
 GameObject:

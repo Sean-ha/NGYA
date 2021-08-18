@@ -40,4 +40,5 @@ public enum Tag
 	TextObject, // A text object (not in canvas)
 	LaserProjectile,  // Instant laser projectile attack
 	LaserSight,	// Laser sight to indicate where a laser will shoot from
+	CircleHitEffectBig,	// Like the regular one but bigger
 }

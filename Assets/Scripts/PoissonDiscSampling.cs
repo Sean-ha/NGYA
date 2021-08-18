@@ -5,6 +5,21 @@ using UnityEngine;
 public static class PoissonDiscSampling
 {
 
+	// Default parameters; Points returned in world space
+	public static List<Vector2> GeneratePoints(float radius, int numberOfPositions, int numSamplesBeforeRejection = 30)
+	{
+		Vector2 topRightPosition = new Vector2(7.64f, 2.67f);
+		Vector2 bottomLeftPosition = new Vector2(-7.6f, -3.6f);
+
+		List<Vector2> generated = GeneratePoints(radius, topRightPosition - bottomLeftPosition, numberOfPositions, numSamplesBeforeRejection);
+		for (int i = 0; i < generated.Count; i++)
+		{
+			generated[i] += bottomLeftPosition;
+		}
+		return generated;
+	}
+
+	// Returns positions relative to bottom left point
 	public static List<Vector2> GeneratePoints(float radius, Vector2 sampleRegionSize, int numberOfPositions, int numSamplesBeforeRejection = 30)
 	{
 		float cellSize = radius / Mathf.Sqrt(2);

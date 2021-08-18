@@ -12,7 +12,7 @@ public class EnemyHealth : MonoBehaviour
 	public UnityEvent onHit;
 	public UnityEvent onDeath;
 
-	private float currentHealth;
+	public float currentHealth { get; set; }
 	private bool isDead;
 
 	private Tween scaleDownTween;

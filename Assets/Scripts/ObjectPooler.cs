@@ -85,9 +85,19 @@ public class ObjectPooler : MonoBehaviour
 		return objectToSpawn;
 	}
 
-	public GameObject CreateCircleHitEffect(Color color, Vector3 position, float startSize, float timeToShrink = 0.2f)
+	public GameObject CreateCircleHitEffect(Color color, Vector3 position, float startSize, float timeToShrink = 0.2f, bool large = false)
 	{
-		GameObject objectToSpawn = poolDictionary[Tag.CircleHitEffect].Dequeue();
+		GameObject objectToSpawn;
+		if (large)
+		{
+			objectToSpawn = poolDictionary[Tag.CircleHitEffectBig].Dequeue();
+			poolDictionary[Tag.CircleHitEffectBig].Enqueue(objectToSpawn);
+		}
+		else
+		{
+			objectToSpawn = poolDictionary[Tag.CircleHitEffect].Dequeue();
+			poolDictionary[Tag.CircleHitEffect].Enqueue(objectToSpawn);
+		}
 
 		objectToSpawn.SetActive(true);
 
@@ -95,8 +105,6 @@ public class ObjectPooler : MonoBehaviour
 		hitEffect.SetHitEffect(color, startSize, timeToShrink);
 
 		objectToSpawn.transform.position = position;
-
-		poolDictionary[Tag.CircleHitEffect].Enqueue(objectToSpawn);
 
 		return objectToSpawn;
 	}

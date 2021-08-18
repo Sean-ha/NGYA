@@ -9,13 +9,17 @@ public class BombEnemyProjectile : MonoBehaviour
 
 	private GameObject colliderObject;
 
+	private float thisCameraShakeMagnitude;
+
 	private void Awake()
 	{
 		colliderObject = transform.GetChild(1).gameObject;
 	}
 
-	public void SetProjectile(Vector2 destination, float timeToReach, float damage)
+	public void SetProjectile(Vector2 destination, float timeToReach, float damage, float cameraShakeMagnitude = 0.3f)
 	{
+		thisCameraShakeMagnitude = cameraShakeMagnitude;
+
 		// Get jump height between this and destination
 		float dist = Vector2.Distance(transform.position, destination);
 		float height = Random.Range(3f, 3.6f);
@@ -38,10 +42,10 @@ public class BombEnemyProjectile : MonoBehaviour
 
 	private void CreateExplosion()
 	{
-		CameraShake.instance.ShakeCamera(0.2f, 0.3f);
+		CameraShake.instance.ShakeCamera(0.2f, thisCameraShakeMagnitude);
 
 		// Creates circle effect that starts white and turns red
-		SpriteRenderer circleEffect = ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 3.5f).GetComponent<SpriteRenderer>();
+		SpriteRenderer circleEffect = ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 0.9f, large:true).GetComponent<SpriteRenderer>();
 		Sequence seq = DOTween.Sequence();
 		seq.AppendInterval(0.05f);
 		seq.AppendCallback(() => circleEffect.color = Color.red);
