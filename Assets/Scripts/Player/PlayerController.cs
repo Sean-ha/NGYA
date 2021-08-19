@@ -190,6 +190,11 @@ public class PlayerController : MonoBehaviour
 					CancelStandStill();
 				}
 
+				if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Blowback))
+				{
+					Instantiate(GameAssets.instance.blowbackExplosion, collision.ClosestPoint(transform.position), Quaternion.identity);
+				}
+
 				onTakeDamage.Invoke();
 
 				currentInvincibility = invincibilityDuration;

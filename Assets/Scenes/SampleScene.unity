@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d4076945d890142b1bdeb14ac8c27a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableSpawn: 0
   bottomLeft: {fileID: 1710238736}
   topRight: {fileID: 801034259}
   worldCanvas: {fileID: 1286460982}
@@ -2232,12 +2233,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c01001fb4e95e4fa3fc9a1d5fc9e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   enemyList:
   - enemyType: 0
     enemy: {fileID: 9098435244903175898, guid: 88b57f8c01e73834c830f25ed54f1e24, type: 3}
   - enemyType: 1
     enemy: {fileID: 5890379573132986030, guid: 2aea513da1115ca47ba12d50419d8439, type: 3}
+  blowbackExplosion: {fileID: 4982838093598263199, guid: 64a2d4fd97811b44188c276810b5e94f, type: 3}
 --- !u!4 &1054429710
 Transform:
   m_ObjectHideFlags: 0
@@ -2590,6 +2591,7 @@ GameObject:
   - component: {fileID: 1236945730}
   - component: {fileID: 1236945731}
   - component: {fileID: 1236945732}
+  - component: {fileID: 1236945733}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -2695,6 +2697,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blackScreen: {fileID: 2019999895}
   upgradeCardTemplate: {fileID: 6682436581473841475, guid: 91a518579c1914645a2de2122d51d846, type: 3}
+--- !u!114 &1236945733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236945727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 699fe2f48bf345f4ab1b0ea2ff93fc84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1244701358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4249,47 +4263,6 @@ Transform:
   m_Father: {fileID: 2031491490}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1188177263621223912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1188177263621223914}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38aff5fa4f490e546848e652c3490309, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  targetType: 0
-  onWallBump:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 9163314141054846318}
-        m_TargetAssemblyTypeName: FlashWhite, Assembly-CSharp
-        m_MethodName: InitiateWhiteFlash
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1188177263621223920}
-        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
-        m_MethodName: PlayOnHitScale
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 4177314843157789084}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &1188177263621223914
 GameObject:
   m_ObjectHideFlags: 0
@@ -4302,7 +4275,6 @@ GameObject:
   - component: {fileID: 1188177263621223917}
   - component: {fileID: 8697438570524492252}
   - component: {fileID: 1188177263621223920}
-  - component: {fileID: 1188177263621223912}
   - component: {fileID: 3581109939569242241}
   - component: {fileID: 1188177263621223916}
   - component: {fileID: 1188177263621223915}
@@ -4371,7 +4343,7 @@ MonoBehaviour:
   phase1BulletDamage: 15
   phase1LaserDamage: 15
   phase2BombDamage: 15
-  phase3BombDamage: 0
+  phase3BombDamage: 15
 --- !u!114 &1188177263621223920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4386,6 +4358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
   maxHealth: 10
+  isBoss: 1
   onHit:
     m_PersistentCalls:
       m_Calls:

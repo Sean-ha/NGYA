@@ -8,14 +8,11 @@ public class GameAssets : MonoBehaviour
 {
    public static GameAssets instance;
 
-   public PlayerController player;
-
    private void Awake()
    {
       instance = this;
 
       InitializeDictionaries();
-      player = FindObjectOfType<PlayerController>();
    }
 
 	private void InitializeDictionaries()
@@ -54,4 +51,6 @@ public class GameAssets : MonoBehaviour
    public HashSet<Upgrade> currentUpgrades { get; set; }
 
    public Dictionary<Upgrade, UpgradeObject> upgradeDict { get; set; }
+
+   public GameObject blowbackExplosion;
 }

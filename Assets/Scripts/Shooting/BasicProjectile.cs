@@ -14,7 +14,6 @@ public class BasicProjectile : Projectile
 	private Vector2 destination;
 	// In radians
 	private float angle;
-	private float timeToReach;
 
 	private int hitCount;
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();

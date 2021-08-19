@@ -9,6 +9,9 @@ public class SpawnManager : MonoBehaviour
 {
 	public static SpawnManager instance;
 
+	// Debug purposes only, REMOVE
+	public bool enableSpawn;
+
 	public Transform bottomLeft;
 	public Transform topRight;
 
@@ -35,7 +38,8 @@ public class SpawnManager : MonoBehaviour
 
 	private void Start()
 	{
-		StartCoroutine(StartCurrentStage());
+		if (enableSpawn)
+			StartCoroutine(StartCurrentStage());
 	}
 
 	private IEnumerator StartCurrentStage()

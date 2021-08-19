@@ -21,7 +21,7 @@ public class UpgradesManager : MonoBehaviour
 	private Transform[] upgradeCards = new Transform[3];
 
 	private HashSet<Upgrade> availableUpgrades;
-	private HashSet<Upgrade> obtainedUpgrades = new HashSet<Upgrade>();
+	public HashSet<Upgrade> obtainedUpgrades { get; set; } = new HashSet<Upgrade>();
 
 	private System.Random rand;
 
@@ -37,6 +37,7 @@ public class UpgradesManager : MonoBehaviour
 		GainUpgradeEffect(Upgrade.TriggerFinger);
 		GainUpgradeEffect(Upgrade.Backbone);
 		GainUpgradeEffect(Upgrade.Unwavering);
+		GainUpgradeEffect(Upgrade.Blowback);
 	}
 
 	private void Update()

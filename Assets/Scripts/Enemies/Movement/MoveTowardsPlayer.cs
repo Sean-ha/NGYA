@@ -28,7 +28,7 @@ public class MoveTowardsPlayer : MonoBehaviour
 
 	private void Start()
 	{
-		player = GameAssets.instance.player;
+		player = PlayerController.instance;
 	}
 
 	private void FixedUpdate()

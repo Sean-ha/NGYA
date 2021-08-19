@@ -251,5 +251,14 @@ public class GiantCircleBoss : MonoBehaviour
 	private IEnumerator DeathBehavior()
 	{
 		yield return new WaitForSeconds(0.25f);
+		ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1, 0.3f, large: true);
+		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
+
+		GetComponent<ExpDropper>().DropExp();
+
+		Destroy(transform.parent.gameObject);
 	}
 }

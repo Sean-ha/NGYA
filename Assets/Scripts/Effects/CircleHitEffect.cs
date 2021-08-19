@@ -6,7 +6,7 @@ using DG.Tweening;
 public class CircleHitEffect : MonoBehaviour
 {
 	public float startSize;
-	public float timeToScale = 0.1f;
+	public float timeToScale = 0.2f;
 
 	private SpriteRenderer sr;
 

@@ -8,7 +8,7 @@ public class PointToPlayer : MonoBehaviour
 
 	private void Start()
 	{
-		player = GameAssets.instance.player.transform;
+		player = PlayerController.instance.transform;
 	}
 
 	private void Update()

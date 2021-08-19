@@ -9,6 +9,7 @@ public class EnemyHealth : MonoBehaviour
 {
 	public Color hitParticlesColor = Color.red;
 	public float maxHealth;
+	public bool isBoss;
 	public UnityEvent onHit;
 	public UnityEvent onDeath;
 
@@ -33,7 +34,8 @@ public class EnemyHealth : MonoBehaviour
 		if (currentHealth <= 0)
 		{
 			isDead = true;
-			SpawnManager.instance.EnemyIsKilled();
+			if (!isBoss)
+				SpawnManager.instance.EnemyIsKilled();
 			onDeath.Invoke();
 		}
 	}
