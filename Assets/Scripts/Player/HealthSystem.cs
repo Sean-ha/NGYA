@@ -16,7 +16,9 @@ public class HealthSystem : MonoBehaviour
 	private float maxHealth = 50f;
 	private float currentHealth;
 
-	private int whiteBarTweenId;
+	public float damageReduction { get; set; }
+
+	private LoveBalloon balloon;
 
 	private const float OUTLINE_BAR_DIFF = 0.07f;
 
@@ -25,14 +27,19 @@ public class HealthSystem : MonoBehaviour
 		instance = this;
 
 		UpdateMaxBar();
-
 		currentHealth = maxHealth;
-
 		UpdateCurrentBar();
+	}
+
+	private void Start()
+	{
+		balloon = PlayerController.instance.transform.Find("HeartBalloon").GetComponent<LoveBalloon>();
 	}
 
 	public void TakeDamage(float damage)
 	{
+		damage *= (1 - damageReduction);
+
 		DOTween.Kill(gameObject);
 		currentHealth -= damage;
 
@@ -50,7 +57,16 @@ public class HealthSystem : MonoBehaviour
 
 		if (currentHealth <= 0)
 		{
+			// Love upgrade
+			if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Love) && balloon.TryPop())
+			{
+				DOTween.Kill(gameObject);
+				currentHealth = maxHealth;
+				UpdateCurrentBar();
+			}
+
 			// Die
+
 		}
 	}
 

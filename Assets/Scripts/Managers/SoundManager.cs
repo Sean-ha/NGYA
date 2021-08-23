@@ -18,6 +18,13 @@ public class SoundManager : MonoBehaviour
       LevelUp = 6,
       LaserCharge = 7,
       LaserShoot = 8,
+      ShieldHit = 9,
+      ShieldReady = 10,
+      EnterField = 11,
+      ExitField = 12,
+      BalloonPop = 13,
+      BasicEnemyShoot = 14,
+
    }
 
    [System.Serializable]
@@ -59,7 +66,7 @@ public class SoundManager : MonoBehaviour
             AudioSource source = soundObject.AddComponent<AudioSource>();
             source.tag = "SoundEffect";
             source.clip = clip.audioClip;
-				source.volume = 0.4f;
+				source.volume = 0.25f;
             source.playOnAwake = false;
             audioPool.Enqueue(source);
 			}

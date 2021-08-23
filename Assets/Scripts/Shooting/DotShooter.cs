@@ -25,7 +25,7 @@ public class DotShooter : Shooter
 		scaleDownTween.Complete();
 		float currentSize = transform.localScale.x;
 		transform.localScale = new Vector3(currentSize + 0.4f, currentSize + 0.4f, 1);
-		transform.DOScale(new Vector3(currentSize, currentSize, 1), 0.1f);
+		scaleDownTween = transform.DOScale(new Vector3(currentSize, currentSize, 1), 0.1f);
 
 		GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(angle, Vector3.forward));
 		proj.GetComponent<BasicProjectile>().SetProjectile(shotSpeed, angle, damage, numberOfTargets, bulletDistance);

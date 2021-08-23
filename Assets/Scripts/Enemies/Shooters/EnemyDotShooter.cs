@@ -30,6 +30,8 @@ public class EnemyDotShooter : EnemyShooter
 
 	public override void Shoot()
 	{
+		onShoot.Invoke();
+
 		// Get angle between player and mouse location
 		float angle = GetAngle();
 

@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using NaughtyAttributes;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class PlayerController : MonoBehaviour
 	public GameObject levelUpText;
 	public float moveSpeed;
 
+	[BoxGroup("Upgrades")]
+	public DefenderShield defenderShield;
 
 	private HealthSystem healthSystem;
 	private Rigidbody2D rb;
@@ -33,8 +37,7 @@ public class PlayerController : MonoBehaviour
 	private Collider2D[] expShells = new Collider2D[10];
 	private int expShellLayer;
 
-	private GameObject levelUpSquare;
-	private GameObject levelUpParticles;
+	private GameObject levelUpSquare, levelUpParticles;
 
 	// Time it takes for stand still effects to take effect
 	private float standStillDuration = 1.5f;
@@ -42,6 +45,8 @@ public class PlayerController : MonoBehaviour
 	public UnityEvent onStandStill { get; set; } = new UnityEvent();
 	// Invoked when player moves after standing still effect activates
 	public UnityEvent onCancelStandStill { get; set; } = new UnityEvent();
+
+	private HashSet<Upgrade> obtainedUpgrades;
 
 	private void Awake()
 	{
@@ -68,6 +73,7 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		healthSystem = HealthSystem.instance;
+		obtainedUpgrades = UpgradesManager.instance.obtainedUpgrades;
 	}
 
 	private void Update()
@@ -101,16 +107,6 @@ public class PlayerController : MonoBehaviour
 		else if (Input.GetKeyUp(KeyCode.LeftShift))
 		{
 			Time.timeScale = 1;
-		}
-		if (Input.GetKeyDown(KeyCode.RightShift))
-		{
-			TimeManager.instance.SlowToPause(() =>
-			{
-			});
-		}
-		else if (Input.GetKeyUp(KeyCode.RightShift))
-		{
-			TimeManager.instance.SlowToUnpause();
 		}
 #endif
 
@@ -173,27 +169,30 @@ public class PlayerController : MonoBehaviour
 		{
 			if (currentInvincibility <= 0)
 			{
-				float toTake = collision.GetComponent<Damager>().damage;
-				healthSystem.TakeDamage(toTake);
+				if (obtainedUpgrades.Contains(Upgrade.Defender) && defenderShield.TryBreakShield())
+				{ } // Negate damage and break the shield (done in DefenderShield, nothing to do here)
+				else
+				{
+					// Actually take damage here
+
+					float toTake = collision.GetComponent<Damager>().damage;
+					healthSystem.TakeDamage(toTake);
+					SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
+					CameraShake.instance.ShakeCamera(0.2f, 0.3f);
+
+					if (!Mathf.Approximately(0, knockBackForce))
+					{
+						// Get knocked back (and cancel standstill)
+						Vector2 diff = (transform.position - collision.transform.position).normalized;
+						Vector2 force = diff * knockBackForce;
+
+						DisableMovement(0.15f);
+						rb.AddForce(force);
+						CancelStandStill();
+					}
+				}
+				
 				TakeDamageEffects();
-				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
-				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
-
-				if (!Mathf.Approximately(0, knockBackForce))
-				{
-					// Get knocked back (and cancel standstill)
-					Vector2 diff = (transform.position - collision.transform.position).normalized;
-					Vector2 force = diff * knockBackForce;
-
-					DisableMovement(0.15f);
-					rb.AddForce(force);
-					CancelStandStill();
-				}
-
-				if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Blowback))
-				{
-					Instantiate(GameAssets.instance.blowbackExplosion, collision.ClosestPoint(transform.position), Quaternion.identity);
-				}
 
 				onTakeDamage.Invoke();
 

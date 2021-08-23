@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,9 @@ public class AmmoSystem : MonoBehaviour
 
 	// Amount of ammo to get per second
 	private int ammoRegenPerSecond = 3;
+
+	private float[] ammoOutlineWidths = { 1.02f, 1.96f, 2.895f };
+
 	public int AmmoRegenPerSecond
 	{
 		get { return ammoRegenPerSecond; }
@@ -60,8 +64,8 @@ public class AmmoSystem : MonoBehaviour
 	// Updates max ammo (outline)
 	private void UpdateMaxAmmoBar()
 	{
-		ammoOutline.size = new Vector2(1 + ammoUpgrades, ammoOutline.size.y);
-		ammoBackground.size = new Vector2(Mathf.FloorToInt(ammoOutline.size.x) - 0.04f, ammoBackground.size.y);
+		ammoOutline.size = new Vector2(ammoOutlineWidths[ammoUpgrades], ammoOutline.size.y);
+		ammoBackground.size = new Vector2(ammoOutlineWidths[ammoUpgrades] - 0.04f, ammoBackground.size.y);
 	}
 
 	/// <summary>
@@ -80,6 +84,7 @@ public class AmmoSystem : MonoBehaviour
 		return true;
 	}
 
+	[Obsolete]
 	// Returns the number of ammo removed
 	private int TryRemoveAmmo(int amount)
 	{
@@ -99,9 +104,9 @@ public class AmmoSystem : MonoBehaviour
 
 	private void Update()
 	{
-		currentAmmoRegen -= Time.deltaTime;
 		if (currentAmmo < maxAmmo)
 		{
+			currentAmmoRegen -= Time.deltaTime;
 			if (currentAmmoRegen <= 0)
 			{
 				int regenCount = 1;

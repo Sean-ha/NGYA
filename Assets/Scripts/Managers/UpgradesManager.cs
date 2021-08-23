@@ -13,6 +13,10 @@ public class UpgradesManager : MonoBehaviour
 	public SpriteRenderer blackScreen;
 	public GameObject upgradeCardTemplate;
 
+	public GameObject defenderShield;
+	public InspireManager inspireManager;
+	public GameObject loveBalloon;
+
 	private GameObject chooseUpgradeText;
 	private int uiLayer;
 	private bool readyToPick;
@@ -35,9 +39,10 @@ public class UpgradesManager : MonoBehaviour
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
 
 		GainUpgradeEffect(Upgrade.TriggerFinger);
-		GainUpgradeEffect(Upgrade.Backbone);
+		GainUpgradeEffect(Upgrade.Love);
 		GainUpgradeEffect(Upgrade.Unwavering);
-		GainUpgradeEffect(Upgrade.Blowback);
+		GainUpgradeEffect(Upgrade.Defender);
+		GainUpgradeEffect(Upgrade.Inspire);
 	}
 
 	private void Update()
@@ -93,7 +98,6 @@ public class UpgradesManager : MonoBehaviour
 						StartCoroutine(FinishChoosingUpgrades(currIndex));
 
 						Upgrade selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
-						availableUpgrades.Remove(selected);
 						GainUpgradeEffect(selected);
 					}
 				}
@@ -223,6 +227,7 @@ public class UpgradesManager : MonoBehaviour
 
 	private void GainUpgradeEffect(Upgrade upgrade)
 	{
+		availableUpgrades.Remove(upgrade);
 		obtainedUpgrades.Add(upgrade);
 
 		switch (upgrade)
@@ -243,7 +248,8 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Blowback:
-
+				PlayerController.instance.onTakeDamage.AddListener(() => 
+					Instantiate(GameAssets.instance.blowbackExplosion, PlayerController.instance.transform.position, Quaternion.identity));
 				break;
 
 			case Upgrade.Brawl:
@@ -257,7 +263,7 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Defender:
-
+				defenderShield.SetActive(true);
 				break;
 
 			case Upgrade.HeavyBullets:
@@ -266,11 +272,11 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Inspire:
-
+				inspireManager.enabled = true;
 				break;
 
 			case Upgrade.Love:
-
+				loveBalloon.SetActive(true);
 				break;
 
 			case Upgrade.MagicBullets:
@@ -279,7 +285,7 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.Resistance:
 				PlayerController.instance.invincibilityDuration += 2.0f;
-				// TODO
+				HealthSystem.instance.damageReduction += 0.1f;
 				break;
 
 			case Upgrade.Sight:
@@ -295,6 +301,14 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.Unwavering:
 				PlayerController.instance.knockBackForce = 0;
+				PlayerController.instance.onStandStill.AddListener(() =>
+				{
+					HealthSystem.instance.damageReduction += 0.25f;
+				});
+				PlayerController.instance.onCancelStandStill.AddListener(() =>
+				{
+					HealthSystem.instance.damageReduction -= 0.25f;
+				});
 				// TODO
 				break;
 		}

@@ -12,6 +12,8 @@ public abstract class EnemyShooter : MonoBehaviour
 	public float bulletDistance;
 	public float damage;
 
+	public SoundManager.Sound shootSound;
+
 	public UnityEvent onShoot;
 
 	private Vector2 originalSize;
@@ -20,6 +22,8 @@ public abstract class EnemyShooter : MonoBehaviour
 	{
 		originalSize = transform.localScale;
 		OnAwake();
+
+		onShoot.AddListener(() => SoundManager.instance.PlaySound(shootSound));
 	}
 
 	protected virtual void OnAwake()

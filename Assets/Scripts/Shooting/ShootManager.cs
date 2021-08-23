@@ -33,6 +33,10 @@ public class ShootManager : MonoBehaviour
 	// Parameters: damage, distance, pierce
 	public UnityEvent<float, float, int> onShoot { get; set; } = new UnityEvent<float, float, int>();
 
+	private bool test;
+	private float TESTVAR;
+
+
 	private void Awake()
 	{
 		instance = this;
