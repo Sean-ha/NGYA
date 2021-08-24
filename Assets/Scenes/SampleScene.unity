@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d4076945d890142b1bdeb14ac8c27a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableSpawn: 0
+  enableSpawn: 1
   bottomLeft: {fileID: 1710238736}
   topRight: {fileID: 801034259}
   worldCanvas: {fileID: 1286460982}
@@ -317,26 +317,73 @@ MonoBehaviour:
   stageText: {fileID: 1343757259}
   spawnsList:
   - waves:
-    - wave: {fileID: 11400000, guid: ec056882ea7976148a15180d770737e6, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
       timeUntilNextWave: 8
-    - wave: {fileID: 11400000, guid: ec056882ea7976148a15180d770737e6, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
       timeUntilNextWave: 8
-    - wave: {fileID: 11400000, guid: ec056882ea7976148a15180d770737e6, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
       timeUntilNextWave: 8
   - waves:
-    - wave: {fileID: 11400000, guid: af5a3100542abab41b03a400c3c1d3b5, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
       timeUntilNextWave: 2
-    - wave: {fileID: 11400000, guid: af5a3100542abab41b03a400c3c1d3b5, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
       timeUntilNextWave: 2
-    - wave: {fileID: 11400000, guid: af5a3100542abab41b03a400c3c1d3b5, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
       timeUntilNextWave: 2
-    - wave: {fileID: 11400000, guid: af5a3100542abab41b03a400c3c1d3b5, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
       timeUntilNextWave: 2
-    - wave: {fileID: 11400000, guid: af5a3100542abab41b03a400c3c1d3b5, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
+      timeUntilNextWave: 2
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
       timeUntilNextWave: 15
-    - wave: {fileID: 11400000, guid: 33fce15103950ba4091c9c8e28314b3e, type: 2}
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
       timeUntilNextWave: 0
-  - waves: []
+    - spawn: {fileID: 8246969099219244532, guid: 7bb4d7ac800dbe9478f237759b0ea485, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 8246969099219244532, guid: eaf35dca661bfcb47bcc99c15d5ec5fc, type: 3}
+      timeUntilNextWave: 0
+  - waves:
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 14
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 2
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 2
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+  - waves:
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 5
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 5
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 0
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 8
+    - spawn: {fileID: 0}
+      timeUntilNextWave: 8
 --- !u!4 &18251659
 Transform:
   m_ObjectHideFlags: 0

@@ -38,11 +38,7 @@ public class UpgradesManager : MonoBehaviour
 		// Initialize available upgrades set
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
 
-		GainUpgradeEffect(Upgrade.TriggerFinger);
-		GainUpgradeEffect(Upgrade.Love);
-		GainUpgradeEffect(Upgrade.Unwavering);
-		GainUpgradeEffect(Upgrade.Defender);
-		GainUpgradeEffect(Upgrade.Inspire);
+		GainUpgradeEffect(Upgrade.Shrapnel);
 	}
 
 	private void Update()
@@ -309,7 +305,16 @@ public class UpgradesManager : MonoBehaviour
 				{
 					HealthSystem.instance.damageReduction -= 0.25f;
 				});
-				// TODO
+				break;
+
+			case Upgrade.Shrapnel:
+				foreach (EnemyHealth enemy in FindObjectsOfType<EnemyHealth>())
+				{
+					enemy.onDeath.AddListener(() =>
+					{
+						enemy.CreateShrapnel();
+					});
+				}
 				break;
 		}
 	}

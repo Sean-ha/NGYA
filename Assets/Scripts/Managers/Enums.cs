@@ -26,6 +26,7 @@ public enum Upgrade
 	Snipe = 12,
 	TriggerFinger = 13,
 	Unwavering = 14,
+	Shrapnel = 15,
 }
 
 public enum Tag

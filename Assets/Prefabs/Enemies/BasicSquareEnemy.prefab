@@ -173,6 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
   maxHealth: 5
+  isBoss: 0
   onHit:
     m_PersistentCalls:
       m_Calls:

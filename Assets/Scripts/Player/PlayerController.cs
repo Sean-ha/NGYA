@@ -99,7 +99,6 @@ public class PlayerController : MonoBehaviour
 			CancelStandStill();
 		}
 
-#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
 			Time.timeScale = 5;
@@ -108,7 +107,6 @@ public class PlayerController : MonoBehaviour
 		{
 			Time.timeScale = 1;
 		}
-#endif
 
 		CheckForExp();
 	}

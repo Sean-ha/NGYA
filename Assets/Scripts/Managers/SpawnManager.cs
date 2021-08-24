@@ -91,17 +91,28 @@ public class SpawnManager : MonoBehaviour
 	{
 		List<WaveAndTime> possibleWaves = spawnsList[currentStage].waves;
 
-		WaveAndTime chosenWave = possibleWaves[currentWave];
+		List<GameObject> spawns = new List<GameObject>();
 
-		int numberOfPositions = chosenWave.wave.spawns.Count;
+		WaveAndTime chosenWave;
+		do
+		{
+			chosenWave = possibleWaves[currentWave];
+			spawns.Add(chosenWave.spawn);
+			currentWave++;
+		} while (Mathf.Approximately(chosenWave.timeUntilNextWave, 0f) && currentWave < possibleWaves.Count);
 
-		List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, numberOfPositions);
+		currentWave--;
 
-		for (int i = 0; i < numberOfPositions; i++)
+		print("SpawnCount: " + spawns.Count);
+		print("CurrWave: " + currentWave);
+
+		List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, spawns.Count);
+
+		for (int i = 0; i < spawns.Count; i++)
 		{
 			Vector2 pos = positions[i] + (Vector2)bottomLeft.position;
 
-			List<Transform> enemies = CreateSpawn(chosenWave.wave.spawns[i], pos);
+			List<Transform> enemies = CreateSpawn(spawns[i], pos);
 
 			GameObject exclaPoint = Instantiate(exclamationPoint, pos, Quaternion.identity);
 			RectTransform epRt = exclaPoint.GetComponent<RectTransform>();
@@ -118,11 +129,9 @@ public class SpawnManager : MonoBehaviour
 
 			circleBarComponent.SetColor(Color.red);
 
-			// Without this, we get an off by 1 error
-			int tempIndex = i;
 			circleBarComponent.BeginBar(1.5f, () =>
 			{
-				foreach(Transform enemy in enemies)
+				foreach (Transform enemy in enemies)
 				{
 					enemy.gameObject.SetActive(true);
 					ObjectPooler.instance.CreateHitParticles(Color.red, enemy.position);
@@ -201,8 +210,7 @@ public class Stage
 [System.Serializable]
 public class WaveAndTime
 {
-	[Expandable]
-	public Wave wave;
+	public GameObject spawn;
 	[Tooltip("The time until the next wave in the list will be spawned")]
 	public float timeUntilNextWave;
 }

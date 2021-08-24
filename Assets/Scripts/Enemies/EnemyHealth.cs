@@ -21,6 +21,11 @@ public class EnemyHealth : MonoBehaviour
 	private void Awake()
 	{
 		currentHealth = maxHealth;
+
+		if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Shrapnel))
+		{
+			onDeath.AddListener(CreateShrapnel);
+		}
 	}
 
 	public void TakeDamage(float toTake)
@@ -36,6 +41,9 @@ public class EnemyHealth : MonoBehaviour
 			isDead = true;
 			if (!isBoss)
 				SpawnManager.instance.EnemyIsKilled();
+
+			if (UpgradesManager.instance)
+
 			onDeath.Invoke();
 		}
 	}
@@ -77,5 +85,16 @@ public class EnemyHealth : MonoBehaviour
 	public void PlaySound(int sound)
 	{
 		SoundManager.instance.PlaySound((SoundManager.Sound)sound);
+	}
+
+	public void CreateShrapnel()
+	{
+		float startDangle = Random.Range(0f, 90f);
+		for (int i = 0; i < 4; i++)
+		{
+			float currDangle = startDangle + 90 * i;
+			GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(currDangle, Vector3.forward));
+			proj.GetComponent<BasicProjectile>().SetProjectile(15, currDangle, ShootManager.instance.damage, 1, 15f);
+		}
 	}
 }
