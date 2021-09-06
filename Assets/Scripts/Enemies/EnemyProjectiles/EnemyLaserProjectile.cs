@@ -51,7 +51,7 @@ public class EnemyLaserProjectile : EnemyProjectile
 		laserParticles.Stop();
 		laserParticles.transform.localPosition = new Vector2(0, 0);
 		laserParticles.Play();
-		laserParticles.transform.DOLocalMoveX(30, 0.1f);
+		laserParticles.transform.DOLocalMoveX(50, 0.16f);
 		
 
 		StartCoroutine(ColliderOnOff());

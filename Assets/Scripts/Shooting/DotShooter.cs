@@ -15,8 +15,13 @@ public class DotShooter : Shooter
 		if (roll >= ChanceToNotConsumeAmmo)
 		{
 			if (!AmmoSystem.instance.RemoveAmmo(ammoPerShot))
+			{
+				SoundManager.instance.PlaySound(SoundManager.Sound.FailShoot);
 				return;
+			}
 		}
+
+		SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);
 
 		// Get angle between player and mouse location
 		float angle = GetAngle();

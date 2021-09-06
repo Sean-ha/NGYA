@@ -15,6 +15,8 @@ public class BasicEnemyProjectile : EnemyProjectile
 	private Color projectileColor;
 	private Vector3 originalSpriteSize;
 
+	private Tween currentTween;
+
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
@@ -33,6 +35,7 @@ public class BasicEnemyProjectile : EnemyProjectile
 
 	public override void SetProjectile(float speed, float angle, float damage, float distance)
 	{
+		rb.DOKill();
 		this.angle = Mathf.Deg2Rad * angle;
 		this.damage = damage;
 		this.distance = distance;
@@ -49,15 +52,30 @@ public class BasicEnemyProjectile : EnemyProjectile
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		// Wall layer
-		if (collision.gameObject.layer == 9)
+		// Wall layer or player layer
+		if (collision.gameObject.layer == 9 || collision.gameObject.layer == 8)
 		{
+			SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHitWall);
 			Vector2 closestPoint = collision.ClosestPoint(transform.position);
 			ObjectPooler.instance.CreateHitParticles(projectileColor, closestPoint);
 			ObjectPooler.instance.CreateCircleHitEffect(projectileColor, closestPoint, 1f);
-
-			rb.DOKill();
-			transform.gameObject.SetActive(false);
+			
+			if (collision.gameObject.layer == 8)
+				StartCoroutine(DisableBullet());
+			else
+			{
+				rb.DOKill();
+				gameObject.SetActive(false);
+			}
 		}
+	}
+
+	// Wait two fixedupdate frames and then disable this bullet so OnTriggerStay on PlayerController is called
+	private IEnumerator DisableBullet()
+	{
+		yield return new WaitForFixedUpdate();
+		yield return new WaitForFixedUpdate();
+		rb.DOKill();
+		gameObject.SetActive(false);
 	}
 }

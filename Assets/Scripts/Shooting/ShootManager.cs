@@ -12,7 +12,7 @@ public class ShootManager : MonoBehaviour
 
 	public float damage;
 
-	private float bulletDistance = 4;
+	private float bulletDistance = 6.5f;
 	public float BulletDistance 
 	{ 
 		get { return bulletDistance; }
@@ -33,10 +33,6 @@ public class ShootManager : MonoBehaviour
 	// Parameters: damage, distance, pierce
 	public UnityEvent<float, float, int> onShoot { get; set; } = new UnityEvent<float, float, int>();
 
-	private bool test;
-	private float TESTVAR;
-
-
 	private void Awake()
 	{
 		instance = this;
@@ -56,13 +52,9 @@ public class ShootManager : MonoBehaviour
 
 		if (Input.GetMouseButton(0))
 		{
-			CameraShake.instance.ShakeCamera(0.06f, 0.06f);
-
 			if (currShootCooldown <= 0)
 			{
-				// Shoot
 				onShoot.Invoke(damage, bulletDistance, pierceCount);
-				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);
 				currShootCooldown = shootCooldown;
 			}
 		}

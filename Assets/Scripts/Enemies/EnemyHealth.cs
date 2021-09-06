@@ -21,7 +21,10 @@ public class EnemyHealth : MonoBehaviour
 	private void Awake()
 	{
 		currentHealth = maxHealth;
+	}
 
+	private void Start()
+	{
 		if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Shrapnel))
 		{
 			onDeath.AddListener(CreateShrapnel);
@@ -94,7 +97,7 @@ public class EnemyHealth : MonoBehaviour
 		{
 			float currDangle = startDangle + 90 * i;
 			GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(currDangle, Vector3.forward));
-			proj.GetComponent<BasicProjectile>().SetProjectile(15, currDangle, ShootManager.instance.damage, 1, 15f);
+			proj.GetComponent<BasicProjectile>().SetProjectile(15, currDangle, ShootManager.instance.damage / 4, ShootManager.instance.pierceCount, 15f);
 		}
 	}
 }

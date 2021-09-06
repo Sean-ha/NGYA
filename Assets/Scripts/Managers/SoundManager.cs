@@ -24,7 +24,21 @@ public class SoundManager : MonoBehaviour
       ExitField = 12,
       BalloonPop = 13,
       BasicEnemyShoot = 14,
-
+      Explosion1 = 15,
+      Whoosh = 16,
+      Blip = 17,
+      Select = 18,
+      EnemySpawn = 19,
+      AlertLow = 20,
+      Tick = 21,
+      FailShoot = 22,
+      Thump = 23,
+      InspireBannerExit = 24,
+      Thump2 = 25,
+      Pickup = 26,
+      BuddyShoot = 27,
+      EnemyHitWall = 28,
+      BigShoot = 29,
    }
 
    [System.Serializable]
@@ -88,6 +102,19 @@ public class SoundManager : MonoBehaviour
          toPlay.pitch = Random.Range(0.95f, 1.05f);
       else
          toPlay.pitch = 1;
+
+      toPlay.Play();
+      dict[sound].Enqueue(toPlay);
+      StartCoroutine(CannotPlaySound(sound));
+   }
+
+   public void PlaySoundPitch(Sound sound, float pitch)
+	{
+      if (!canPlayDict[sound])
+         return;
+
+      AudioSource toPlay = dict[sound].Dequeue();
+		toPlay.pitch = pitch;
 
       toPlay.Play();
       dict[sound].Enqueue(toPlay);

@@ -15,6 +15,11 @@ public class AmmoSystem : MonoBehaviour
 
 	// Each ammo upgrade gives 20 additional max ammo
 	private int ammoUpgrades;
+	public int AmmoUpgrades 
+	{
+		get { return ammoUpgrades; }
+		set { ammoUpgrades = value; CalculateMaxAmmo(); UpdateMaxAmmoBar(); FillCurrentAmmo(); }
+	}
 
 	private int maxAmmo;
 	private int currentAmmo;
@@ -39,7 +44,7 @@ public class AmmoSystem : MonoBehaviour
 		instance = this;
 
 		CalculateAmmoRegenRate();
-		maxAmmo = 20 + 20 * ammoUpgrades;
+		CalculateMaxAmmo();
 
 		firstBulletPosition = bulletTemplate.transform.position.x;
 
@@ -124,19 +129,37 @@ public class AmmoSystem : MonoBehaviour
 
 				for (int i = 0; i < regenCount; i++)
 				{
-					// gain an ammo
-					currentAmmo++;
-					GameObject bulletUI = Instantiate(bulletTemplate, new Vector2(firstBulletPosition + 0.0935f * (currentAmmo - 1), bulletTemplate.transform.position.y),
-						Quaternion.identity);
-					ammoStack.Push(bulletUI);
+					RegenerateBullet();
 				}
 				currentAmmoRegen += ammoRegenRate;
 			}
 		}
 	}
 
+	private void RegenerateBullet()
+	{
+		// gain an ammo
+		currentAmmo++;
+		GameObject bulletUI = Instantiate(bulletTemplate, new Vector2(firstBulletPosition + 0.0935f * (currentAmmo - 1), bulletTemplate.transform.position.y),
+			Quaternion.identity);
+		ammoStack.Push(bulletUI);
+	}
+
 	private void CalculateAmmoRegenRate()
 	{
 		ammoRegenRate = 1f / ammoRegenPerSecond;
+	}
+
+	private void CalculateMaxAmmo()
+	{
+		maxAmmo = 20 + 20 * ammoUpgrades;
+	}
+
+	public void FillCurrentAmmo()
+	{
+		while(currentAmmo < maxAmmo)
+		{
+			RegenerateBullet();
+		}
 	}
 }

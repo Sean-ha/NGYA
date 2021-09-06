@@ -43,6 +43,7 @@ public class BombEnemyProjectile : MonoBehaviour
 	private void CreateExplosion()
 	{
 		CameraShake.instance.ShakeCamera(0.2f, thisCameraShakeMagnitude);
+		SoundManager.instance.PlaySound(SoundManager.Sound.Explosion1);
 
 		// Creates circle effect that starts white and turns red
 		SpriteRenderer circleEffect = ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 0.9f, large:true).GetComponent<SpriteRenderer>();

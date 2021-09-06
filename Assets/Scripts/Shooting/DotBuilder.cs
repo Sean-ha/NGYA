@@ -9,6 +9,8 @@ public class DotBuilder : MonoBehaviour
 	public Transform dotTemplate;
 	public int dotCount;
 
+	private BuddyShooter buddyShooter;
+
 	private float dotAngle = 20f;
 
 	private const float distance = 0.6f;
@@ -16,6 +18,7 @@ public class DotBuilder : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		buddyShooter = FindObjectOfType<BuddyShooter>(true);
 	}
 
 	private void BuildDots()
@@ -76,6 +79,7 @@ public class DotBuilder : MonoBehaviour
 			if (shooter.ammoPerShot != 0)
 				shooter.ammoPerShot += adjustmentValue;
 		}
+		buddyShooter.ammoPerShot += adjustmentValue;
 	}
 
 	public void ChangeBulletAmmoConsumptionChance(float adjustmentValue)
@@ -85,5 +89,6 @@ public class DotBuilder : MonoBehaviour
 		{
 			shooter.ChanceToNotConsumeAmmo += adjustmentValue;
 		}
+		buddyShooter.ChanceToNotConsumeAmmo += adjustmentValue;
 	}
 }

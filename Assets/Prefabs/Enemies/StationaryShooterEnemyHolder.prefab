@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 4
+  shotSpeed: 6
   bulletDistance: 25
   damage: 10
   shootSound: 14
@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 5890379573145675381}
   - component: {fileID: 8102324731306517252}
   - component: {fileID: 5890379573145675369}
-  - component: {fileID: 5890379573145675368}
+  - component: {fileID: 2831526968499484616}
   m_Layer: 7
   m_Name: ShooterEnemy
   m_TagString: Untagged
@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0fac850ec1ba9f40912662824c6e59f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spinsPerSecond: 0.5
+  spinsPerSecond: -0.5
 --- !u!114 &5890379573145675381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,8 +504,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &5890379573145675368
-BoxCollider2D:
+--- !u!58 &2831526968499484616
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -518,15 +518,5 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Radius: 0.5

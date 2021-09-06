@@ -20,6 +20,8 @@ public class InspireManager : MonoBehaviour
 			Vector2 bannerPos = PoissonDiscSampling.GeneratePoints(2, 1)[0];
 
 			// Set banner spawn aniamtion
+			SoundManager.instance.PlaySound(SoundManager.Sound.Thump);
+			SoundManager.instance.PlaySound(SoundManager.Sound.Thump2);
 			GameObject bannerObj = Instantiate(inspireBannerPrefab, bannerPos, Quaternion.identity);
 			Transform circleField = bannerObj.transform.GetChild(1);
 			circleField.localScale = new Vector3(0, 0, 1);

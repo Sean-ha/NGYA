@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HeavyBullets
   m_EditorClassIdentifier: 
   upgradeType: 6
-  upgradeName: Heavy Bullets
+  upgradeName: heavy bullets
   upgradeSprite: {fileID: 21300000, guid: 2eb07ab64e652b4439e15de06ac5df4a, type: 3}
   upgradeDescription: shots deal more damage and consume more ammo

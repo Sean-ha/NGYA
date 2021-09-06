@@ -16,11 +16,12 @@ public class UpgradesManager : MonoBehaviour
 	public GameObject defenderShield;
 	public InspireManager inspireManager;
 	public GameObject loveBalloon;
+	public GameObject buddyObject;
 
 	private GameObject chooseUpgradeText;
 	private int uiLayer;
 	private bool readyToPick;
-	private int previousHoverCardIndex;
+	private int previousHoverCardIndex = -1;
 
 	private Transform[] upgradeCards = new Transform[3];
 
@@ -37,8 +38,6 @@ public class UpgradesManager : MonoBehaviour
 
 		// Initialize available upgrades set
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
-
-		GainUpgradeEffect(Upgrade.Shrapnel);
 	}
 
 	private void Update()
@@ -68,14 +67,17 @@ public class UpgradesManager : MonoBehaviour
 					if (previousHoverCardIndex != currIndex)
 					{
 						CancelPreviousHoverCardTween();
-						
+
+						SoundManager.instance.PlaySound(SoundManager.Sound.Blip, false);
 						previousHoverCardIndex = currIndex;
-						hitInfo.transform.DOScale(new Vector3(1.2f, 1.2f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+						hitInfo.transform.DOScale(new Vector3(1.7f, 1.7f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 					}
 
 					if (Input.GetMouseButtonDown(0))
 					{
+						SoundManager.instance.PlaySound(SoundManager.Sound.Pickup, false);
 						readyToPick = false;
+						previousHoverCardIndex = -1;
 
 						// Tween the non-selected upgrades downwards
 						for (int i = 0; i < upgradeCards.Length; i++)
@@ -85,12 +87,11 @@ public class UpgradesManager : MonoBehaviour
 							if (i == currIndex)
 								currentCard.DOLocalMoveY(-0.25f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true);
 							else
-								currentCard.DOLocalMoveY(-10f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
+								currentCard.DOLocalMoveY(-18f, 1f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
 								{
 									Destroy(currentCard.gameObject);
 								});
 						}
-						// TODO: Actually add the upgrade to your player
 						StartCoroutine(FinishChoosingUpgrades(currIndex));
 
 						Upgrade selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
@@ -110,7 +111,7 @@ public class UpgradesManager : MonoBehaviour
 		if (previousHoverCardIndex != -1)
 		{
 			upgradeCards[previousHoverCardIndex].DOKill();
-			upgradeCards[previousHoverCardIndex].DOScale(new Vector3(1f, 1f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+			upgradeCards[previousHoverCardIndex].DOScale(new Vector3(1.5f, 1.5f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 			previousHoverCardIndex = -1;
 		}
 	}
@@ -135,11 +136,11 @@ public class UpgradesManager : MonoBehaviour
 		yield return new WaitForSecondsRealtime(0.75f);
 
 		// Create "choose an upgrade" text
-		chooseUpgradeText = ObjectPooler.instance.CreateTextObject(new Vector3(0, 4.4f, 0), Quaternion.identity, Color.white, 8, "choose an upgrade");
+		chooseUpgradeText = ObjectPooler.instance.CreateTextObject(new Vector3(0, 7.5f, 0), Quaternion.identity, Color.white, 8, "choose an upgrade");
 		TextMeshPro upgradeText = chooseUpgradeText.GetComponent<TextMeshPro>();
 		upgradeText.color = new Color(1, 1, 1, 0);
 
-		chooseUpgradeText.transform.DOLocalMoveY(4.75f, 0.75f).SetEase(Ease.OutQuad).SetUpdate(true);
+		chooseUpgradeText.transform.DOLocalMoveY(8f, 0.75f).SetEase(Ease.OutQuad).SetUpdate(true);
 
 		DOTween.To(() => upgradeText.color, (Color to) => upgradeText.color = to, new Color(1, 1, 1, 1), 0.75f).SetEase(Ease.OutQuad)
 			.SetTarget(chooseUpgradeText.transform).SetUpdate(true);
@@ -151,12 +152,13 @@ public class UpgradesManager : MonoBehaviour
 		yield return new WaitForSecondsRealtime(0.5f);
 
 		// Create upgrade cards
-		Transform left = Instantiate(upgradeCardTemplate, new Vector3(-6.25f, -10f, 0), Quaternion.identity).transform;
-		Transform mid = Instantiate(upgradeCardTemplate, new Vector3(0, -10f, 0), Quaternion.identity).transform;
-		Transform right = Instantiate(upgradeCardTemplate, new Vector3(6.25f, -10f, 0), Quaternion.identity).transform;
-		left.transform.DOLocalMoveY(-1f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true);
-		mid.transform.DOLocalMoveY(-1f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true);
-		right.transform.DOLocalMoveY(-1f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() => readyToPick = true);
+		Transform left = Instantiate(upgradeCardTemplate, new Vector3(-10f, -18f, 0), Quaternion.identity).transform;
+		Transform mid = Instantiate(upgradeCardTemplate, new Vector3(0, -18f, 0), Quaternion.identity).transform;
+		Transform right = Instantiate(upgradeCardTemplate, new Vector3(10f, -18f, 0), Quaternion.identity).transform;
+		left.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true);
+		mid.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true);
+		right.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() => readyToPick = true);
+		SoundManager.instance.PlaySound(SoundManager.Sound.Whoosh);
 
 		upgradeCards[0] = left;
 		upgradeCards[1] = mid;
@@ -192,7 +194,7 @@ public class UpgradesManager : MonoBehaviour
 
 		// Close remaining card
 		Transform currCard = upgradeCards[chosenUpgrade];
-		currCard.DOLocalMoveY(-12f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
+		currCard.DOLocalMoveY(-18f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
 		{
 			Destroy(currCard.gameObject);
 		});
@@ -244,13 +246,16 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Blowback:
-				PlayerController.instance.onTakeDamage.AddListener(() => 
-					Instantiate(GameAssets.instance.blowbackExplosion, PlayerController.instance.transform.position, Quaternion.identity));
+				PlayerController.instance.onTakeDamage.AddListener(() =>
+				{
+					Instantiate(GameAssets.instance.blowbackExplosion, PlayerController.instance.transform.position, Quaternion.identity);
+					SoundManager.instance.PlaySound(SoundManager.Sound.Explosion1);
+				});
 				break;
 
 			case Upgrade.Brawl:
 				ShootManager.instance.BulletDistance = 2;
-				AmmoSystem.instance.AmmoRegenPerSecond += 6;
+				ShootManager.instance.damage += 2f;
 				break;
 
 			case Upgrade.DeepBreaths:
@@ -287,9 +292,11 @@ public class UpgradesManager : MonoBehaviour
 			case Upgrade.Sight:
 				ShootManager.instance.BulletDistance += 6f;
 				break;
-			case Upgrade.Snipe:
 
+			case Upgrade.Snipe:
+				// TODO
 				break;
+
 			case Upgrade.TriggerFinger:
 				ShootManager.instance.ShootCooldown -= 0.075f;
 				AmmoSystem.instance.AmmoRegenPerSecond += 3;
@@ -315,6 +322,19 @@ public class UpgradesManager : MonoBehaviour
 						enemy.CreateShrapnel();
 					});
 				}
+				break;
+
+			case Upgrade.Buddy:
+				buddyObject.SetActive(true);
+				ShootManager.instance.onShoot.AddListener(buddyObject.GetComponentInChildren<BuddyShooter>().Shoot);
+				break;
+
+			case Upgrade.Sharpness:
+				ShootManager.instance.pierceCount += 3;
+				break;
+
+			case Upgrade.Supplies:
+				AmmoSystem.instance.AmmoUpgrades += 1;
 				break;
 		}
 	}

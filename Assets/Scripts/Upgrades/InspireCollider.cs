@@ -27,6 +27,8 @@ public class InspireCollider : MonoBehaviour
 
 			if (currLifetime >= bannerLifetime)
 			{
+				SoundManager.instance.PlaySound(SoundManager.Sound.InspireBannerExit);
+
 				// Banner is out of time, exit the field
 				destroyed = true;
 

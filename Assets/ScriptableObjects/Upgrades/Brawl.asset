@@ -15,6 +15,6 @@ MonoBehaviour:
   upgradeType: 3
   upgradeName: brawl
   upgradeSprite: {fileID: 21300000, guid: f3c8d67b6756a574a93921a7a360cd30, type: 3}
-  upgradeDescription: 'massively decrease range.
+  upgradeDescription: 'decrease maximum range.
 
-    increase reload speed.'
+    increase damage.'

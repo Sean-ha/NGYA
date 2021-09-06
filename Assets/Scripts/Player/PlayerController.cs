@@ -65,9 +65,6 @@ public class PlayerController : MonoBehaviour
 
 		levelUpSquare = transform.GetChild(0).gameObject;
 		levelUpParticles = transform.GetChild(1).gameObject;
-
-		onStandStill.AddListener(() => print("STILL!!"));
-		onCancelStandStill.AddListener(() => print("moving again"));
 	}
 
 	private void Start()
@@ -271,6 +268,9 @@ public class PlayerController : MonoBehaviour
 
 	public void LevelUp()
 	{
+		HealthSystem.instance.RestoreMaxHealth();
+		AmmoSystem.instance.FillCurrentAmmo();
+
 		levelUpSquare.SetActive(true);
 		levelUpParticles.SetActive(true);
 		Instantiate(levelUpText, transform.position + new Vector3(0, 1, 0), Quaternion.identity);

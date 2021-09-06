@@ -24,6 +24,7 @@ public class MoveTowardsPlayer : MonoBehaviour
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
+		onWallBump.AddListener(() => SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHitWall));
 	}
 
 	private void Start()

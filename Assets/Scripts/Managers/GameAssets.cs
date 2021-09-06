@@ -53,4 +53,6 @@ public class GameAssets : MonoBehaviour
    public Dictionary<Upgrade, UpgradeObject> upgradeDict { get; set; }
 
    public GameObject blowbackExplosion;
+
+   public GameObject textMeshShadow;
 }

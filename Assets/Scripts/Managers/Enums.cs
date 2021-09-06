@@ -27,6 +27,9 @@ public enum Upgrade
 	TriggerFinger = 13,
 	Unwavering = 14,
 	Shrapnel = 15,
+	Buddy = 16,
+	Sharpness = 17,
+	Supplies = 18,
 }
 
 public enum Tag

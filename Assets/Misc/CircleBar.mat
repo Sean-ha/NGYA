@@ -37,7 +37,7 @@ Material:
     - _Smoothstep: 0
     m_Colors:
     - _BackColor: {r: 0, g: 0, b: 0, a: 0}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 0, g: 0, b: 0, a: 0.627451}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowOffset: {r: 0.1, g: -0.1, b: 0, a: 0}
   m_BuildTextureStacks: []

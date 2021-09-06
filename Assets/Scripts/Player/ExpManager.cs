@@ -8,7 +8,8 @@ public class ExpManager : MonoBehaviour
 	public static ExpManager instance;
 
 	public Transform expBar;
-	public float TESTTIME;
+
+	private float expBarXScale;
 
 	private int level = 1;
 	private int expToLevelUp;
@@ -23,17 +24,8 @@ public class ExpManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		expBarXScale = expBar.localScale.x;
 		expToLevelUp = 50 * level;
-		// StartCoroutine(TEST());
-	}
-
-	private IEnumerator TEST()
-	{
-		while(true)
-		{
-			yield return new WaitForSeconds(TESTTIME);
-			GainExp(100);
-		}
 	}
 
 	public void GainExp(int amount)
@@ -60,7 +52,7 @@ public class ExpManager : MonoBehaviour
 		{
 			currentTween = DOTween.To(() => displayExp, (int val) =>
 			{
-				expBar.localScale = new Vector3(1, (float)val / expToLevelUp, 1);
+				expBar.localScale = new Vector3(expBarXScale, (float)val / expToLevelUp, 1);
 				displayExp = val;
 			}, currentExp, 0.3f).SetEase(Ease.OutQuad);
 
@@ -78,9 +70,6 @@ public class ExpManager : MonoBehaviour
 		expToLevelUp = 50 * level;
 
 		UpdateExpBar();
-
-		// Slow down game
-		
 	}
 
 	private IEnumerator SlowDown()

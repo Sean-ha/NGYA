@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using NaughtyAttributes;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -10,8 +11,9 @@ public class HealthSystem : MonoBehaviour
 	public SpriteRenderer healthOutline;
 	public SpriteRenderer healthBar;
 	public SpriteRenderer whiteBar;
+	public SpriteRenderer background;
 
-	// Each upgrade increase max health by 25 (outline width increases by 0.5)
+	// Each upgrade increase max health by 10 (outline width increases by 0.2)
 	private int healthUpgradeCount;
 	private float maxHealth = 50f;
 	private float currentHealth;
@@ -78,10 +80,18 @@ public class HealthSystem : MonoBehaviour
 		healthBar.size = new Vector2(newSize, healthBar.size.y);
 	}
 
-	// Update max health bar (outline part)
+	// Update max health bar (outline and background part)
 	private void UpdateMaxBar()
 	{
-		maxHealth = 50 + 25 * healthUpgradeCount;
-		healthOutline.size = new Vector2(1 + 0.5f * healthUpgradeCount, healthOutline.size.y);
+		maxHealth = 50 + 10 * healthUpgradeCount;
+		float ySize = 1 + 0.2f * healthUpgradeCount;
+		background.size = new Vector2(ySize - 0.07f, background.size.y);
+		healthOutline.size = new Vector2(ySize, healthOutline.size.y);
+	}
+
+	public void RestoreMaxHealth()
+	{
+		currentHealth = maxHealth;
+		UpdateCurrentBar();
 	}
 }

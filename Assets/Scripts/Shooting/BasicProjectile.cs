@@ -12,6 +12,7 @@ public class BasicProjectile : Projectile
 	private Transform projectileSpriteChild;
 
 	private Vector2 destination;
+	private Vector2 startPosition;
 	// In radians
 	private float angle;
 
@@ -47,6 +48,7 @@ public class BasicProjectile : Projectile
 		this.damage = damage;
 		this.numberOfTargets = numberOfTargets;
 		this.distance = distance;
+		startPosition = transform.position;
 
 		float firstDistance = distance - 1;
 		Vector2 firstDestination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * firstDistance);
@@ -72,7 +74,16 @@ public class BasicProjectile : Projectile
 
 			if (hitCount < numberOfTargets && !hitSet.Contains(collision.gameObject))
 			{
-				collision.GetComponent<EnemyHealth>().TakeDamage(damage);
+				float adjustedDamage = damage;
+				if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Snipe))
+				{
+					float distance = Vector2.Distance(startPosition, transform.position);
+					float multiplier = distance / 3f;
+					if (multiplier >= 2.5f) multiplier = 2.5f;
+					if (multiplier <= 0.25f) multiplier = 0.25f;
+					adjustedDamage *= multiplier;
+				}
+				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage);
 
 				Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
 				collision.GetComponent<Rigidbody2D>().AddForce(push);

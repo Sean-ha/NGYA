@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38aff5fa4f490e546848e652c3490309, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
+  speed: 4
   targetType: 0
   onWallBump:
     m_PersistentCalls:

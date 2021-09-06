@@ -7,11 +7,11 @@ public class SpinNoRigidBody : MonoBehaviour
 	public float spinsPerSecond;
 
 	private float angle;
-	private float spinsPerFrame;
+	private float degreesPerSecond;
 
 	private void Awake()
 	{
-		spinsPerFrame = spinsPerSecond * 360f / Application.targetFrameRate;
+		degreesPerSecond = spinsPerSecond * 360f;
 	}
 
 	private void Update()
@@ -19,7 +19,8 @@ public class SpinNoRigidBody : MonoBehaviour
 		if (angle > 360 || angle < -360)
 			angle %= 360;
 
-		angle += spinsPerFrame;
+		angle += degreesPerSecond * Time.deltaTime;
+
 		transform.localRotation = Quaternion.Euler(0, 0, angle);
 	}
 }

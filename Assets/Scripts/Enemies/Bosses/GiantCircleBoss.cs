@@ -94,7 +94,7 @@ public class GiantCircleBoss : MonoBehaviour
 
 		float addValue = 360f / bulletCount;
 
-		for (int i = 0; i < laserCount; i++)
+		for (int i = 0; i < bulletCount; i++)
 		{
 			float thisDangle = currDangle + addValue * i;
 			Vector2 pos = GetBulletSourcePosition(thisDangle * Mathf.Deg2Rad);

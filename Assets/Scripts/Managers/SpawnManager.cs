@@ -66,6 +66,7 @@ public class SpawnManager : MonoBehaviour
 
 		yield return new WaitForSeconds(1f);
 
+		/*
 		foreach (TMP_CharacterInfo charInfo in stageText.textInfo.characterInfo)
 		{
 			if (!charInfo.isVisible)
@@ -79,9 +80,11 @@ public class SpawnManager : MonoBehaviour
 			ObjectPooler.instance.CreateCircleHitEffect(Color.white, worldPos, 2);
 		}
 		SoundManager.instance.PlaySound(SoundManager.Sound.EnemyDeath);
+		*/
+
 		stageText.gameObject.SetActive(false);
 
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.75f);
 		
 		SpawnWave();
 	}
@@ -100,11 +103,7 @@ public class SpawnManager : MonoBehaviour
 			spawns.Add(chosenWave.spawn);
 			currentWave++;
 		} while (Mathf.Approximately(chosenWave.timeUntilNextWave, 0f) && currentWave < possibleWaves.Count);
-
 		currentWave--;
-
-		print("SpawnCount: " + spawns.Count);
-		print("CurrWave: " + currentWave);
 
 		List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, spawns.Count);
 
@@ -124,6 +123,7 @@ public class SpawnManager : MonoBehaviour
 			};
 
 			// Circle bar behavior
+			SoundManager.instance.PlaySound(SoundManager.Sound.AlertLow, false);
 			GameObject circleBar = Instantiate(circularProgressBar, pos, Quaternion.identity, worldCanvas);
 			CircleProgressBar circleBarComponent = circleBar.GetComponent<CircleProgressBar>();
 
@@ -131,6 +131,7 @@ public class SpawnManager : MonoBehaviour
 
 			circleBarComponent.BeginBar(1.5f, () =>
 			{
+				SoundManager.instance.PlaySound(SoundManager.Sound.EnemySpawn, false);
 				foreach (Transform enemy in enemies)
 				{
 					enemy.gameObject.SetActive(true);
