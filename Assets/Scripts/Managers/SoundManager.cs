@@ -39,6 +39,7 @@ public class SoundManager : MonoBehaviour
       BuddyShoot = 27,
       EnemyHitWall = 28,
       BigShoot = 29,
+      PauseMenuClick = 30,
    }
 
    [System.Serializable]
@@ -54,8 +55,10 @@ public class SoundManager : MonoBehaviour
    private Dictionary<Sound, Queue<AudioSource>> dict;
    private Dictionary<Sound, bool> canPlayDict;
 
-   private float expPickupPitch = 0.9f;
-   private Coroutine currentPickupExpCR;
+   private float expPickupPitch = 0.9f; // Unused, i think
+   private Coroutine currentPickupExpCR; // Unused, i think
+
+   private float sfxVolume = 0.25f;
 
    private void Awake()
    {
@@ -80,7 +83,7 @@ public class SoundManager : MonoBehaviour
             AudioSource source = soundObject.AddComponent<AudioSource>();
             source.tag = "SoundEffect";
             source.clip = clip.audioClip;
-				source.volume = 0.25f;
+				source.volume = sfxVolume;
             source.playOnAwake = false;
             audioPool.Enqueue(source);
 			}
@@ -91,7 +94,7 @@ public class SoundManager : MonoBehaviour
       }
    }
 
-   public void PlaySound(Sound sound, bool randomizePitch = true)
+   public void PlaySound(Sound sound, bool randomizePitch = true, float volumeDelta = 0)
    {
       if (!canPlayDict[sound])
          return;
@@ -102,19 +105,21 @@ public class SoundManager : MonoBehaviour
          toPlay.pitch = Random.Range(0.95f, 1.05f);
       else
          toPlay.pitch = 1;
+      toPlay.volume = sfxVolume + volumeDelta;
 
       toPlay.Play();
       dict[sound].Enqueue(toPlay);
       StartCoroutine(CannotPlaySound(sound));
    }
 
-   public void PlaySoundPitch(Sound sound, float pitch)
+   public void PlaySoundPitch(Sound sound, float pitch, float volumeDelta = 0)
 	{
       if (!canPlayDict[sound])
          return;
 
       AudioSource toPlay = dict[sound].Dequeue();
 		toPlay.pitch = pitch;
+      toPlay.volume = sfxVolume + volumeDelta;
 
       toPlay.Play();
       dict[sound].Enqueue(toPlay);

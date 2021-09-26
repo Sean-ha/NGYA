@@ -11,19 +11,25 @@ public class GiantCircleBoss : MonoBehaviour
 	public Collider2D myCollider;
 	public GameObject bombObject;
 
+	/*
+	 * Phase 2 and 3 are scrapped; only 1st phase. No longer a boss, but just a big enemy
 	[BoxGroup("Stats")]
 	public float phase2HealthThreshold;
 	[BoxGroup("Stats")]
 	public float phase3HealthThreshold;
+	*/
 
 	[BoxGroup("Stats")]
 	public float phase1BulletDamage;
 	[BoxGroup("Stats")]
 	public float phase1LaserDamage;
+
+	/*
 	[BoxGroup("Stats")]
 	public float phase2BombDamage;
 	[BoxGroup("Stats")]
 	public float phase3BombDamage;
+	*/
 
 	private Transform playerTransform;
 
@@ -100,7 +106,7 @@ public class GiantCircleBoss : MonoBehaviour
 			Vector2 pos = GetBulletSourcePosition(thisDangle * Mathf.Deg2Rad);
 			GameObject proj = ObjectPooler.instance.Create(Tag.CircularEnemyProjectile, pos, Quaternion.AngleAxis(thisDangle, Vector3.forward));
 			EnemyProjectile projComp = proj.GetComponent<EnemyProjectile>();
-			projComp.SetProjectile(3f, thisDangle, phase1BulletDamage, 30f);
+			projComp.SetProjectile(4f, thisDangle, phase1BulletDamage, 40f);
 		}
 
 		currDangle += 11f;
@@ -140,6 +146,36 @@ public class GiantCircleBoss : MonoBehaviour
 	{
 		return new Vector2(Mathf.Cos(rangle), Mathf.Sin(rangle)) * distanceFromCenter + (Vector2)transform.position;
 	}
+
+	public void Die()
+	{
+		StopCoroutine(currentCR);
+
+		myAnimator.Play(animHurt);
+		CameraShake.instance.ShakeCameraLong(5f, 0.1f);
+		myCollider.enabled = false;
+		transform.DOShakePosition(4.75f, 0.2f).OnComplete(() =>
+		{
+			currentCR = StartCoroutine(DeathBehavior());
+		});
+	}
+
+	private IEnumerator DeathBehavior()
+	{
+		yield return new WaitForSeconds(0.25f);
+		ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1, 0.3f, large: true);
+		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
+		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
+
+		GetComponent<ExpDropper>().DropExp();
+
+		Destroy(transform.parent.gameObject);
+	}
+
+
+	/* NO LONGER IN USE...
 
 	// Called whenever boss takes damage. Determine whether or not to move to next phase based on current hp.
 	public void CheckPhaseProgress()
@@ -234,31 +270,5 @@ public class GiantCircleBoss : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 		}
 	}
-
-	public void Die()
-	{
-		StopCoroutine(currentCR);
-
-		myAnimator.Play(animHurt);
-		CameraShake.instance.ShakeCameraLong(5f, 0.1f);
-		myCollider.enabled = false;
-		transform.DOShakePosition(4.75f, 0.2f).OnComplete(() =>
-		{
-			currentCR = StartCoroutine(DeathBehavior());
-		});
-	}
-
-	private IEnumerator DeathBehavior()
-	{
-		yield return new WaitForSeconds(0.25f);
-		ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1, 0.3f, large: true);
-		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
-		ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
-		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
-		ObjectPooler.instance.CreateHitParticles(Color.red, transform.position);
-
-		GetComponent<ExpDropper>().DropExp();
-
-		Destroy(transform.parent.gameObject);
-	}
+	*/
 }

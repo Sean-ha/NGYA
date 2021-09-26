@@ -17,7 +17,7 @@ public class EnemyDotShooterStraight : EnemyShooter
 	[Tooltip("Number of shots in each burst")]
 	public int shotCount;
 
-	[Tooltip("Angle bullet will be fired at")]
+	[Tooltip("Angle bullet will be fired at (degrees)")]
 	public float straightAngle;
 
 	[Header("Randomization")]
@@ -76,6 +76,7 @@ public class EnemyDotShooterStraight : EnemyShooter
 		}
 	}
 
+	// In degrees
 	protected new float GetAngle()
 	{
 		return straightAngle;
@@ -91,6 +92,8 @@ public class EnemyDotShooterStraight : EnemyShooter
 
 	public override void Shoot()
 	{
+		onShoot.Invoke();
+
 		// Get angle between player and mouse location
 		currAngle = GetAngle();
 

@@ -15,4 +15,4 @@ MonoBehaviour:
   upgradeType: 8
   upgradeName: love
   upgradeSprite: {fileID: 21300000, guid: 10c775578f570eb40835a725fae32ac1, type: 3}
-  upgradeDescription: i love you
+  upgradeDescription: survive death once

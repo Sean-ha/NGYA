@@ -7,9 +7,14 @@ public class SpecialAbilityCooldownBar : MonoBehaviour
 	private Transform myTransform;
 	private SpecialAbilityManager sam;
 
+	private float maxScaleX;
+	private float yScale;
+
 	private void Awake()
 	{
 		myTransform = transform;
+		maxScaleX = myTransform.localScale.x;
+		yScale = myTransform.localScale.y;
 	}
 
 	private void Start()
@@ -19,8 +24,8 @@ public class SpecialAbilityCooldownBar : MonoBehaviour
 
 	private void Update()
 	{
-		float yScale = sam.GetCooldownFraction();
+		float ratio = 1 - sam.GetCooldownFraction();
 
-		myTransform.localScale = new Vector3(1, yScale, 1);
+		myTransform.localScale = new Vector3(ratio * maxScaleX, yScale, 1);
 	}
 }

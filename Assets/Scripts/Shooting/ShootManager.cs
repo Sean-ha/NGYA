@@ -16,7 +16,7 @@ public class ShootManager : MonoBehaviour
 	public float BulletDistance 
 	{ 
 		get { return bulletDistance; }
-		set { bulletDistance = Mathf.Max(1, value); }
+		set { bulletDistance = Mathf.Max(3.5f, value); }
 	}
 
 	public int pierceCount;
@@ -54,6 +54,7 @@ public class ShootManager : MonoBehaviour
 		{
 			if (currShootCooldown <= 0)
 			{
+				CursorManager.instance.AnimateCursorShoot();
 				onShoot.Invoke(damage, bulletDistance, pierceCount);
 				currShootCooldown = shootCooldown;
 			}

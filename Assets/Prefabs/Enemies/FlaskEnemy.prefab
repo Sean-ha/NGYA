@@ -200,8 +200,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shotSpeed: 2
-  bulletDistance: 2
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
   shortCooldown: 0.05
@@ -361,6 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
   maxHealth: 20
+  isBoss: 0
   onHit:
     m_PersistentCalls:
       m_Calls:

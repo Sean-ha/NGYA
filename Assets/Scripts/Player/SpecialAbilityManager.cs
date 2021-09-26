@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public class SpecialAbilityManager : MonoBehaviour
 {
 	public static SpecialAbilityManager instance;
+
+	public SpriteRenderer whiteScreen;
 	public Abilities ability;
 
 	private UnityEvent onAbilityCast = new UnityEvent();
@@ -77,12 +80,23 @@ public class SpecialAbilityManager : MonoBehaviour
 		return angle;
 	}
 
+	private void FlashWhiteScreen()
+	{
+		whiteScreen.color = new Color(1, 1, 1, 1);
+		whiteScreen.DOColor(new Color(1, 1, 1, 0), 0.15f);
+	}
+
 	// Shoot a shotgun blast
 	public void UnnamedAbility()
 	{
+		FlashWhiteScreen();
 		SoundManager.instance.PlaySound(SoundManager.Sound.BigShoot);
 		float dangle = GetAngleTowardsMouse();
 
+		GameObject laserAbility = ObjectPooler.instance.Create(Tag.PlayerLaserAbility, transform.position, Quaternion.AngleAxis(dangle, Vector3.forward));
+		laserAbility.GetComponent<PlayerLaserProjectile>().ActivateLaser(ShootManager.instance.damage + 10);
+
+		/*
 		int bulletCount = 14;
 
 		for (int i = 0; i < bulletCount; i++)
@@ -93,5 +107,6 @@ public class SpecialAbilityManager : MonoBehaviour
 			proj.GetComponent<BasicProjectile>().SetProjectile(Random.Range(15f, 20f), thisDangle, shootManager.damage / 2, shootManager.pierceCount + 2, 
 				shootManager.BulletDistance + Random.Range(-0.6f, 0.6f));
 		}
+		*/
 	}
 }

@@ -43,13 +43,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 270
   randomizeShots: 1
   bulletSpeedVariance: 0.25
@@ -100,13 +104,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 0
   randomizeShots: 1
   bulletSpeedVariance: 0.25
@@ -208,13 +216,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 180
   randomizeShots: 1
   bulletSpeedVariance: 0.25
@@ -482,13 +494,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 0
   randomizeShots: 1
   bulletSpeedVariance: 0.25
@@ -539,13 +555,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 90
   randomizeShots: 1
   bulletSpeedVariance: 0.25
@@ -663,6 +683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
   maxHealth: 20
+  isBoss: 0
   onHit:
     m_PersistentCalls:
       m_Calls:
@@ -909,13 +930,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e03e8834f9a2e54eb1d4234f28b3307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
-  bulletDistance: 2.5
+  shotSpeed: 2.5
+  bulletDistance: 10
   damage: 10
+  shootSound: 0
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   bulletType: 6
   longCooldown: -1
-  shortCooldown: 0.05
-  shotCount: 15
+  shortCooldown: 0.08
+  shotCount: 10
   straightAngle: 180
   randomizeShots: 1
   bulletSpeedVariance: 0.25

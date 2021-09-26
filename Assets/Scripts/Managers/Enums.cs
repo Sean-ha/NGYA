@@ -11,6 +11,13 @@ public enum EnemyType
 
 public enum Upgrade
 {
+	MagicBullet,
+
+}
+
+// Deprecated
+public enum Upgrade_OLD
+{
 	Adrenaline = 0,
 	Backbone = 1,
 	Blowback = 2,
@@ -45,4 +52,5 @@ public enum Tag
 	LaserProjectile,  // Instant laser projectile attack
 	LaserSight,	// Laser sight to indicate where a laser will shoot from
 	CircleHitEffectBig,	// Like the regular one but bigger
+	PlayerLaserAbility,	// Default character's special ability projectile (giant laser)
 }

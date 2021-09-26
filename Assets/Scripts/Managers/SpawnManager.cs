@@ -11,6 +11,7 @@ public class SpawnManager : MonoBehaviour
 
 	// Debug purposes only, REMOVE
 	public bool enableSpawn;
+	public int currStageDebug;
 
 	public Transform bottomLeft;
 	public Transform topRight;
@@ -38,6 +39,7 @@ public class SpawnManager : MonoBehaviour
 
 	private void Start()
 	{
+		currentStage = currStageDebug;
 		if (enableSpawn)
 			StartCoroutine(StartCurrentStage());
 	}
@@ -82,7 +84,10 @@ public class SpawnManager : MonoBehaviour
 		SoundManager.instance.PlaySound(SoundManager.Sound.EnemyDeath);
 		*/
 
-		stageText.gameObject.SetActive(false);
+		DOTween.To(() => stageText.color, (Color val) => stageText.color = val, new Color(1, 1, 1, 0), 0.4f).OnComplete(() => {
+			stageText.gameObject.SetActive(false);
+			stageText.color = Color.white;
+		});
 
 		yield return new WaitForSeconds(0.75f);
 		

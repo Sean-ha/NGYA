@@ -10,6 +10,15 @@ public class UpgradeObject : ScriptableObject
 	public string upgradeName;
 	[ShowAssetPreview]
 	public Sprite upgradeSprite;
+
+	[Tooltip("Text description of item when it's first picked up")]
 	[TextArea(1, 5)]
-	public string upgradeDescription;
+	public string upgradeDescriptionFirst;
+
+	[Tooltip("Text description of item after it's already picked up")]
+	[TextArea(1, 5)]
+	public string upgradeDescriptionSecond;
+
+	[Tooltip("Total number of this upgrade that the user can possibly acquire")]
+	public int maxNumber;
 }

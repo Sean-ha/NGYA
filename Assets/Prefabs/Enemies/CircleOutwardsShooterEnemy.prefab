@@ -44,9 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944171458009971
@@ -144,9 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944172090776272
@@ -244,9 +252,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944172158814610
@@ -344,9 +356,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944172226165616
@@ -444,9 +460,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944172369418507
@@ -544,9 +564,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944172680783506
@@ -644,9 +668,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &1493944173212604960
@@ -983,9 +1011,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 2
+  shotSpeed: 3
   bulletDistance: 25
   damage: 10
+  shootSound: 14
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
   shotCooldown: -1
   shot: 6
 --- !u!212 &3205498463672064223
@@ -1202,6 +1234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
   maxHealth: 20
+  isBoss: 0
   onHit:
     m_PersistentCalls:
       m_Calls:

@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using NaughtyAttributes;
 
 // Place this component on a TextMesh object to give it a shadow
 public class TextMeshShadowCreator : MonoBehaviour
 {
 	[Tooltip("Set this to true if this text object can and will change at some point (this includes changing text, changing font size, etc.)")]
 	public bool dynamicText;
+
+	public bool overrideSortingLayer;
+	[EnableIf("overrideSortingLayer")]
+	public int newSortingLayer;
 
 	private void Awake()
 	{
@@ -22,6 +27,11 @@ public class TextMeshShadowCreator : MonoBehaviour
 		textComponent.alignment = myTextMesh.alignment;
 		textComponent.color = new Color(0, 0, 0, myTextMesh.color.a);
 		textComponent.rectTransform.sizeDelta = myTextMesh.rectTransform.sizeDelta;
+
+		if (overrideSortingLayer)
+		{
+			shadow.GetComponent<MeshRenderer>().sortingOrder = newSortingLayer;
+		}
 
 		if (dynamicText)
 			shadow.AddComponent<TextMeshShadowUpdater>();

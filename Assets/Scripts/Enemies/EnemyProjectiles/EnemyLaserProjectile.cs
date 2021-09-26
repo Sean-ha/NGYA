@@ -13,13 +13,13 @@ public class EnemyLaserProjectile : EnemyProjectile
 
 	private SpriteRenderer beamRectangleSR;
 	private SpriteRenderer circleEffectSR;
-	private FlashWhite particlesFW;
+
+	private Coroutine currCR;
 
 	private void Awake()
 	{
 		beamRectangleSR = beamRectangle.GetComponent<SpriteRenderer>();
 		circleEffectSR = circleEffect.GetComponent<SpriteRenderer>();
-		particlesFW = laserParticles.GetComponent<FlashWhite>();
 	}
 
 	public override void SetProjectile(float speed, float angle, float damage, float distance)
@@ -29,6 +29,9 @@ public class EnemyLaserProjectile : EnemyProjectile
 
 	public void ActivateLaser(float damage)
 	{
+		if (currCR != null)
+			StopCoroutine(currCR);
+
 		Sequence seq = DOTween.Sequence();
 
 		coll.GetComponent<Damager>().damage = damage;
@@ -52,9 +55,8 @@ public class EnemyLaserProjectile : EnemyProjectile
 		laserParticles.transform.localPosition = new Vector2(0, 0);
 		laserParticles.Play();
 		laserParticles.transform.DOLocalMoveX(50, 0.16f);
-		
 
-		StartCoroutine(ColliderOnOff());
+		currCR = StartCoroutine(ColliderOnOff());
 	}
 
 	private IEnumerator ColliderOnOff()

@@ -75,6 +75,8 @@ public class BasicProjectile : Projectile
 			if (hitCount < numberOfTargets && !hitSet.Contains(collision.gameObject))
 			{
 				float adjustedDamage = damage;
+
+				/*
 				if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Snipe))
 				{
 					float distance = Vector2.Distance(startPosition, transform.position);
@@ -83,6 +85,8 @@ public class BasicProjectile : Projectile
 					if (multiplier <= 0.25f) multiplier = 0.25f;
 					adjustedDamage *= multiplier;
 				}
+				*/
+
 				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage);
 
 				Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;

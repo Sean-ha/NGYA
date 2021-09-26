@@ -18,6 +18,8 @@ public class UpgradesManager : MonoBehaviour
 	public GameObject loveBalloon;
 	public GameObject buddyObject;
 
+	private PauseUpgradeIconBuilder pauseIconBuilder;
+
 	private GameObject chooseUpgradeText;
 	private int uiLayer;
 	private bool readyToPick;
@@ -35,6 +37,8 @@ public class UpgradesManager : MonoBehaviour
 		instance = this;
 		uiLayer = 1 << LayerMask.NameToLayer("UI");
 		rand = new System.Random();
+
+		pauseIconBuilder = FindObjectOfType<PauseUpgradeIconBuilder>();
 
 		// Initialize available upgrades set
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
@@ -75,6 +79,7 @@ public class UpgradesManager : MonoBehaviour
 
 					if (Input.GetMouseButtonDown(0))
 					{
+						TimeManager.instance.canPause = false;
 						SoundManager.instance.PlaySound(SoundManager.Sound.Pickup, false);
 						readyToPick = false;
 						previousHoverCardIndex = -1;
@@ -219,14 +224,22 @@ public class UpgradesManager : MonoBehaviour
 		// Reset text
 		ResetText();
 
+		TimeManager.instance.canPause = true;
 		// Unpause game
 		TimeManager.instance.SlowToUnpause();
 	}
 
 	private void GainUpgradeEffect(Upgrade upgrade)
 	{
+
+	}
+
+	/*  Old stuff
+	private void GainUpgradeEffect(Upgrade upgrade)
+	{
 		availableUpgrades.Remove(upgrade);
 		obtainedUpgrades.Add(upgrade);
+		pauseIconBuilder.AddUpgradeIcon(upgrade);
 
 		switch (upgrade)
 		{
@@ -254,7 +267,7 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Brawl:
-				ShootManager.instance.BulletDistance = 2;
+				ShootManager.instance.BulletDistance = 3.5f;
 				ShootManager.instance.damage += 2f;
 				break;
 
@@ -299,7 +312,6 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.TriggerFinger:
 				ShootManager.instance.ShootCooldown -= 0.075f;
-				AmmoSystem.instance.AmmoRegenPerSecond += 3;
 				break;
 
 			case Upgrade.Unwavering:
@@ -338,4 +350,5 @@ public class UpgradesManager : MonoBehaviour
 				break;
 		}
 	}
+	*/
 }

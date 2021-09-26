@@ -101,6 +101,9 @@ public class CameraShake : MonoBehaviour
 		//Do the actual shaking
 		while (counter < currentDuration)
 		{
+			while (TimeManager.IsPaused)
+				yield return null;
+
 			counter += Time.deltaTime;
 			float decreaseSpeed = currentMagnitude;
 			float decreaseAngle = angleRot;
@@ -120,6 +123,9 @@ public class CameraShake : MonoBehaviour
 				counter = 0f;
 				while (counter <= decreasePoint)
 				{
+					while (TimeManager.IsPaused)
+						yield return null;
+
 					counter += Time.deltaTime;
 					decreaseSpeed = Mathf.Lerp(currentMagnitude, 0, counter / decreasePoint);
 					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / decreasePoint);
@@ -157,6 +163,9 @@ public class CameraShake : MonoBehaviour
 		//Do the actual shaking
 		while (counter < duration)
 		{
+			while (TimeManager.IsPaused)
+				yield return null;
+
 			counter += Time.deltaTime;
 			float decreaseSpeed = magnitude;
 			float decreaseAngle = angleRot;
@@ -176,6 +185,9 @@ public class CameraShake : MonoBehaviour
 				counter = 0f;
 				while (counter <= decreasePoint)
 				{
+					while (TimeManager.IsPaused)
+						yield return null;
+
 					counter += Time.deltaTime;
 					decreaseSpeed = Mathf.Lerp(magnitude, 0, counter / decreasePoint);
 					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / decreasePoint);

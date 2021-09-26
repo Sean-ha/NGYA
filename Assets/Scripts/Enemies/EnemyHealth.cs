@@ -25,10 +25,12 @@ public class EnemyHealth : MonoBehaviour
 
 	private void Start()
 	{
+		/*
 		if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Shrapnel))
 		{
 			onDeath.AddListener(CreateShrapnel);
 		}
+		*/
 	}
 
 	public void TakeDamage(float toTake)

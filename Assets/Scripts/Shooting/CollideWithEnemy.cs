@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class CollideWithEnemy : MonoBehaviour
 {
-	public int damage;
+	public float damage;
 
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 

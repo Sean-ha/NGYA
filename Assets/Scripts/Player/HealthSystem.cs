@@ -59,14 +59,6 @@ public class HealthSystem : MonoBehaviour
 
 		if (currentHealth <= 0)
 		{
-			// Love upgrade
-			if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Love) && balloon.TryPop())
-			{
-				DOTween.Kill(gameObject);
-				currentHealth = maxHealth;
-				UpdateCurrentBar();
-			}
-
 			// Die
 
 		}

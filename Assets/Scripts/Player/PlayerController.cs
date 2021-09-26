@@ -164,29 +164,24 @@ public class PlayerController : MonoBehaviour
 		{
 			if (currentInvincibility <= 0)
 			{
-				if (obtainedUpgrades.Contains(Upgrade.Defender) && defenderShield.TryBreakShield())
-				{ } // Negate damage and break the shield (done in DefenderShield, nothing to do here)
-				else
+				// Actually take damage here
+
+				float toTake = collision.GetComponent<Damager>().damage;
+				healthSystem.TakeDamage(toTake);
+				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
+				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
+
+				if (!Mathf.Approximately(0, knockBackForce))
 				{
-					// Actually take damage here
+					// Get knocked back (and cancel standstill)
+					Vector2 diff = (transform.position - collision.transform.position).normalized;
+					Vector2 force = diff * knockBackForce;
 
-					float toTake = collision.GetComponent<Damager>().damage;
-					healthSystem.TakeDamage(toTake);
-					SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
-					CameraShake.instance.ShakeCamera(0.2f, 0.3f);
-
-					if (!Mathf.Approximately(0, knockBackForce))
-					{
-						// Get knocked back (and cancel standstill)
-						Vector2 diff = (transform.position - collision.transform.position).normalized;
-						Vector2 force = diff * knockBackForce;
-
-						DisableMovement(0.15f);
-						rb.AddForce(force);
-						CancelStandStill();
-					}
+					DisableMovement(0.15f);
+					rb.AddForce(force);
+					CancelStandStill();
 				}
-				
+
 				TakeDamageEffects();
 
 				onTakeDamage.Invoke();
