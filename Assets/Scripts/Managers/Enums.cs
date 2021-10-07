@@ -11,8 +11,32 @@ public enum EnemyType
 
 public enum Upgrade
 {
-	MagicBullet,
+	// Common upgrades
+	MagicBullet = 0,
+	FingerlessGloves = 1,
+	Lipstick = 2,
+	FlimsyString = 3,
+	FannyPack = 4,
+	Goggles = 5,
+	LoveJar = 6,
+	VultureClaw = 7,
+	WhiteCrystal = 8,
+	SealedEnvelope = 9,
+	CannedSoup = 10,
+	SquigglyHead = 11,
+	TatteredCharm = 12,
+	DumbBigAxe = 13,
+	CloakedDagger = 14,
+	D20 = 15,
+	Thumbtack = 16,
+	SwirlyStraw = 17,
+	PilferedFence = 18,
+	PotLid = 19,
 
+
+	// Rare upgrades
+	StarFragment = 1000,
+	GentleQuill = 1001,
 }
 
 // Deprecated
@@ -53,4 +77,5 @@ public enum Tag
 	LaserSight,	// Laser sight to indicate where a laser will shoot from
 	CircleHitEffectBig,	// Like the regular one but bigger
 	PlayerLaserAbility,	// Default character's special ability projectile (giant laser)
+	Tendril,	// Bezier curve
 }

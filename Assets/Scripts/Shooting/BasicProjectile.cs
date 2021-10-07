@@ -15,14 +15,22 @@ public class BasicProjectile : Projectile
 	private Vector2 startPosition;
 	// In radians
 	private float angle;
+	private bool enableOnHitEffects;
 
 	private int hitCount;
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
+
+	private ShootManager sm;
 
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		projectileSpriteChild = transform.GetChild(0);
+	}
+
+	private void Start()
+	{
+		sm = ShootManager.instance;
 	}
 
 	private void OnEnable()
@@ -42,12 +50,13 @@ public class BasicProjectile : Projectile
 	/// Sets the projectile's fields and allows it to begin its travel
 	/// </summary>
 	/// <param name="angle">Angle in degrees</param>
-	public void SetProjectile(float speed, float angle, float damage, int numberOfTargets, float distance)
+	public void SetProjectile(float speed, float angle, float damage, int numberOfTargets, float distance, bool enableOnHitEffects = true)
 	{
 		this.angle = Mathf.Deg2Rad * angle;
 		this.damage = damage;
 		this.numberOfTargets = numberOfTargets;
 		this.distance = distance;
+		this.enableOnHitEffects = enableOnHitEffects;
 		startPosition = transform.position;
 
 		float firstDistance = distance - 1;
@@ -86,6 +95,9 @@ public class BasicProjectile : Projectile
 					adjustedDamage *= multiplier;
 				}
 				*/
+
+				if (enableOnHitEffects)
+					sm.OnProjectileHitEnemy(transform, collision.transform);				
 
 				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage);
 

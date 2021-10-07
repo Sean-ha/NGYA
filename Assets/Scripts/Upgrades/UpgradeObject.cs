@@ -11,14 +11,22 @@ public class UpgradeObject : ScriptableObject
 	[ShowAssetPreview]
 	public Sprite upgradeSprite;
 
+	public UpgradeRarity rarity;
+
 	[Tooltip("Text description of item when it's first picked up")]
-	[TextArea(1, 5)]
+	[TextArea(2, 5)]
 	public string upgradeDescriptionFirst;
 
 	[Tooltip("Text description of item after it's already picked up")]
-	[TextArea(1, 5)]
+	[TextArea(2, 5)]
 	public string upgradeDescriptionSecond;
 
 	[Tooltip("Total number of this upgrade that the user can possibly acquire")]
-	public int maxNumber;
+	public int maxCount;
+}
+
+public enum UpgradeRarity
+{
+	Common,
+	Rare
 }

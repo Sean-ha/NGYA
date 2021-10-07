@@ -14,27 +14,43 @@ public class TextMeshShadowCreator : MonoBehaviour
 	[EnableIf("overrideSortingLayer")]
 	public int newSortingLayer;
 
+	private TextMeshPro myTextMesh;
+	private GameObject shadowObject;
+
 	private void Awake()
 	{
-		TextMeshPro myTextMesh = GetComponent<TextMeshPro>();
+		myTextMesh = GetComponent<TextMeshPro>();
+	}
 
-		GameObject shadow = Instantiate(GameAssets.instance.textMeshShadow, transform, false);
+	private void Start()
+	{
+		shadowObject = Instantiate(GameAssets.instance.textMeshShadow, transform, false);
+
+		if (overrideSortingLayer)
+		{
+			shadowObject.GetComponent<MeshRenderer>().sortingOrder = newSortingLayer;
+		}
+
+		if (dynamicText)
+			shadowObject.AddComponent<TextMeshShadowUpdater>();
+
+		ForceRefreshShadow();
+	}
+
+	public void ForceRefreshShadow()
+	{
+		// If shadowObject is null, this object has never even been activated. So no need to refresh; it will automatically refresh when SetActive
+		if (shadowObject == null)
+			return;
+
 		// Set shadow properties to be identical to this text
-		TextMeshPro textComponent = shadow.GetComponent<TextMeshPro>();
+		TextMeshPro textComponent = shadowObject.GetComponent<TextMeshPro>();
 		textComponent.text = myTextMesh.text;
 		textComponent.fontSize = myTextMesh.fontSize;
 		textComponent.fontStyle = myTextMesh.fontStyle;
 		textComponent.alignment = myTextMesh.alignment;
 		textComponent.color = new Color(0, 0, 0, myTextMesh.color.a);
 		textComponent.rectTransform.sizeDelta = myTextMesh.rectTransform.sizeDelta;
-
-		if (overrideSortingLayer)
-		{
-			shadow.GetComponent<MeshRenderer>().sortingOrder = newSortingLayer;
-		}
-
-		if (dynamicText)
-			shadow.AddComponent<TextMeshShadowUpdater>();
 
 		textComponent.ForceMeshUpdate();
 	}

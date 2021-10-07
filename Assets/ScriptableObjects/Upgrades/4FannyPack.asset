@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2258317027a79748bf77a1eb3a4b762, type: 3}
-  m_Name: Adrenaline
+  m_Name: 4FannyPack
   m_EditorClassIdentifier: 
-  upgradeType: 0
-  upgradeName: adrenaline
-  upgradeSprite: {fileID: 21300000, guid: 120631b670af56340884d1627d06b0a6, type: 3}
-  upgradeDescription: 'increase base movement speed.
-
-    gain a large speed boost
-    upon getting hit.'
+  upgradeType: 4
+  upgradeName: fanny pack
+  upgradeSprite: {fileID: 21300000, guid: 0d80e2a75596b1840b17ed00ea279a31, type: 3}
+  rarity: 0
+  upgradeDescriptionFirst: +max ammo
+  upgradeDescriptionSecond: +max ammo
+  maxCount: 14

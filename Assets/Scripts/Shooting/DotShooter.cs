@@ -11,8 +11,7 @@ public class DotShooter : Shooter
 
 	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
 	{
-		float roll = Random.Range(0f, 1f);
-		if (roll >= ChanceToNotConsumeAmmo)
+		if (!MyRandom.RollProbability(ChanceToNotConsumeAmmo))
 		{
 			if (!AmmoSystem.instance.RemoveAmmo(ammoPerShot))
 			{

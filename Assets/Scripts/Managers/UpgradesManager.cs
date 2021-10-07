@@ -28,7 +28,13 @@ public class UpgradesManager : MonoBehaviour
 	private Transform[] upgradeCards = new Transform[3];
 
 	private HashSet<Upgrade> availableUpgrades;
-	public HashSet<Upgrade> obtainedUpgrades { get; set; } = new HashSet<Upgrade>();
+
+	// Contains only the currently available upgrades. When max count is reached, the upgrade will be deleted from this set!!
+	private HashSet<Upgrade> commonUpgrades = new HashSet<Upgrade>();
+	private HashSet<Upgrade> rareUpgrades = new HashSet<Upgrade>();
+
+	// Key: upgrade; value: number of that upgrade currently held
+	public Dictionary<Upgrade, int> obtainedUpgrades { get; set; } = new Dictionary<Upgrade, int>();
 
 	private System.Random rand;
 
@@ -42,6 +48,24 @@ public class UpgradesManager : MonoBehaviour
 
 		// Initialize available upgrades set
 		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
+
+		StartCoroutine(LoadUpgrades());
+	}
+
+	private IEnumerator LoadUpgrades()
+	{
+		while (!GameAssets.LoadingDone)
+			yield return null;
+
+		// Setup dictionary and rarity hashsets
+		foreach (Upgrade upgrade in availableUpgrades)
+		{
+			if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Common)
+				commonUpgrades.Add(upgrade);
+			else if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Rare)
+				rareUpgrades.Add(upgrade);
+			obtainedUpgrades.Add(upgrade, 0);
+		}
 	}
 
 	private void Update()
@@ -67,14 +91,14 @@ public class UpgradesManager : MonoBehaviour
 					// Shouldn't happen ever, but just in case...
 					if (currIndex < 0) return;
 
-					// Scale up card if it's a brand new card being hovered
+					// Move up card if it's a brand new card being hovered
 					if (previousHoverCardIndex != currIndex)
 					{
 						CancelPreviousHoverCardTween();
 
 						SoundManager.instance.PlaySound(SoundManager.Sound.Blip, false);
 						previousHoverCardIndex = currIndex;
-						hitInfo.transform.DOScale(new Vector3(1.7f, 1.7f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+						hitInfo.transform.DOLocalMoveY(-0.25f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 					}
 
 					if (Input.GetMouseButtonDown(0))
@@ -116,20 +140,32 @@ public class UpgradesManager : MonoBehaviour
 		if (previousHoverCardIndex != -1)
 		{
 			upgradeCards[previousHoverCardIndex].DOKill();
-			upgradeCards[previousHoverCardIndex].DOScale(new Vector3(1.5f, 1.5f, 1), 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+			upgradeCards[previousHoverCardIndex].DOLocalMoveY(-1f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 			previousHoverCardIndex = -1;
 		}
 	}
 
-	public void DisplayUpgradesWindow()
+	public void DisplayUpgradesWindow(int currentLevel)
 	{
-		StartCoroutine(DisplayUpgradesWindowCR());
+		StartCoroutine(DisplayUpgradesWindowCR(currentLevel));
 	}
 
-	private IEnumerator DisplayUpgradesWindowCR()
+	private IEnumerator DisplayUpgradesWindowCR(int currentLevel)
 	{
-		// Get 3 random available upgrades
-		List<Upgrade> chosen = availableUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+		List<Upgrade> chosen;
+		string chooseUpgradeStr = "";
+
+		// If current level is a multiple of 4, choose rare upgrade. Otherwise, choose common upgrade
+		if (currentLevel % 4 == 0)
+		{
+			chosen = rareUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+			chooseUpgradeStr = "choose a <color=#" + GameAssets.instance.blueColorHex + ">rare</color> upgrade";
+		}
+		else
+		{
+			chosen = commonUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+			chooseUpgradeStr = "choose an upgrade";
+		}		
 
 		yield return new WaitForSecondsRealtime(0.5f);
 
@@ -141,7 +177,7 @@ public class UpgradesManager : MonoBehaviour
 		yield return new WaitForSecondsRealtime(0.75f);
 
 		// Create "choose an upgrade" text
-		chooseUpgradeText = ObjectPooler.instance.CreateTextObject(new Vector3(0, 7.5f, 0), Quaternion.identity, Color.white, 8, "choose an upgrade");
+		chooseUpgradeText = ObjectPooler.instance.CreateTextObject(new Vector3(0, 7.5f, 0), Quaternion.identity, Color.white, 8, chooseUpgradeStr);
 		TextMeshPro upgradeText = chooseUpgradeText.GetComponent<TextMeshPro>();
 		upgradeText.color = new Color(1, 1, 1, 0);
 
@@ -171,7 +207,9 @@ public class UpgradesManager : MonoBehaviour
 
 		// Set card values
 		for (int i = 0; i < upgradeCards.Length; i++)
-			upgradeCards[i].GetComponent<UpgradeCard>().SetCard(chosen[i]);
+		{
+			upgradeCards[i].GetComponent<UpgradeCard>().SetCard(chosen[i], obtainedUpgrades[chosen[i]]);
+		}
 	}
 
 	private void RotateText(GameObject textObj)
@@ -231,7 +269,102 @@ public class UpgradesManager : MonoBehaviour
 
 	private void GainUpgradeEffect(Upgrade upgrade)
 	{
+		UpgradeObject uo = GameAssets.instance.upgradeDict[upgrade];
 
+		obtainedUpgrades[upgrade]++;
+		int upgradeCount = obtainedUpgrades[upgrade];
+
+		// Max number of this upgrade has been reached; remove it from the available pool
+		if (obtainedUpgrades[upgrade] >= uo.maxCount)
+		{
+			if (uo.rarity == UpgradeRarity.Common)
+				commonUpgrades.Remove(upgrade);
+			else if (uo.rarity == UpgradeRarity.Rare)
+				rareUpgrades.Remove(upgrade);
+
+			availableUpgrades.Remove(upgrade);
+		}
+		pauseIconBuilder.AddUpgradeIcon(upgrade);
+
+		switch (upgrade)
+		{
+			case Upgrade.MagicBullet:
+				DotBuilder.instance.ChangeBulletAmmoConsumptionChance(0.15f);
+				break;
+
+			case Upgrade.FingerlessGloves:
+				ShootManager.instance.ShootCooldown -= 0.03f;
+				break;
+
+			case Upgrade.Lipstick:
+				HealthSystem.instance.healthUpgradeCount += 5;
+				HealthSystem.instance.UpdateMaxBar();
+				HealthSystem.instance.RestoreToMaxHealth();
+				break;
+
+			case Upgrade.FlimsyString:
+				AmmoSystem.instance.AmmoRegenPerSecond += 2;
+				break;
+
+			case Upgrade.FannyPack:
+				AmmoSystem.instance.AmmoUpgrades += 1;
+				break;
+
+			case Upgrade.Goggles:
+				ShootManager.instance.BulletDistance += 1.6f;
+				break;
+
+			case Upgrade.LoveJar:
+				HealthSystem.instance.healthRegenPerMinute += 6f;
+				break;
+
+			case Upgrade.VultureClaw:
+				if (upgradeCount == 1)
+					ShootManager.instance.vultureClawAmount += 1;
+				if (upgradeCount % 3 == 0)
+					ShootManager.instance.vultureClawAmount += 1;
+				ShootManager.instance.vultureClawChance += 0.15f;
+				break;
+
+			case Upgrade.WhiteCrystal:
+
+				break;
+
+			case Upgrade.SealedEnvelope:
+
+				break;
+
+			case Upgrade.CannedSoup:
+
+				break;
+
+			case Upgrade.SquigglyHead:
+				break;
+
+			case Upgrade.TatteredCharm:
+				break;
+
+			case Upgrade.DumbBigAxe:
+				break;
+
+			case Upgrade.CloakedDagger:
+				break;
+
+			case Upgrade.D20:
+				break;
+
+			case Upgrade.Thumbtack:
+				break;
+
+			case Upgrade.SwirlyStraw:
+				break;
+
+			case Upgrade.PilferedFence:
+				break;
+
+			case Upgrade.PotLid:
+				break;
+		}
 	}
 
 	/*  Old stuff

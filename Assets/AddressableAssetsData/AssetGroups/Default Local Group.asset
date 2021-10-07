@@ -20,14 +20,14 @@ MonoBehaviour:
   - m_GUID: 45a386a40d8448f439f075e02e7bdfe1
     m_Address: UpgradeObjectFolder
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - UpgradeObjects
-    m_MainAsset: {fileID: 102900000, guid: 45a386a40d8448f439f075e02e7bdfe1, type: 3}
-    m_TargetAsset: {fileID: 102900000, guid: 45a386a40d8448f439f075e02e7bdfe1, type: 3}
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: 9acd9e8746ca46a498cf11fdae4e7e65
     m_Address: UpgradeObjectFolderV2
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UpgradeObjects
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0

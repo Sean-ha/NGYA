@@ -8,11 +8,14 @@ public class GameAssets : MonoBehaviour
 {
    public static GameAssets instance;
 
+   public static bool LoadingDone;
+
    private void Awake()
    {
       instance = this;
 
       InitializeDictionaries();
+      blueColorHex = ColorUtility.ToHtmlStringRGB(blueColor);
    }
 
 	private void InitializeDictionaries()
@@ -35,6 +38,7 @@ public class GameAssets : MonoBehaviour
       {
          upgradeDict.Add(loaded.upgradeType, loaded);
       }).Task;
+      LoadingDone = true;
    }
 
 	[System.Serializable]
@@ -43,6 +47,9 @@ public class GameAssets : MonoBehaviour
       public EnemyType enemyType;
       public GameObject enemy;
 	}
+
+   public Color blueColor { get; set; } = new Color(0, 200f / 255f, 1);
+   public string blueColorHex;
 
    public List<EnemyPair> enemyList;
 

@@ -18,16 +18,31 @@ public class UpgradeCard : MonoBehaviour
 		upgradeDescription = transform.GetChild(2).GetComponent<TextMeshPro>();
 	}
 
-	public void SetCard(Upgrade upgrade)
+	// Params: amount is the number of this upgrade the player currently has
+	public void SetCard(Upgrade upgrade, int amount)
 	{
 		// Get upgrade object from upgrade
 		UpgradeObject obj = GameAssets.instance.upgradeDict[upgrade];
 
 		this.upgrade = obj.upgradeType;
 
-		upgradeName.text = obj.upgradeName;
+		string upgradeTxt = "";
+		if (obj.rarity == UpgradeRarity.Rare)
+			upgradeTxt += "<color=#" + GameAssets.instance.blueColorHex + ">";
+
+		upgradeTxt += obj.upgradeName + " " + (amount + 1);
+
+		if (obj.rarity == UpgradeRarity.Rare)
+			upgradeTxt += "</color>";
+
+		upgradeName.text = upgradeTxt;
 		upgradeSprite.sprite = obj.upgradeSprite;
-		upgradeDescription.text = obj.upgradeDescription;
+
+		if (amount == 0)
+			upgradeDescription.text = obj.upgradeDescriptionFirst;
+		else
+			upgradeDescription.text = obj.upgradeDescriptionSecond;
+
 		upgradeDescription.ForceMeshUpdate();
 
 		if (upgradeDescription.bounds.size.y > 4.15f)

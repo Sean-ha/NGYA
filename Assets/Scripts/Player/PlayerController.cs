@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
 	// Invoked when player moves after standing still effect activates
 	public UnityEvent onCancelStandStill { get; set; } = new UnityEvent();
 
-	private HashSet<Upgrade> obtainedUpgrades;
+	private int currentLevel;
 
 	private void Awake()
 	{
@@ -70,7 +70,6 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		healthSystem = HealthSystem.instance;
-		obtainedUpgrades = UpgradesManager.instance.obtainedUpgrades;
 	}
 
 	private void Update()
@@ -263,7 +262,8 @@ public class PlayerController : MonoBehaviour
 
 	public void LevelUp()
 	{
-		HealthSystem.instance.RestoreMaxHealth();
+		currentLevel++;
+		HealthSystem.instance.RestoreToMaxHealth();
 		AmmoSystem.instance.FillCurrentAmmo();
 
 		levelUpSquare.SetActive(true);
@@ -273,7 +273,7 @@ public class PlayerController : MonoBehaviour
 
 		TimeManager.instance.SlowToPause(() =>
 		{
-			UpgradesManager.instance.DisplayUpgradesWindow();
+			UpgradesManager.instance.DisplayUpgradesWindow(currentLevel);
 		});
 	}
 }

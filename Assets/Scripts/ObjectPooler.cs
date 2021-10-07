@@ -128,4 +128,26 @@ public class ObjectPooler : MonoBehaviour
 
 		return created;
 	}
+
+	public GameObject CreateTendril(Vector2 startPos, Vector2 endPos)
+	{
+		GameObject created = Create(Tag.Tendril, new Vector2(0, 0), Quaternion.identity);
+
+		Vector2 direction = endPos - startPos;
+		Vector2 perp = Vector3.Cross(direction, Vector3.back);
+
+		// How far from the start the midpoint should be
+		float dist = Random.Range(4f, 7f);
+		bool reverse = Random.value > 0.5f;
+		if (reverse)
+			dist *= -1;
+
+		float xOffset = Random.Range(-4f, 4f);
+		
+		Vector2 midpoint = startPos + perp.normalized * dist + direction.normalized * xOffset;
+
+		created.GetComponent<BezierCurve>().SetBezierCurve(startPos, midpoint, endPos, 20);
+
+		return created;
+	}
 }

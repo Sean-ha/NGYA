@@ -13,7 +13,7 @@ public class AmmoSystem : MonoBehaviour
 
 	private float firstBulletPosition;
 
-	// Each ammo upgrade gives 20 additional max ammo
+	// Each ammo upgrade gives 10 additional max ammo
 	private int ammoUpgrades;
 	public int AmmoUpgrades 
 	{
@@ -28,7 +28,7 @@ public class AmmoSystem : MonoBehaviour
 	// Amount of ammo to get per second
 	private int ammoRegenPerSecond = 3;
 
-	private float[] ammoOutlineWidths = { 1.02f, 1.96f, 2.895f };
+	private float[] ammoOutlineWidths = { 1.02f, 1.52f, 1.98f, 2.45f, 2.9f, 3.37f, 3.85f, 4.32f, 4.78f, 5.26f, 5.73f, 6.19f, 6.66f, 7.12f, 7.59f };
 
 	public int AmmoRegenPerSecond
 	{
@@ -109,6 +109,11 @@ public class AmmoSystem : MonoBehaviour
 
 	private void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.O))
+		{
+			AmmoRegenPerSecond += 2;
+		}
+
 		if (currentAmmo < maxAmmo)
 		{
 			currentAmmoRegen -= Time.deltaTime;
@@ -145,6 +150,12 @@ public class AmmoSystem : MonoBehaviour
 		ammoStack.Push(bulletUI);
 	}
 
+	public void RegenerateBullet(int amount)
+	{
+		for (int i = 0; i < amount; i++)
+			RegenerateBullet();
+	}
+
 	private void CalculateAmmoRegenRate()
 	{
 		ammoRegenRate = 1f / ammoRegenPerSecond;
@@ -152,7 +163,7 @@ public class AmmoSystem : MonoBehaviour
 
 	private void CalculateMaxAmmo()
 	{
-		maxAmmo = 20 + 20 * ammoUpgrades;
+		maxAmmo = 20 + 10 * ammoUpgrades;
 	}
 
 	public void FillCurrentAmmo()

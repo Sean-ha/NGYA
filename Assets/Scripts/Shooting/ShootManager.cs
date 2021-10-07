@@ -12,7 +12,7 @@ public class ShootManager : MonoBehaviour
 
 	public float damage;
 
-	private float bulletDistance = 6.5f;
+	public float bulletDistance = 6.5f;
 	public float BulletDistance 
 	{ 
 		get { return bulletDistance; }
@@ -25,7 +25,7 @@ public class ShootManager : MonoBehaviour
 	public float ShootCooldown
 	{
 		get { return shootCooldown; }
-		set { shootCooldown = Mathf.Max(0.01f, value); }
+		set { shootCooldown = Mathf.Max(0.05f, value); }
 	}
 
 	private float currShootCooldown;
@@ -58,6 +58,36 @@ public class ShootManager : MonoBehaviour
 				onShoot.Invoke(damage, bulletDistance, pierceCount);
 				currShootCooldown = shootCooldown;
 			}
+		}
+	}
+
+
+	#region UPGRADE_VARS
+	// UPGRADE VARIABLES
+	public float tendrilChance;
+	public float tendrilDamage;
+
+	public float vultureClawChance;
+	public int vultureClawAmount;
+
+	#endregion
+
+	// Call whenever a projectile hits an enemy to invoke on hit effects
+	public void OnProjectileHitEnemy(Transform projectile, Transform enemy)
+	{
+		if (MyRandom.RollProbability(tendrilChance))
+		{
+			ObjectPooler.instance.CreateTendril(PlayerController.instance.transform.position, enemy.position);
+			enemy.GetComponent<EnemyHealth>().TakeDamage(tendrilDamage);
+		}
+	}
+
+	// Call whenever an enemy dies to invoke on death effects
+	public void OnProjectileKillEnemy(Transform enemy)
+	{
+		if (MyRandom.RollProbability(vultureClawChance))
+		{
+			AmmoSystem.instance.RegenerateBullet(vultureClawAmount);
 		}
 	}
 }

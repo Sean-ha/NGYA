@@ -13,14 +13,14 @@ public class HealthSystem : MonoBehaviour
 	public SpriteRenderer whiteBar;
 	public SpriteRenderer background;
 
-	// Each upgrade increase max health by 10 (outline width increases by 0.2)
-	private int healthUpgradeCount;
+	// Each upgrade increase max health by 5 (outline width increases by 0.2)
+	public int healthUpgradeCount { get; set; }
+
 	private float maxHealth = 50f;
 	private float currentHealth;
 
+	public float healthRegenPerMinute { get; set; }
 	public float damageReduction { get; set; }
-
-	private LoveBalloon balloon;
 
 	private const float OUTLINE_BAR_DIFF = 0.07f;
 
@@ -31,11 +31,8 @@ public class HealthSystem : MonoBehaviour
 		UpdateMaxBar();
 		currentHealth = maxHealth;
 		UpdateCurrentBar();
-	}
 
-	private void Start()
-	{
-		balloon = PlayerController.instance.transform.Find("HeartBalloon").GetComponent<LoveBalloon>();
+		StartCoroutine(RegenerateHealth());
 	}
 
 	public void TakeDamage(float damage)
@@ -73,17 +70,32 @@ public class HealthSystem : MonoBehaviour
 	}
 
 	// Update max health bar (outline and background part)
-	private void UpdateMaxBar()
+	public void UpdateMaxBar()
 	{
-		maxHealth = 50 + 10 * healthUpgradeCount;
-		float ySize = 1 + 0.2f * healthUpgradeCount;
+		maxHealth = 50 + 5 * healthUpgradeCount;
+		float ySize = 1 + 0.1f * healthUpgradeCount;
 		background.size = new Vector2(ySize - 0.07f, background.size.y);
 		healthOutline.size = new Vector2(ySize, healthOutline.size.y);
 	}
 
-	public void RestoreMaxHealth()
+	public void RestoreToMaxHealth()
 	{
 		currentHealth = maxHealth;
 		UpdateCurrentBar();
+	}
+
+	public void RestoreHealth(float amount)
+	{
+		currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+		UpdateCurrentBar();
+	}
+
+	private IEnumerator RegenerateHealth()
+	{
+		while (true)
+		{
+			RestoreHealth(healthRegenPerMinute / 240f);
+			yield return new WaitForSeconds(0.25f);
+		}
 	}
 }

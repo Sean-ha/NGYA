@@ -25,7 +25,7 @@ public class ExpManager : MonoBehaviour
 	{
 		instance = this;
 		expBarXScale = expBar.localScale.x;
-		expToLevelUp = 50 * level;
+		expToLevelUp = GetEXPToLevelUp();
 	}
 
 	public void GainExp(int amount)
@@ -67,7 +67,7 @@ public class ExpManager : MonoBehaviour
 		isLeveling = false;
 		currentExp -= expToLevelUp;
 		level++;
-		expToLevelUp = 50 * level;
+		expToLevelUp = GetEXPToLevelUp();
 
 		UpdateExpBar();
 	}
@@ -75,5 +75,10 @@ public class ExpManager : MonoBehaviour
 	private IEnumerator SlowDown()
 	{
 		yield return null;
+	}
+
+	private int GetEXPToLevelUp()
+	{
+		return 40 * level;
 	}
 }
