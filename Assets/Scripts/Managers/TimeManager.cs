@@ -12,6 +12,7 @@ public class TimeManager : MonoBehaviour
 	public GameObject pauseBlackScreen;
 	public GameObject pauseText;
 	public GameObject pauseUpgradeIconHolder;
+	public PauseUpgradeDescriptionBox pauseDescriptionBox;
 
 	// Whether or not pausing is allowed
 	public bool canPause { get; set; } = true;
@@ -96,6 +97,7 @@ public class TimeManager : MonoBehaviour
 		pauseBlackScreen.SetActive(false);
 		pauseText.SetActive(false);
 		pauseUpgradeIconHolder.SetActive(false);
+		pauseDescriptionBox.DisableBox();
 	}
 
 	public void PauseGame()

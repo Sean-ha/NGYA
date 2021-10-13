@@ -8,7 +8,7 @@ public class PauseUpgradeIconBuilder : MonoBehaviour
 	public GameObject iconTemplate;
 	public Transform iconHolder;
 
-	private Vector2 currentPosition;
+	private Vector3 currentPosition;
 
 	private float originalPosX;
 
@@ -20,7 +20,7 @@ public class PauseUpgradeIconBuilder : MonoBehaviour
 		originalPosX = currentPosition.x;
 
 		// Move the template away from scene
-		iconTemplate.transform.position = new Vector2(100, 100);
+		iconTemplate.transform.position = new Vector3(100, 100, iconTemplate.transform.position.z);
 	}
 
 	public void AddUpgradeIcon(Upgrade upgrade)
@@ -40,10 +40,12 @@ public class PauseUpgradeIconBuilder : MonoBehaviour
 			GameObject icon = Instantiate(iconTemplate, iconHolder, false);
 			TextMeshPro quantityText = icon.transform.GetChild(0).GetComponent<TextMeshPro>();
 
+			icon.GetComponent<PauseUpgradeIcon>().upgrade = upgrade;
+
 			icon.transform.position = currentPosition;
 			icon.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.upgradeDict[upgrade].upgradeSprite;
 			// Update currentPosition
-			currentPosition += new Vector2(2.25f, 0f);
+			currentPosition += new Vector3(2.25f, 0f, 0f);
 
 			PauseUpgradeObject obj = new PauseUpgradeObject();
 

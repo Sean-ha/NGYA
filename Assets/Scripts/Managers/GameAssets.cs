@@ -49,7 +49,7 @@ public class GameAssets : MonoBehaviour
 	}
 
    public Color blueColor { get; set; } = new Color(0, 200f / 255f, 1);
-   public string blueColorHex;
+   public string blueColorHex { get; set; }
 
    public List<EnemyPair> enemyList;
 

@@ -12,7 +12,6 @@ public class MainMenuManager : MonoBehaviour
 	public Transform[] menuItems;
 
 	private int uiLayer;
-
 	private int previousHoverIndex = -1;
 
 	private void Awake()
@@ -36,13 +35,13 @@ public class MainMenuManager : MonoBehaviour
 
 		if (hitInfo)
 		{
-			// Get index of current upgrade card being hovered
+			// Get index of current menu item being hovered
 			int currIndex = Array.FindIndex(menuItems, (Transform val) => val == hitInfo.transform);
 
 			// Shouldn't happen ever, but just in case...
 			if (currIndex < 0) return;
 
-			// Scale up card if it's a brand new card being hovered
+			// Scale up card if it's a brand new button being hovered
 			if (previousHoverIndex != currIndex)
 			{
 				CancelPreviousHoverTween();
