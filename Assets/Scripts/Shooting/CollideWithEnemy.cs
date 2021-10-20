@@ -6,6 +6,7 @@ using UnityEngine;
 public class CollideWithEnemy : MonoBehaviour
 {
 	public float damage;
+	public bool canCrit;
 
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 
@@ -25,7 +26,7 @@ public class CollideWithEnemy : MonoBehaviour
 
 			if (!hitSet.Contains(collision.gameObject))
 			{
-				collision.GetComponent<EnemyHealth>().TakeDamage(damage);
+				collision.GetComponent<EnemyHealth>().TakeDamage(damage, canCrit: canCrit);
 
 				ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
 				ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1f);

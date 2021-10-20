@@ -111,7 +111,7 @@ public class TimeManager : MonoBehaviour
 		IsPaused = false;
 	}
 
-	public void SlowToPause(TweenCallback onComplete, float time = 2.3f)
+	public void SlowToPause(TweenCallback onComplete, float time = 1f)
 	{
 		inTransition = true;
 		currentSlowToPauseTween = DOTween.To(() => Time.timeScale, (float val) => Time.timeScale = val, 0, time).SetUpdate(true).OnComplete(() => 
@@ -123,7 +123,7 @@ public class TimeManager : MonoBehaviour
 		currentSlowToPauseTween.onComplete += onComplete;
 	}
 
-	public void SlowToUnpause(float time = 2.3f)
+	public void SlowToUnpause(float time = 1.3f)
 	{
 		inUpgradeWindow = false;
 		inTransition = true;

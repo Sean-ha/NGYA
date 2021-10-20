@@ -20,8 +20,9 @@ public enum Upgrade
 	Goggles = 5,
 	LoveJar = 6,
 	VultureClaw = 7,
-	WhiteCrystal = 8,
-	SealedEnvelope = 9,
+	BustedToaster = 8,
+	LastRegards = 9,
+	/*
 	CannedSoup = 10,
 	SquigglyHead = 11,
 	TatteredCharm = 12,
@@ -32,11 +33,13 @@ public enum Upgrade
 	SwirlyStraw = 17,
 	PilferedFence = 18,
 	PotLid = 19,
+	
 
 
 	// Rare upgrades
 	StarFragment = 1000,
 	GentleQuill = 1001,
+	*/
 }
 
 // Deprecated
@@ -65,7 +68,7 @@ public enum Upgrade_OLD
 
 public enum Tag
 {
-	PlayerProjectile, // Classic player projectile
+	PlayerProjectile, // Classic player projectile. CAN CRIT!
 	ParticleHitEffects,  // Classic particles from player projectiles, or enemies being hit
 	AmmoShell,  // Ammo shells for when player shoots
 	EnemyProjectile,  // Classic enemy projectile
@@ -78,4 +81,7 @@ public enum Tag
 	CircleHitEffectBig,	// Like the regular one but bigger
 	PlayerLaserAbility,	// Default character's special ability projectile (giant laser)
 	Tendril,	// Bezier curve
+	CritText,	// Text to appear when you crit an enemy
+	PlayerProjectileNoCrit,	// Classic player projectile; NO CRIT!
+
 }

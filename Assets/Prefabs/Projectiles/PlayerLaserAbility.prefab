@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+  canCrit: 1
 --- !u!114 &142469980006105943
 MonoBehaviour:
   m_ObjectHideFlags: 0

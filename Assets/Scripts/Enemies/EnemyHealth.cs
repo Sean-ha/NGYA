@@ -18,13 +18,19 @@ public class EnemyHealth : MonoBehaviour
 
 	private Tween scaleDownTween;
 
+	private ShootManager sm;
+	private Collider2D myColl;
+
 	private void Awake()
 	{
 		currentHealth = maxHealth;
+		// Collider2D should be on the same gameobject as EnemyHealth. If not, we can fix up this code.
+		myColl = GetComponent<Collider2D>();
 	}
 
 	private void Start()
 	{
+		sm = ShootManager.instance;
 		/*
 		if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Shrapnel))
 		{
@@ -33,10 +39,16 @@ public class EnemyHealth : MonoBehaviour
 		*/
 	}
 
-	public void TakeDamage(float toTake)
+	public void TakeDamage(float toTake, bool canCrit = false)
 	{
 		if (isDead)
 			return;
+
+		if (canCrit && MyRandom.RollProbability(sm.critChance))
+		{
+			sm.OnCrit(transform, myColl);
+			toTake *= sm.critDamage;
+		}
 
 		currentHealth -= toTake;
 		onHit.Invoke();
@@ -98,7 +110,7 @@ public class EnemyHealth : MonoBehaviour
 		for (int i = 0; i < 4; i++)
 		{
 			float currDangle = startDangle + 90 * i;
-			GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(currDangle, Vector3.forward));
+			GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectileNoCrit, transform.position, Quaternion.AngleAxis(currDangle, Vector3.forward));
 			proj.GetComponent<BasicProjectile>().SetProjectile(15, currDangle, ShootManager.instance.damage / 4, ShootManager.instance.pierceCount, 15f);
 		}
 	}

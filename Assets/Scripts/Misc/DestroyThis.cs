@@ -13,4 +13,16 @@ public class DestroyThis : MonoBehaviour
 	{
 		Destroy(transform.parent.gameObject);
 	}
+
+	// Waits 'timeToWait' seconds, and then destroys this gameObject
+	public void DestroyThisObject(float timeToWait)
+	{
+		StartCoroutine(WaitThenDestroy(timeToWait));
+	}
+
+	private IEnumerator WaitThenDestroy(float timeToWait)
+	{
+		yield return new WaitForSeconds(timeToWait);
+		Destroy(gameObject);
+	}
 }

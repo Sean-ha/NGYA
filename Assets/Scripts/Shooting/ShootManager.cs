@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
+using NaughtyAttributes;
 
 public class ShootManager : MonoBehaviour
 {
@@ -27,6 +28,10 @@ public class ShootManager : MonoBehaviour
 		get { return shootCooldown; }
 		set { shootCooldown = Mathf.Max(0.05f, value); }
 	}
+
+	public float critChance { get; set; } = 0;
+	// Percentage damage increase. E.g. 0.5 means crits deal 50% more damage, or 1.5x dmg
+	public float critDamage { get; set; } = 0.5f;
 
 	private float currShootCooldown;
 
@@ -61,24 +66,35 @@ public class ShootManager : MonoBehaviour
 		}
 	}
 
-
+	// Note: DM stands for "Damage Multiplier" :)
 	#region UPGRADE_VARS
 	// UPGRADE VARIABLES
-	public float tendrilChance;
-	public float tendrilDamage;
+	[HideInInspector] public float tendrilChance;
+	[HideInInspector] public float tendrilDM;
 
-	public float vultureClawChance;
-	public int vultureClawAmount;
+	[HideInInspector] public float vultureClawChance;
+	[HideInInspector] public int vultureClawAmount;
+
+	[HideInInspector] public float bustedToasterChance;
+	[HideInInspector] public float bustedToasterDM;
+	public GameObject bustedToasterExplosion;
 
 	#endregion
 
 	// Call whenever a projectile hits an enemy to invoke on hit effects
-	public void OnProjectileHitEnemy(Transform projectile, Transform enemy)
+	public void OnProjectileHitEnemy(Transform projectile, Transform enemy, Collider2D collider)
 	{
+		
 		if (MyRandom.RollProbability(tendrilChance))
 		{
 			ObjectPooler.instance.CreateTendril(PlayerController.instance.transform.position, enemy.position);
-			enemy.GetComponent<EnemyHealth>().TakeDamage(tendrilDamage);
+			enemy.GetComponent<EnemyHealth>().TakeDamage(damage * tendrilDM);
+		}
+		if (MyRandom.RollProbability(bustedToasterChance))
+		{
+			GameObject expl = Instantiate(bustedToasterExplosion, enemy.position, Quaternion.identity);
+			expl.GetComponent<BustedToasterExplosion>().ActivateExplosion(damage * bustedToasterDM);
+			// TODO: SFX here
 		}
 	}
 
@@ -89,5 +105,13 @@ public class ShootManager : MonoBehaviour
 		{
 			AmmoSystem.instance.RegenerateBullet(vultureClawAmount);
 		}
+	}
+
+	// Called from the enemy that was critted
+	public void OnCrit(Transform enemy, Collider2D collider)
+	{
+		// TODO: Crit fx
+		Vector2 topOfEnemy = (Vector2)collider.bounds.center + new Vector2(0, collider.bounds.extents.y + 0.35f);
+		ObjectPooler.instance.Create(Tag.CritText, topOfEnemy, Quaternion.identity);
 	}
 }

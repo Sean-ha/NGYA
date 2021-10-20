@@ -22,7 +22,7 @@ public class TextMeshShadowCreator : MonoBehaviour
 		myTextMesh = GetComponent<TextMeshPro>();
 	}
 
-	private void Start()
+	private void OnEnable()
 	{
 		shadowObject = Instantiate(GameAssets.instance.textMeshShadow, transform, false);
 

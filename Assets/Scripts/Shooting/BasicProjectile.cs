@@ -7,6 +7,7 @@ public class BasicProjectile : Projectile
 {
 	[Tooltip("How hard to push the enemy hit by this projectile")]
 	public float pushForce;
+	public bool canCrit;
 
 	private Rigidbody2D rb;
 	private Transform projectileSpriteChild;
@@ -97,9 +98,9 @@ public class BasicProjectile : Projectile
 				*/
 
 				if (enableOnHitEffects)
-					sm.OnProjectileHitEnemy(transform, collision.transform);				
+					sm.OnProjectileHitEnemy(transform, collision.transform, collision);				
 
-				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage);
+				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage, canCrit: canCrit);
 
 				Vector2 push = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pushForce;
 				collision.GetComponent<Rigidbody2D>().AddForce(push);

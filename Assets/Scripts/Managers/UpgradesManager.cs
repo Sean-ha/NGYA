@@ -272,6 +272,7 @@ public class UpgradesManager : MonoBehaviour
 		UpgradeObject uo = GameAssets.instance.upgradeDict[upgrade];
 
 		obtainedUpgrades[upgrade]++;
+		// upgradeCount = 1 for first time upgrade obtained
 		int upgradeCount = obtainedUpgrades[upgrade];
 
 		// Max number of this upgrade has been reached; remove it from the available pool
@@ -326,19 +327,39 @@ public class UpgradesManager : MonoBehaviour
 				ShootManager.instance.vultureClawChance += 0.15f;
 				break;
 
-			case Upgrade.WhiteCrystal:
+			case Upgrade.BustedToaster:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.bustedToasterChance = 0.25f;
+					ShootManager.instance.bustedToasterDM = 0.9f;
+				}
+				else
+				{
+					ShootManager.instance.bustedToasterChance += 0.05f;
+					ShootManager.instance.bustedToasterDM += 0.1f;
+				}
+				break;
+
+			case Upgrade.LastRegards:
 
 				break;
 
-			case Upgrade.SealedEnvelope:
-
-				break;
-
+				/*
 			case Upgrade.CannedSoup:
-
+				PlayerController.instance.moveSpeed += 1;
 				break;
 
 			case Upgrade.SquigglyHead:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.tendrilDM = 0.6f;
+					ShootManager.instance.tendrilChance = 0.3f;
+				}
+				else
+				{
+					ShootManager.instance.tendrilDM += 0.15f;
+					ShootManager.instance.tendrilChance += 0.05f;
+				}
 				break;
 
 			case Upgrade.TatteredCharm:
@@ -364,6 +385,7 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.PotLid:
 				break;
+				*/
 		}
 	}
 
