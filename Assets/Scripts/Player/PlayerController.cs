@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 	[BoxGroup("Upgrades")]
 	public DefenderShield defenderShield;
 
+	private ShootManager sm;
 	private HealthSystem healthSystem;
 	private Rigidbody2D rb;
 	private SpriteRenderer sr;
@@ -32,14 +33,13 @@ public class PlayerController : MonoBehaviour
 	public float invincibilityDuration { get; set; } = 1f;
 	// Duration of current invincibility. <=0 means player can be hit.
 	private float currentInvincibility;
-	public UnityEvent onTakeDamage { get; set; } = new UnityEvent();
 
 	private Collider2D[] expShells = new Collider2D[10];
 	private int expShellLayer;
 
 	private GameObject levelUpSquare, levelUpParticles;
 
-	// Time it takes for stand still effects to take effect
+	// Time it takes for stand still effects to take effect.
 	private float standStillDuration = 1.5f;
 	private float currentStandStillDuration;
 	public UnityEvent onStandStill { get; set; } = new UnityEvent();
@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		healthSystem = HealthSystem.instance;
+		sm = ShootManager.instance;
 	}
 
 	private void Update()
@@ -183,7 +184,7 @@ public class PlayerController : MonoBehaviour
 
 				TakeDamageEffects();
 
-				onTakeDamage.Invoke();
+				sm.OnTakeDamage(transform, collision.transform);
 
 				currentInvincibility = invincibilityDuration;
 			}

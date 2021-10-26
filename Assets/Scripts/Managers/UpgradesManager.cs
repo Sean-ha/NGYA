@@ -341,7 +341,8 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.LastRegards:
-
+				ShootManager.instance.lastRegardsBulletCount += 8;
+				ShootManager.instance.lastRegardsDM = 1f;
 				break;
 
 				/*

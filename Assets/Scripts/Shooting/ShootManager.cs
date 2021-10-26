@@ -29,7 +29,7 @@ public class ShootManager : MonoBehaviour
 		set { shootCooldown = Mathf.Max(0.05f, value); }
 	}
 
-	public float critChance { get; set; } = 0;
+	public float critChance { get; set; } = .6f;
 	// Percentage damage increase. E.g. 0.5 means crits deal 50% more damage, or 1.5x dmg
 	public float critDamage { get; set; } = 0.5f;
 
@@ -72,9 +72,6 @@ public class ShootManager : MonoBehaviour
 	[HideInInspector] public float tendrilChance;
 	[HideInInspector] public float tendrilDM;
 
-	[HideInInspector] public float vultureClawChance;
-	[HideInInspector] public int vultureClawAmount;
-
 	[HideInInspector] public float bustedToasterChance;
 	[HideInInspector] public float bustedToasterDM;
 	public GameObject bustedToasterExplosion;
@@ -84,7 +81,6 @@ public class ShootManager : MonoBehaviour
 	// Call whenever a projectile hits an enemy to invoke on hit effects
 	public void OnProjectileHitEnemy(Transform projectile, Transform enemy, Collider2D collider)
 	{
-		
 		if (MyRandom.RollProbability(tendrilChance))
 		{
 			ObjectPooler.instance.CreateTendril(PlayerController.instance.transform.position, enemy.position);
@@ -96,7 +92,13 @@ public class ShootManager : MonoBehaviour
 			expl.GetComponent<BustedToasterExplosion>().ActivateExplosion(damage * bustedToasterDM);
 			// TODO: SFX here
 		}
+		
+		
 	}
+
+
+	[HideInInspector] public float vultureClawChance;
+	[HideInInspector] public int vultureClawAmount;
 
 	// Call whenever an enemy dies to invoke on death effects
 	public void OnProjectileKillEnemy(Transform enemy)
@@ -113,5 +115,32 @@ public class ShootManager : MonoBehaviour
 		// TODO: Crit fx
 		Vector2 topOfEnemy = (Vector2)collider.bounds.center + new Vector2(0, collider.bounds.extents.y + 0.35f);
 		ObjectPooler.instance.Create(Tag.CritText, topOfEnemy, Quaternion.identity);
+	}
+
+	[HideInInspector] public int lastRegardsBulletCount;
+	[HideInInspector] public float lastRegardsDM;
+
+	// 2 arguments: player transform and the transform of the thing that hit you. Can be an enemy or a projectile or whatever
+	public void OnTakeDamage(Transform player, Transform enemy)
+	{
+		if (lastRegardsBulletCount != 0)
+		{
+			// Opposite direction of enemy from player
+			Vector2 dir = player.position - enemy.position;
+			StartCoroutine(LastRegardsShoot(dir));
+		}
+	}
+
+
+	private IEnumerator LastRegardsShoot(Vector2 direction)
+	{
+		int lastRegardsUpgradeCount = lastRegardsBulletCount / 8;
+		for (int i = 0; i < lastRegardsBulletCount; i++)
+		{
+			Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
+			ObjectPooler.instance.CreateHomingProjectile(PlayerController.instance.transform.position, Quaternion.identity, damage, true,
+			randomDir, 0.02f);
+			yield return new WaitForSeconds(Random.Range(0.04f, 0.1f) / lastRegardsUpgradeCount);
+		}
 	}
 }

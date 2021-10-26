@@ -7,12 +7,14 @@ public class CollideWithEnemy : MonoBehaviour
 {
 	public float damage;
 	public bool canCrit;
+	[Tooltip("Disable this object after it collides with a single enemy")]
+	public bool disableOnHit;
 
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 
 	private void OnEnable()
 	{
-		hitSet = new HashSet<GameObject>();
+		hitSet.Clear();
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -32,6 +34,8 @@ public class CollideWithEnemy : MonoBehaviour
 				ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1f);
 
 				hitSet.Add(collision.gameObject);
+				if (disableOnHit)
+					gameObject.SetActive(false);
 			}
 		}
 	}

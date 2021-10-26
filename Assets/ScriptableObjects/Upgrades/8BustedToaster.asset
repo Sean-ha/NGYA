@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upgradeType: 8
   upgradeName: busted toaster
-  upgradeSprite: {fileID: -8566091700487108214, guid: 2736b46e41f7837478e0c66af75365f9, type: 3}
+  upgradeSprite: {fileID: 21300000, guid: 4696ade11e3d75749b2a078ea131188d, type: 3}
   rarity: 0
   upgradeDescriptionFirst: blah bl
   upgradeDescriptionSecond: blah

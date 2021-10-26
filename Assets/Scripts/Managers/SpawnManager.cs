@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using NaughtyAttributes;
+using System.Linq;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class SpawnManager : MonoBehaviour
 	private int playerKillCountInCurrentStage;
 
 	private Coroutine currentWaitingToSpawnCR;
+
+	public HashSet<Transform> enemySet { get; set; } = new HashSet<Transform>();
 
 	private void Awake()
 	{
@@ -142,6 +145,7 @@ public class SpawnManager : MonoBehaviour
 					enemy.gameObject.SetActive(true);
 					ObjectPooler.instance.CreateHitParticles(Color.red, enemy.position);
 					ObjectPooler.instance.CreateCircleHitEffect(Color.red, enemy.position, 1.5f);
+					enemySet.Add(enemy);
 				}
 			});
 		}
@@ -163,7 +167,7 @@ public class SpawnManager : MonoBehaviour
 	// All enemies are set as inactive. They must be enabled elsewhere (i.e. after circle load completes)
 	private List<Transform> CreateSpawn(GameObject spawn, Vector2 position)
 	{
-		List<Transform> createdEnemies = new List<Transform>(); ;
+		List<Transform> createdEnemies = new List<Transform>();
 
 		Transform holder = Instantiate(spawn, position, Quaternion.identity).transform;
 
@@ -182,9 +186,10 @@ public class SpawnManager : MonoBehaviour
 		return createdEnemies;
 	}
 
-	public void EnemyIsKilled()
+	public void EnemyIsKilled(Transform enemy)
 	{
 		playerKillCountInCurrentStage++;
+		enemySet.Remove(enemy);
 
 		if (playerKillCountInCurrentStage == enemiesInCurrentStage)
 		{
@@ -204,6 +209,15 @@ public class SpawnManager : MonoBehaviour
 				Invoke(nameof(SpawnWave), 0.75f);
 			}
 		}
+	}
+
+	public Transform GetRandomEnemy()
+	{
+		if (enemySet.Count == 0)
+			return null;
+
+		int index = Random.Range(0, enemySet.Count);
+		return enemySet.ElementAt(index);
 	}
 }
 

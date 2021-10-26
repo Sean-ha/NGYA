@@ -83,5 +83,5 @@ public enum Tag
 	Tendril,	// Bezier curve
 	CritText,	// Text to appear when you crit an enemy
 	PlayerProjectileNoCrit,	// Classic player projectile; NO CRIT!
-
+	HomingProjectile,		// Player projectile that follows enemies.
 }

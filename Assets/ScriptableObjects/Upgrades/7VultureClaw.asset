@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upgradeType: 7
   upgradeName: vulture claw
-  upgradeSprite: {fileID: 21300000, guid: 9a02e4d18057ae541a36a7032f17efcd, type: 3}
+  upgradeSprite: {fileID: 21300000, guid: 578e7cb95b5fbb9488db982f08db7a6f, type: 3}
   rarity: 0
   upgradeDescriptionFirst: chance to get ammo on enemy kill
   upgradeDescriptionSecond: increase chance and amount of ammo

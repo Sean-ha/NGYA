@@ -82,19 +82,12 @@ public class CursorManager : MonoBehaviour
 		foreach (Transform piece in crosshairPieces)
 			piece.DOKill();
 
-		float oldPos1 = crosshairPieces[0].localPosition.y;
-		crosshairPieces[0].DOLocalMoveY(oldPos1 + cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[0].DOLocalMove(defaultPositions[0], inTime).SetUpdate(true)).SetUpdate(true);
+		crosshairPieces[0].DOLocalMoveY(defaultPositions[0].y + cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[0].DOLocalMove(defaultPositions[0], inTime).SetUpdate(true)).SetUpdate(true);
 
-		float oldPos2 = crosshairPieces[1].localPosition.y;
-		oldPos2 = crosshairPieces[1].localPosition.y;
-		crosshairPieces[1].DOLocalMoveY(oldPos2 - cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[1].DOLocalMove(defaultPositions[1], inTime).SetUpdate(true)).SetUpdate(true);
+		crosshairPieces[1].DOLocalMoveY(defaultPositions[1].y - cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[1].DOLocalMove(defaultPositions[1], inTime).SetUpdate(true)).SetUpdate(true);
 
-		float oldPos3 = crosshairPieces[2].localPosition.y;
-		oldPos3 = crosshairPieces[2].localPosition.x;
-		crosshairPieces[2].DOLocalMoveX(oldPos3 - cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[2].DOLocalMove(defaultPositions[2], inTime).SetUpdate(true)).SetUpdate(true);
+		crosshairPieces[2].DOLocalMoveX(defaultPositions[2].x - cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[2].DOLocalMove(defaultPositions[2], inTime).SetUpdate(true)).SetUpdate(true);
 
-		float oldPos4 = crosshairPieces[3].localPosition.y;
-		oldPos4 = crosshairPieces[3].localPosition.x;
-		crosshairPieces[3].DOLocalMoveX(oldPos4 + cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[3].DOLocalMove(defaultPositions[3], inTime).SetUpdate(true)).SetUpdate(true);
+		crosshairPieces[3].DOLocalMoveX(defaultPositions[3].x + cursorExpandAmount, outTime).OnComplete(() => crosshairPieces[3].DOLocalMove(defaultPositions[3], inTime).SetUpdate(true)).SetUpdate(true);
 	}
 }

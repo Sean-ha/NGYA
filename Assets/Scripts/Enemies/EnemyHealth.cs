@@ -57,7 +57,7 @@ public class EnemyHealth : MonoBehaviour
 		{
 			isDead = true;
 			if (!isBoss)
-				SpawnManager.instance.EnemyIsKilled();
+				SpawnManager.instance.EnemyIsKilled(transform);
 
 			if (UpgradesManager.instance)
 

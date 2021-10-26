@@ -150,4 +150,17 @@ public class ObjectPooler : MonoBehaviour
 
 		return created;
 	}
+
+	// startDirection = bullet's default starting velocity. timeToActivate = time until bullet's homing capabilites are enabled
+	public GameObject CreateHomingProjectile(Vector2 position, Quaternion rotation, float damage, bool canCrit, Vector2 startDirection, float timeToActivate)
+	{
+		GameObject proj = Create(Tag.HomingProjectile, position, rotation);
+
+		CollideWithEnemy collider = proj.GetComponent<CollideWithEnemy>();
+		collider.damage = damage;
+		collider.canCrit = canCrit;
+		proj.GetComponent<HomingProjectile>().ActivateBullet(startDirection, timeToActivate);
+
+		return proj;
+	}
 }
