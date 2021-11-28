@@ -277,4 +277,11 @@ public class PlayerController : MonoBehaviour
 			UpgradesManager.instance.DisplayUpgradesWindow(currentLevel);
 		});
 	}
+
+
+	// Get a random position within a certain distance of the player
+	public Vector2 GetRandomNearbyPosition(float minDistance = 0.8f, float maxDistance = 2f)
+	{
+		return HelperFunctions.RandomPointInAnnulusWithinGameBounds(transform.position, minDistance, maxDistance);
+	}
 }

@@ -24,19 +24,15 @@ public class EnemyHealth : MonoBehaviour
 	private void Awake()
 	{
 		currentHealth = maxHealth;
-		// Collider2D should be on the same gameobject as EnemyHealth. If not, we can fix up this code.
+		// Collider2D should be on the same gameobject as EnemyHealth. If not, we might have to change stuff, not sure yet
 		myColl = GetComponent<Collider2D>();
+		if (myColl == null)
+			Debug.LogError("Collider and EnemyHealth not on the same object: Object " + gameObject.name);
 	}
 
 	private void Start()
 	{
 		sm = ShootManager.instance;
-		/*
-		if (UpgradesManager.instance.obtainedUpgrades.Contains(Upgrade.Shrapnel))
-		{
-			onDeath.AddListener(CreateShrapnel);
-		}
-		*/
 	}
 
 	public void TakeDamage(float toTake, bool canCrit = false)
@@ -44,7 +40,15 @@ public class EnemyHealth : MonoBehaviour
 		if (isDead)
 			return;
 
-		if (canCrit && MyRandom.RollProbability(sm.critChance))
+		if (currentHealth == maxHealth)
+			toTake += sm.cloakedDaggerDM * sm.damage;
+
+		float critChance = sm.critChance;
+
+		if (IsBelowHealthThreshold(sm.scissorsHealthPercent))
+			critChance += sm.scissorsCritChanceAddition;
+
+		if (canCrit && MyRandom.RollProbability(critChance))
 		{
 			sm.OnCrit(transform, myColl);
 			toTake *= sm.critDamage;
@@ -56,10 +60,12 @@ public class EnemyHealth : MonoBehaviour
 		if (currentHealth <= 0)
 		{
 			isDead = true;
-			if (!isBoss)
-				SpawnManager.instance.EnemyIsKilled(transform);
 
-			if (UpgradesManager.instance)
+			if (!isBoss)
+			{
+				SpawnManager.instance.EnemyIsKilled(transform);
+			}
+			sm.OnProjectileKillEnemy(transform);
 
 			onDeath.Invoke();
 		}
@@ -104,14 +110,9 @@ public class EnemyHealth : MonoBehaviour
 		SoundManager.instance.PlaySound((SoundManager.Sound)sound);
 	}
 
-	public void CreateShrapnel()
+	// Given a percentage, return whether or not this enemy's health is below that percentage
+	private bool IsBelowHealthThreshold(float percentage)
 	{
-		float startDangle = Random.Range(0f, 90f);
-		for (int i = 0; i < 4; i++)
-		{
-			float currDangle = startDangle + 90 * i;
-			GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectileNoCrit, transform.position, Quaternion.AngleAxis(currDangle, Vector3.forward));
-			proj.GetComponent<BasicProjectile>().SetProjectile(15, currDangle, ShootManager.instance.damage / 4, ShootManager.instance.pierceCount, 15f);
-		}
+		return currentHealth <= percentage * maxHealth;
 	}
 }

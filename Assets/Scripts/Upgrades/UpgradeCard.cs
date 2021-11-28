@@ -7,16 +7,9 @@ public class UpgradeCard : MonoBehaviour
 {
 	public Upgrade upgrade { get; set; }
 
-	private TextMeshPro upgradeName;
-	private SpriteRenderer upgradeSprite;
-	private TextMeshPro upgradeDescription;
-
-	private void Awake()
-	{
-		upgradeName = transform.GetChild(0).GetComponent<TextMeshPro>();
-		upgradeSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
-		upgradeDescription = transform.GetChild(2).GetComponent<TextMeshPro>();
-	}
+	[SerializeField] private TextMeshPro upgradeName;
+	[SerializeField] private SpriteRenderer upgradeSprite;
+	[SerializeField] private TextMeshPro upgradeDescription;
 
 	// Params: amount is the number of this upgrade the player currently has
 	public void SetCard(Upgrade upgrade, int amount)

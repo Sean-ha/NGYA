@@ -51,18 +51,15 @@ public class BasicProjectile : Projectile
 	/// Sets the projectile's fields and allows it to begin its travel
 	/// </summary>
 	/// <param name="angle">Angle in degrees</param>
-	public void SetProjectile(float speed, float angle, float damage, int numberOfTargets, float distance, bool enableOnHitEffects = true)
+	public void SetProjectile(float speed, float angle, float damage, int numberOfTargets, float distance, bool canCrit, bool enableOnHitEffects)
 	{
 		this.angle = Mathf.Deg2Rad * angle;
 		this.damage = damage;
 		this.numberOfTargets = numberOfTargets;
 		this.distance = distance;
+		this.canCrit = canCrit;
 		this.enableOnHitEffects = enableOnHitEffects;
 		startPosition = transform.position;
-
-		float firstDistance = distance - 1;
-		Vector2 firstDestination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * firstDistance);
-		float timeToReachFirstDistance = firstDistance / speed;
 
 		destination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * distance);
 		float timeToReachFinal = distance / speed;
@@ -98,7 +95,7 @@ public class BasicProjectile : Projectile
 				*/
 
 				if (enableOnHitEffects)
-					sm.OnProjectileHitEnemy(transform, collision.transform, collision);				
+					sm.OnMainProjectileHitEnemy(transform, collision.transform, collision);				
 
 				collision.GetComponent<EnemyHealth>().TakeDamage(adjustedDamage, canCrit: canCrit);
 

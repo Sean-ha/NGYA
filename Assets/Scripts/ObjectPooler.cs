@@ -40,11 +40,17 @@ public class ObjectPooler : MonoBehaviour
 		}
 	}
 
-	public GameObject Create(Tag tag, Vector3 position, Quaternion rotation)
+	// DEBUG: DELETE TESTVAL LATER, ONLY FOR DEBUGGING
+	public GameObject Create(Tag tag, Vector3 position, Quaternion rotation, bool TESTVAL = true)
 	{
 		// TODO: Remove
 #if UNITY_EDITOR
-		if (tag == Tag.ParticleHitEffects)
+		if (tag == Tag.PlayerProjectile)
+		{
+			if (TESTVAL)
+				Debug.LogError("ERROR: DON'T CREATE PLAYER PROJECTILE FROM HERE!!!");
+		}
+		else if (tag == Tag.ParticleHitEffects)
 		{
 			Debug.LogError("ERROR: DON'T CREATE PARTICLE HIT EFFECTS FROM HERE!!!");
 		}
@@ -67,6 +73,15 @@ public class ObjectPooler : MonoBehaviour
 		poolDictionary[tag].Enqueue(objectToSpawn);
 
 		return objectToSpawn;
+	}
+
+	public GameObject CreatePlayerProjectile(Vector3 position, float dAngle, float shotSpeed, float damage, 
+		int numberOfTargets, float distance, bool canCrit, bool applyOnHitEffects)
+	{
+		GameObject proj = Create(Tag.PlayerProjectile, position, Quaternion.AngleAxis(dAngle, Vector3.forward), TESTVAL: false);
+		proj.GetComponent<BasicProjectile>().SetProjectile(shotSpeed, dAngle, damage, numberOfTargets, distance, canCrit, applyOnHitEffects);
+
+		return proj;
 	}
 
 	public GameObject CreateHitParticles(Color color, Vector3 position)
@@ -152,15 +167,31 @@ public class ObjectPooler : MonoBehaviour
 	}
 
 	// startDirection = bullet's default starting velocity. timeToActivate = time until bullet's homing capabilites are enabled
-	public GameObject CreateHomingProjectile(Vector2 position, Quaternion rotation, float damage, bool canCrit, Vector2 startDirection, float timeToActivate)
+	// Banana parameter: false for regular bullet, true for banana bullet
+	public GameObject CreateHomingProjectile(Vector2 position, Quaternion rotation, float damage, bool canCrit, Vector2 startDirection, float speed = 12f, 
+		float timeToActivate = 0.07f, bool banana = false)
 	{
-		GameObject proj = Create(Tag.HomingProjectile, position, rotation);
+		GameObject proj;
+		if (banana)
+			proj = Create(Tag.BananaProjectile, position, rotation);
+		else
+			proj = Create(Tag.HomingProjectile, position, rotation);
 
 		CollideWithEnemy collider = proj.GetComponent<CollideWithEnemy>();
 		collider.damage = damage;
 		collider.canCrit = canCrit;
-		proj.GetComponent<HomingProjectile>().ActivateBullet(startDirection, timeToActivate);
+		proj.GetComponent<HomingProjectile>().ActivateBullet(startDirection, timeToActivate, speed);
 
 		return proj;
+	}
+
+	public GameObject CreateElectricity(Vector2 start, Vector2 end, float time = 0.2f, float startWidth = 0.5f)
+	{
+		GameObject electricity = Create(Tag.Electricity, Vector3.zero, Quaternion.identity);
+		ElectricityEffect effect = electricity.GetComponent<ElectricityEffect>();
+
+		effect.CreateElectricEffect(start, end, time: time, startWidth: startWidth);
+
+		return electricity;
 	}
 }

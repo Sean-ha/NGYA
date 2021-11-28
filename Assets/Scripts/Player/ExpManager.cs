@@ -79,6 +79,6 @@ public class ExpManager : MonoBehaviour
 
 	private int GetEXPToLevelUp()
 	{
-		return 10 + 20 * level;
+		return 5 + 15 * level;
 	}
 }

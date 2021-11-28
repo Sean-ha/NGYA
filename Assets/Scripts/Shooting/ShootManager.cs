@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 using NaughtyAttributes;
+using System;
+using Random = UnityEngine.Random;
 
 public class ShootManager : MonoBehaviour
 {
@@ -29,7 +31,7 @@ public class ShootManager : MonoBehaviour
 		set { shootCooldown = Mathf.Max(0.05f, value); }
 	}
 
-	public float critChance { get; set; } = .6f;
+	public float critChance { get; set; } = .05f;
 	// Percentage damage increase. E.g. 0.5 means crits deal 50% more damage, or 1.5x dmg
 	public float critDamage { get; set; } = 0.5f;
 
@@ -37,6 +39,8 @@ public class ShootManager : MonoBehaviour
 
 	// Parameters: damage, distance, pierce
 	public UnityEvent<float, float, int> onShoot { get; set; } = new UnityEvent<float, float, int>();
+
+	private PlayerController pc;
 
 	private void Awake()
 	{
@@ -47,6 +51,11 @@ public class ShootManager : MonoBehaviour
 			if (currShooter != null)
 				onShoot.AddListener(currShooter.Shoot);
 		}
+	}
+
+	private void Start()
+	{
+		pc = PlayerController.instance;
 	}
 
 	private void Update()
@@ -69,21 +78,35 @@ public class ShootManager : MonoBehaviour
 	// Note: DM stands for "Damage Multiplier" :)
 	#region UPGRADE_VARS
 	// UPGRADE VARIABLES
-	[HideInInspector] public float tendrilChance;
-	[HideInInspector] public float tendrilDM;
+	[NonSerialized] public float tendrilChance;
+	[NonSerialized] public float tendrilDM;
 
-	[HideInInspector] public float bustedToasterChance;
-	[HideInInspector] public float bustedToasterDM;
+	[NonSerialized] public float bustedToasterChance;
+	[NonSerialized] public float bustedToasterDM;
 	public GameObject bustedToasterExplosion;
 
+	[NonSerialized] public float sinisterCharmChance;
+	[NonSerialized] public float sinisterCharmDM;
+	public GameObject sinisterCharmProjectile;
+
+	[NonSerialized] public float bananaChance;
+	[NonSerialized] public float bananaDM;
+
+	[NonSerialized] public float scissorsHealthPercent;
+	[NonSerialized] public float scissorsCritChanceAddition = 0.5f;
+
+	[NonSerialized] public float cloakedDaggerDM;
+
+	[NonSerialized] public float voltHammerChance;
+	[NonSerialized] public float voltHammerDM;
 	#endregion
 
-	// Call whenever a projectile hits an enemy to invoke on hit effects
-	public void OnProjectileHitEnemy(Transform projectile, Transform enemy, Collider2D collider)
+	// Call whenever a main player projectile (DIRECTLY shot by player) hits an enemy to invoke on hit effects
+	public void OnMainProjectileHitEnemy(Transform projectile, Transform enemy, Collider2D collider)
 	{
 		if (MyRandom.RollProbability(tendrilChance))
 		{
-			ObjectPooler.instance.CreateTendril(PlayerController.instance.transform.position, enemy.position);
+			ObjectPooler.instance.CreateTendril(pc.transform.position, enemy.position);
 			enemy.GetComponent<EnemyHealth>().TakeDamage(damage * tendrilDM);
 		}
 		if (MyRandom.RollProbability(bustedToasterChance))
@@ -92,13 +115,76 @@ public class ShootManager : MonoBehaviour
 			expl.GetComponent<BustedToasterExplosion>().ActivateExplosion(damage * bustedToasterDM);
 			// TODO: SFX here
 		}
-		
-		
+		if (MyRandom.RollProbability(sinisterCharmChance))
+		{
+			Vector2 pos = pc.GetRandomNearbyPosition(minDistance: 1.6f, maxDistance: 3f);
+			GameObject charmStarter = Instantiate(sinisterCharmProjectile, pc.transform.position, Quaternion.identity);
+
+			Sequence seq = DOTween.Sequence();
+			seq.Append(charmStarter.transform.DOMove(pos, Random.Range(.6f, .8f)).SetEase(Ease.OutExpo));
+			seq.AppendInterval(0.1f);
+			seq.AppendCallback(() =>
+			{
+				Destroy(charmStarter);
+				Vector2 target = SpawnManager.instance.GetRandomEnemy().position;
+				if (target == null) return;
+
+				float dAngle = HelperFunctions.GetDAngleTowards(pos, target);
+				ObjectPooler.instance.CreatePlayerProjectile(pos, dAngle, 20f, damage * sinisterCharmDM,
+					1, 40f, true, true);
+			});
+
+			seq.Play();
+		}
+		if (MyRandom.RollProbability(bananaChance))
+		{
+			Vector2 direction = pc.transform.position - enemy.position;
+			Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
+			ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage * bananaDM, true,
+			randomDir, banana: true);
+		}
+		if (MyRandom.RollProbability(voltHammerChance))
+		{
+			HashSet<Transform> targets = SpawnManager.instance.GetRandomEnemies(15);
+
+			// If targets.Count is 1, then the hit enemy is the only one alive. No electricity is activated
+			CameraShake.instance.ShakeCamera(0.3f, 0.4f);
+			Transform curr = enemy;
+			foreach (Transform target in targets)
+			{
+				ObjectPooler.instance.CreateElectricity(curr.position, target.position);
+				curr = target;
+				target.GetComponent<EnemyHealth>().TakeDamage(damage * voltHammerDM, true);
+			}
+		}
+	}
+
+	// NOTE: ShotCount means the number of shots for this upgrade to activate
+	[NonSerialized] public int jumboGeorgeShotCount = 10;
+	private int jumboGeorgeShotCountCurr;
+	[NonSerialized] public float jumboGeorgeDM = 1f;
+	public GameObject jumboGeorgeProjectile;
+
+	// Call whenever you shoot. Angle is towards mouse. Source is position of DotShooter
+	public void OnShoot(float dangle, Vector2 source)
+	{
+		jumboGeorgeShotCountCurr++;
+
+		if (jumboGeorgeShotCountCurr == jumboGeorgeShotCount && jumboGeorgeShotCount != 0)
+		{
+			GameObject proj = Instantiate(jumboGeorgeProjectile, source, Quaternion.identity);
+			proj.GetComponent<JumboGeorgeProjectile>().SetProjectile(8f, dangle, damage * jumboGeorgeDM, 12f, true, false);
+			// Create jumbo george projectile here
+			jumboGeorgeShotCountCurr = 0;
+		}
 	}
 
 
-	[HideInInspector] public float vultureClawChance;
-	[HideInInspector] public int vultureClawAmount;
+	[NonSerialized] public float vultureClawChance;
+	[NonSerialized] public int vultureClawAmount;
+
+	[NonSerialized] public int starFragmentCount = 0;
+	[NonSerialized] public float starFragmentDM = 0.65f;
 
 	// Call whenever an enemy dies to invoke on death effects
 	public void OnProjectileKillEnemy(Transform enemy)
@@ -106,6 +192,17 @@ public class ShootManager : MonoBehaviour
 		if (MyRandom.RollProbability(vultureClawChance))
 		{
 			AmmoSystem.instance.RegenerateBullet(vultureClawAmount);
+		}
+		if (starFragmentCount > 0)
+		{
+			float startDangle = Random.Range(0f, 90f);
+			float angleDiff = 360f / starFragmentCount;
+			for (int i = 0; i < starFragmentCount; i++)
+			{
+				float currDangle = startDangle + angleDiff * i;
+				ObjectPooler.instance.CreatePlayerProjectile(enemy.position, currDangle, HelperFunctions.shotSpeed,
+					damage * starFragmentDM, pierceCount, bulletDistance, true, false);
+			}
 		}
 	}
 
@@ -115,10 +212,11 @@ public class ShootManager : MonoBehaviour
 		// TODO: Crit fx
 		Vector2 topOfEnemy = (Vector2)collider.bounds.center + new Vector2(0, collider.bounds.extents.y + 0.35f);
 		ObjectPooler.instance.Create(Tag.CritText, topOfEnemy, Quaternion.identity);
+		ObjectPooler.instance.CreateHitParticles(GameAssets.instance.blueColor, enemy.position);
 	}
 
-	[HideInInspector] public int lastRegardsBulletCount;
-	[HideInInspector] public float lastRegardsDM;
+	[NonSerialized] public int lastRegardsBulletCount;
+	[NonSerialized] public float lastRegardsDM;
 
 	// 2 arguments: player transform and the transform of the thing that hit you. Can be an enemy or a projectile or whatever
 	public void OnTakeDamage(Transform player, Transform enemy)
@@ -138,8 +236,8 @@ public class ShootManager : MonoBehaviour
 		for (int i = 0; i < lastRegardsBulletCount; i++)
 		{
 			Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
-			ObjectPooler.instance.CreateHomingProjectile(PlayerController.instance.transform.position, Quaternion.identity, damage, true,
-			randomDir, 0.02f);
+			ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage, true,
+			randomDir);
 			yield return new WaitForSeconds(Random.Range(0.04f, 0.1f) / lastRegardsUpgradeCount);
 		}
 	}

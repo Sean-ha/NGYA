@@ -82,8 +82,9 @@ public class CameraShake : MonoBehaviour
 		currentDuration = duration;
 
 		StopAllCoroutines();
-		cam.position = defaultPos; //Reset to original postion
-		cam.rotation = defaultRot; //Reset to original rotation
+
+		// cam.position = defaultPos; //Reset to original postion
+		// cam.rotation = defaultRot; //Reset to original rotation
 
 		shakeCR = StartCoroutine(ShakeDirectional(duration, -angle, magnitude));
 	}
@@ -95,7 +96,7 @@ public class CameraShake : MonoBehaviour
 		//Angle Rotation
 		const float angleRot = 0.05f;
 
-		float decreasePoint = currentDuration / 2;
+		float decreasePoint = 0;
 
 		isShaking = true;
 		//Do the actual shaking
@@ -116,19 +117,19 @@ public class CameraShake : MonoBehaviour
 			cam.rotation = defaultRot * Quaternion.AngleAxis(Random.Range(-angleRot, angleRot), new Vector3(0f, 0f, 1f));
 			yield return null;
 
-			//Check if we have reached the decreasePoint then start decreasing  decreaseSpeed value
+			//Check if we have reached the decreasePoint then start decreasing decreaseSpeed value
 			if (counter >= decreasePoint)
 			{
 				//Reset counter to 0 
 				counter = 0f;
-				while (counter <= decreasePoint)
+				while (counter <= currentDuration - decreasePoint)
 				{
 					while (TimeManager.IsPaused)
 						yield return null;
 
 					counter += Time.deltaTime;
-					decreaseSpeed = Mathf.Lerp(currentMagnitude, 0, counter / decreasePoint);
-					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / decreasePoint);
+					decreaseSpeed = Mathf.Lerp(currentMagnitude, 0, counter / (currentDuration - decreasePoint));
+					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / (currentDuration - decreasePoint));
 
 					// Shake camera
 					tempPos = defaultPos + Random.insideUnitSphere * decreaseSpeed;

@@ -11,6 +11,9 @@ public class SpawnManager : MonoBehaviour
 	public static SpawnManager instance;
 
 	// Debug purposes only, REMOVE
+	public bool endlessSpawn;
+	[EnableIf("endlessSpawn")]
+	public GameObject endlessSpawnObj;
 	public bool enableSpawn;
 	public int currStageDebug;
 
@@ -33,6 +36,8 @@ public class SpawnManager : MonoBehaviour
 
 	private Coroutine currentWaitingToSpawnCR;
 
+	// Set containing enemies that are currently alive and enabled.
+	// IMPORTANT NOTE: Contains the Transform of the EnemyHealth component of each enemy, NOT THE OUTERMOST PARENT!
 	public HashSet<Transform> enemySet { get; set; } = new HashSet<Transform>();
 
 	private void Awake()
@@ -45,6 +50,67 @@ public class SpawnManager : MonoBehaviour
 		currentStage = currStageDebug;
 		if (enableSpawn)
 			StartCoroutine(StartCurrentStage());
+		else if (endlessSpawn)
+			StartCoroutine(EndlessMode());
+
+#if UNITY_EDITOR
+		// Test for nulls in enemySet. Only for testing purposes; only in editor
+		InvokeRepeating(nameof(TestNulls), 1f, 1f);
+#endif
+	}
+
+	// DEBUG: remove in final version
+	private IEnumerator EndlessMode()
+	{
+		while (true)
+		{
+			List<GameObject> spawns = new List<GameObject>();
+			spawns.Add(endlessSpawnObj);
+			spawns.Add(endlessSpawnObj);
+			spawns.Add(endlessSpawnObj);
+			spawns.Add(endlessSpawnObj);
+			spawns.Add(endlessSpawnObj);
+
+			List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, spawns.Count);
+
+			for (int i = 0; i < spawns.Count; i++)
+			{
+				Vector2 pos = positions[i] + (Vector2)bottomLeft.position;
+
+				List<Transform> enemies = CreateSpawn(spawns[i], pos);
+
+				GameObject exclaPoint = Instantiate(exclamationPoint, pos, Quaternion.identity);
+				RectTransform epRt = exclaPoint.GetComponent<RectTransform>();
+
+				epRt.localScale = new Vector3(1.75f, 1.75f, 1);
+				epRt.DOScale(new Vector3(0.75f, 0.75f, 1), 0.2f).SetEase(Ease.OutCubic).onComplete += () =>
+				{
+					epRt.DOScale(new Vector3(1, 1, 1), 0.15f).SetEase(Ease.OutCubic).onComplete += () => Destroy(exclaPoint, 1.15f);
+				};
+
+				// Circle bar behavior
+				SoundManager.instance.PlaySound(SoundManager.Sound.AlertLow, false);
+				GameObject circleBar = Instantiate(circularProgressBar, pos, Quaternion.identity, worldCanvas);
+				CircleProgressBar circleBarComponent = circleBar.GetComponent<CircleProgressBar>();
+
+				circleBarComponent.SetColor(Color.red);
+
+				circleBarComponent.BeginBar(1.5f, () =>
+				{
+					SoundManager.instance.PlaySound(SoundManager.Sound.EnemySpawn, false);
+					foreach (Transform enemy in enemies)
+					{
+						enemy.gameObject.SetActive(true);
+						ObjectPooler.instance.CreateHitParticles(Color.red, enemy.position);
+						ObjectPooler.instance.CreateCircleHitEffect(Color.red, enemy.position, 1.5f);
+
+						enemySet.Add(enemy.GetComponentInChildren<EnemyHealth>().transform);
+					}
+				});
+			}
+
+			yield return new WaitForSeconds(1.5f);
+		}
 	}
 
 	private IEnumerator StartCurrentStage()
@@ -145,7 +211,8 @@ public class SpawnManager : MonoBehaviour
 					enemy.gameObject.SetActive(true);
 					ObjectPooler.instance.CreateHitParticles(Color.red, enemy.position);
 					ObjectPooler.instance.CreateCircleHitEffect(Color.red, enemy.position, 1.5f);
-					enemySet.Add(enemy);
+
+					enemySet.Add(enemy.GetComponentInChildren<EnemyHealth>().transform);
 				}
 			});
 		}
@@ -218,6 +285,36 @@ public class SpawnManager : MonoBehaviour
 
 		int index = Random.Range(0, enemySet.Count);
 		return enemySet.ElementAt(index);
+	}
+
+	// Gets n random enemies
+	public HashSet<Transform> GetRandomEnemies(int amount)
+	{
+		int numberToReturn = Mathf.Min(amount, enemySet.Count);
+
+		List<int> indices = MyRandom.GenerateRandomValues(numberToReturn, 0, enemySet.Count);
+		List<Transform> enemyList = enemySet.ToList();
+		HashSet<Transform> selected = new HashSet<Transform>();
+
+		for (int i = 0; i < indices.Count; i++)
+		{
+			selected.Add(enemyList[indices[i]]);
+		}
+		return selected;
+	}
+
+	private void TestNulls()
+	{
+		int i = 0;
+		foreach (Transform t in enemySet)
+		{
+			if (t == null)
+				i++;
+		}
+		if (i != 0)
+		{
+			throw new System.Exception(i + " NULLS FOUND IN enemySet in SpawnManager!! (Should be 0)");
+		}
 	}
 }
 

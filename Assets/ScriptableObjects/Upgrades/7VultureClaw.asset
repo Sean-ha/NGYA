@@ -17,5 +17,5 @@ MonoBehaviour:
   upgradeSprite: {fileID: 21300000, guid: 578e7cb95b5fbb9488db982f08db7a6f, type: 3}
   rarity: 0
   upgradeDescriptionFirst: chance to get ammo on enemy kill
-  upgradeDescriptionSecond: increase chance and amount of ammo
+  upgradeDescriptionSecond: increase chance and amount of ammo restored
   maxCount: 6

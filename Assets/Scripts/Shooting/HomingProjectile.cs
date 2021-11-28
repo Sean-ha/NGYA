@@ -9,7 +9,7 @@ public class HomingProjectile : MonoBehaviour
    private Transform target;
 
    private float speed;
-   private float rotateSpeed = 300;
+   private float rotateSpeed = 350;
 
    private float horizontal;
    private float vertical;
@@ -33,7 +33,7 @@ public class HomingProjectile : MonoBehaviour
 
 	private void OnEnable()
    {
-      speed = 14;
+      speed = 12;
       time = 0;
       canHitWalls = false;
 
@@ -81,8 +81,9 @@ public class HomingProjectile : MonoBehaviour
    */
 
    // Call this to disable the bullet and have it travel in a given direction for 'time' seconds, and then reactivate.
-   public void ActivateBullet(Vector2 direction, float timeToEnable)
+   public void ActivateBullet(Vector2 direction, float timeToEnable, float speed)
 	{
+      this.speed = speed;
       active = false;
       horizontal = direction.x;
       vertical = direction.y;
@@ -104,7 +105,7 @@ public class HomingProjectile : MonoBehaviour
 				{
                target = SpawnManager.instance.GetRandomEnemy();
                rb.angularVelocity = 0;
-               yield return new WaitForSeconds(0.1f);
+               yield return null;
 				}
             else
 				{

@@ -66,6 +66,33 @@ public class UpgradesManager : MonoBehaviour
 				rareUpgrades.Add(upgrade);
 			obtainedUpgrades.Add(upgrade, 0);
 		}
+
+		/*
+		GainUpgradeEffect(Upgrade.VoltHammer);
+		GainUpgradeEffect(Upgrade.VoltHammer);
+		GainUpgradeEffect(Upgrade.VoltHammer);
+		GainUpgradeEffect(Upgrade.GentleQuill);
+		GainUpgradeEffect(Upgrade.FlimsyString);
+		GainUpgradeEffect(Upgrade.FlimsyString);
+		GainUpgradeEffect(Upgrade.FlimsyString);
+		GainUpgradeEffect(Upgrade.FlimsyString);
+		GainUpgradeEffect(Upgrade.FlimsyString);
+		GainUpgradeEffect(Upgrade.FingerlessGloves);
+		GainUpgradeEffect(Upgrade.FingerlessGloves);
+		GainUpgradeEffect(Upgrade.FingerlessGloves);
+		GainUpgradeEffect(Upgrade.FingerlessGloves);
+		GainUpgradeEffect(Upgrade.SquigglyHead);
+		GainUpgradeEffect(Upgrade.SquigglyHead);
+		GainUpgradeEffect(Upgrade.SquigglyHead);
+		GainUpgradeEffect(Upgrade.SquigglyHead);
+		GainUpgradeEffect(Upgrade.SinisterCharm);
+		GainUpgradeEffect(Upgrade.SinisterCharm);
+		GainUpgradeEffect(Upgrade.SinisterCharm);
+		GainUpgradeEffect(Upgrade.SinisterCharm);
+		GainUpgradeEffect(Upgrade.DeadlyBananas);
+		GainUpgradeEffect(Upgrade.DeadlyBananas);
+		GainUpgradeEffect(Upgrade.DeadlyBananas);
+		*/
 	}
 
 	private void Update()
@@ -98,7 +125,7 @@ public class UpgradesManager : MonoBehaviour
 
 						SoundManager.instance.PlaySound(SoundManager.Sound.Blip, false);
 						previousHoverCardIndex = currIndex;
-						hitInfo.transform.DOLocalMoveY(-0.25f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+						hitInfo.transform.GetChild(0).DOLocalMoveY(0.5f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 					}
 
 					if (Input.GetMouseButtonDown(0))
@@ -140,7 +167,7 @@ public class UpgradesManager : MonoBehaviour
 		if (previousHoverCardIndex != -1)
 		{
 			upgradeCards[previousHoverCardIndex].DOKill();
-			upgradeCards[previousHoverCardIndex].DOLocalMoveY(-1f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+			upgradeCards[previousHoverCardIndex].GetChild(0).DOLocalMoveY(0f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 			previousHoverCardIndex = -1;
 		}
 	}
@@ -345,39 +372,62 @@ public class UpgradesManager : MonoBehaviour
 				ShootManager.instance.lastRegardsDM = 1f;
 				break;
 
-				/*
 			case Upgrade.CannedSoup:
-				PlayerController.instance.moveSpeed += 1;
+				PlayerController.instance.moveSpeed += 1.5f;
 				break;
 
 			case Upgrade.SquigglyHead:
 				if (upgradeCount == 1)
 				{
-					ShootManager.instance.tendrilDM = 0.6f;
+					ShootManager.instance.tendrilDM = 0.7f;
 					ShootManager.instance.tendrilChance = 0.3f;
 				}
 				else
 				{
-					ShootManager.instance.tendrilDM += 0.15f;
-					ShootManager.instance.tendrilChance += 0.05f;
+					ShootManager.instance.tendrilDM += 0.2f;
+					ShootManager.instance.tendrilChance += 0.12f;
 				}
 				break;
 
-			case Upgrade.TatteredCharm:
+			case Upgrade.SinisterCharm:
+				ShootManager.instance.sinisterCharmDM = 0.5f;
+				ShootManager.instance.sinisterCharmChance += 0.12f;
 				break;
 
-			case Upgrade.DumbBigAxe:
+			case Upgrade.DeadlyBananas:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.bananaChance = 0.3f;
+					ShootManager.instance.bananaDM = 1f;
+				}
+				else
+				{
+					ShootManager.instance.bananaChance += 0.15f;
+					ShootManager.instance.bananaDM += 0.2f;
+				}
+				break;
+
+			
+			case Upgrade.Scissors:
+				if (upgradeCount == 1)
+					ShootManager.instance.scissorsHealthPercent = 0.15f;
+				else
+					ShootManager.instance.scissorsHealthPercent += 0.05f;
 				break;
 
 			case Upgrade.CloakedDagger:
+				ShootManager.instance.cloakedDaggerDM += 0.5f;
 				break;
 
-			case Upgrade.D20:
+			case Upgrade.D6:
+				ShootManager.instance.critChance += 0.1f;
 				break;
 
 			case Upgrade.Thumbtack:
+				ShootManager.instance.critDamage += 0.2f;
 				break;
 
+			/*
 			case Upgrade.SwirlyStraw:
 				break;
 
@@ -387,6 +437,31 @@ public class UpgradesManager : MonoBehaviour
 			case Upgrade.PotLid:
 				break;
 				*/
+
+			case Upgrade.StarFragment:
+				ShootManager.instance.starFragmentCount += 1;
+				break;
+
+			case Upgrade.GentleQuill:
+				ShootManager.instance.pierceCount += 1;
+				break;
+
+			case Upgrade.VoltHammer:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.voltHammerChance = 0.1f;
+					ShootManager.instance.voltHammerDM = 1.5f;
+				}
+				else
+				{
+					ShootManager.instance.voltHammerChance += 0.07f;
+					ShootManager.instance.voltHammerDM += 0.2f;
+				}
+				break;
+
+			case Upgrade.JumboGeorge:
+
+				break;
 		}
 	}
 

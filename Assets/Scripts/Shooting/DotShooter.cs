@@ -5,8 +5,6 @@ using DG.Tweening;
 
 public class DotShooter : Shooter
 {
-	public float shotSpeed;
-
 	private Tween scaleDownTween;
 
 	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
@@ -22,8 +20,10 @@ public class DotShooter : Shooter
 
 		SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);
 
-		// Get angle between player and mouse location
-		float angle = GetAngle();
+		// Get angle (degrees) between player and mouse location
+		float dangle = GetAngle();
+
+		ShootManager.instance.OnShoot(dangle, transform.position);
 
 		// Tweening dot
 		scaleDownTween.Complete();
@@ -31,12 +31,12 @@ public class DotShooter : Shooter
 		transform.localScale = new Vector3(currentSize + 0.4f, currentSize + 0.4f, 1);
 		scaleDownTween = transform.DOScale(new Vector3(currentSize, currentSize, 1), 0.1f);
 
-		GameObject proj = ObjectPooler.instance.Create(Tag.PlayerProjectile, transform.position, Quaternion.AngleAxis(angle, Vector3.forward));
-		proj.GetComponent<BasicProjectile>().SetProjectile(shotSpeed, angle, damage, numberOfTargets, bulletDistance);
+		ObjectPooler.instance.CreatePlayerProjectile(transform.position, dangle, HelperFunctions.shotSpeed, damage, 
+			numberOfTargets, bulletDistance, true, true);
 
 		// Ammo shell
 		GameObject shell = ObjectPooler.instance.Create(Tag.AmmoShell, transform.position, Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward));
-		float shellAngle = angle + Random.Range(80, 130f);
+		float shellAngle = dangle + Random.Range(80, 130f);
 		float shellForce = Random.Range(1.4f, 2f);
 		float shellTime = Random.Range(0.4f, 0.6f);
 		float shellSpinTime = shellTime + Random.Range(0.15f, 0.3f);

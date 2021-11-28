@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2258317027a79748bf77a1eb3a4b762, type: 3}
+  m_Name: 11SquigglyHead
+  m_EditorClassIdentifier: 
+  upgradeType: 11
+  upgradeName: squiggly head
+  upgradeSprite: {fileID: 21300000, guid: 6111a5c67ecad6748ac85bbed933cda7, type: 3}
+  rarity: 0
+  upgradeDescriptionFirst: chance to create tendrils when hitting enemies
+  upgradeDescriptionSecond: increase tendril chance and damage
+  maxCount: 5
