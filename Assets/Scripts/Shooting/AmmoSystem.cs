@@ -150,10 +150,27 @@ public class AmmoSystem : MonoBehaviour
 		ammoStack.Push(bulletUI);
 	}
 
+	// Only regenerates a bullet if it is possible. Returns whether or not it was successful
+	private bool TryRegenerateBullet()
+	{
+		if (currentAmmo < maxAmmo)
+		{
+			RegenerateBullet();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	public void RegenerateBullet(int amount)
 	{
 		for (int i = 0; i < amount; i++)
-			RegenerateBullet();
+		{
+			if (!TryRegenerateBullet())
+				break;
+		}
 	}
 
 	private void CalculateAmmoRegenRate()

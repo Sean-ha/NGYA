@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 	private HealthSystem healthSystem;
 	private Rigidbody2D rb;
 	private SpriteRenderer sr;
+	private Collider2D coll;
 
 	private float horizontal;
 	private float vertical;
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
 	private Collider2D[] expShells = new Collider2D[10];
 	private int expShellLayer;
 
-	private GameObject levelUpSquare, levelUpParticles;
+	private GameObject levelUpSquare, levelUpParticles, levelUpParticles2;
 
 	// Time it takes for stand still effects to take effect.
 	private float standStillDuration = 1.5f;
@@ -60,17 +61,26 @@ public class PlayerController : MonoBehaviour
 
 		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
+		coll = GetComponent<Collider2D>();
 
 		expShellLayer = LayerMask.GetMask("Exp");
 
 		levelUpSquare = transform.GetChild(0).gameObject;
 		levelUpParticles = transform.GetChild(1).gameObject;
+		levelUpParticles2 = transform.GetChild(2).gameObject;
 	}
 
 	private void Start()
 	{
 		healthSystem = HealthSystem.instance;
 		sm = ShootManager.instance;
+		StartCoroutine(LevelUpAuto());
+	}
+
+	IEnumerator LevelUpAuto()
+	{
+		yield return new WaitForSeconds(0.1f);
+		LevelUp();
 	}
 
 	private void Update()
@@ -96,6 +106,7 @@ public class PlayerController : MonoBehaviour
 			CancelStandStill();
 		}
 
+#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
 			Time.timeScale = 5;
@@ -104,6 +115,11 @@ public class PlayerController : MonoBehaviour
 		{
 			Time.timeScale = 1;
 		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			LevelUp();
+		}
+#endif
 
 		CheckForExp();
 	}
@@ -167,6 +183,20 @@ public class PlayerController : MonoBehaviour
 				// Actually take damage here
 
 				float toTake = collision.GetComponent<Damager>().damage;
+				// Check dodge
+				if (healthSystem.TryDodge())
+				{
+					currentInvincibility = invincibilityDuration * 0.33f;
+					return;
+				}
+				// Check royal shield
+				if (defenderShield.TryBreakShield())
+				{
+					TakeDamageEffects();
+					currentInvincibility = invincibilityDuration;
+					return;
+				}
+
 				healthSystem.TakeDamage(toTake);
 				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
 				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
@@ -269,6 +299,7 @@ public class PlayerController : MonoBehaviour
 
 		levelUpSquare.SetActive(true);
 		levelUpParticles.SetActive(true);
+		levelUpParticles2.SetActive(true);
 		Instantiate(levelUpText, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
 		SoundManager.instance.PlaySound(SoundManager.Sound.LevelUp);
 
@@ -283,5 +314,11 @@ public class PlayerController : MonoBehaviour
 	public Vector2 GetRandomNearbyPosition(float minDistance = 0.8f, float maxDistance = 2f)
 	{
 		return HelperFunctions.RandomPointInAnnulusWithinGameBounds(transform.position, minDistance, maxDistance);
+	}
+
+	public Vector2 GetPositionAbove()
+	{
+		Vector2 topOfPlayer = (Vector2)coll.bounds.center + new Vector2(0, coll.bounds.extents.y + 0.35f);
+		return topOfPlayer;
 	}
 }

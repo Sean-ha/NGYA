@@ -136,8 +136,8 @@ public class GiantCircleBoss : MonoBehaviour
 		{
 			float thisDangle = currDangle + addValue * i;
 			Vector2 pos = GetBulletSourcePosition(thisDangle * Mathf.Deg2Rad);
-			GameObject proj = ObjectPooler.instance.Create(Tag.LaserProjectile, pos, Quaternion.AngleAxis(thisDangle, Vector3.forward));
-			EnemyProjectile projComp = proj.GetComponent<EnemyLaserProjectile>();
+			GameObject proj = ObjectPooler.instance.Create(Tag.EnemyLaserProjectile, pos, Quaternion.AngleAxis(thisDangle, Vector3.forward));
+			EnemyProjectile projComp = proj.GetComponent<LaserProjectile>();
 			projComp.SetProjectile(0, thisDangle, phase1LaserDamage, 30f);
 		}
 	}

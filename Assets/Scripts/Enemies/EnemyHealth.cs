@@ -37,6 +37,7 @@ public class EnemyHealth : MonoBehaviour
 
 	public void TakeDamage(float toTake, bool canCrit = false)
 	{
+		// Modify damage to take based on upgrades and such things
 		if (isDead)
 			return;
 
@@ -48,14 +49,25 @@ public class EnemyHealth : MonoBehaviour
 		if (IsBelowHealthThreshold(sm.scissorsHealthPercent))
 			critChance += sm.scissorsCritChanceAddition;
 
+		Color damageTextColor = Color.white;
 		if (canCrit && MyRandom.RollProbability(critChance))
 		{
 			sm.OnCrit(transform, myColl);
-			toTake *= sm.critDamage;
+			toTake = toTake + (toTake * sm.critDamage);
+			damageTextColor = GameAssets.instance.critColor;
+			ObjectPooler.instance.CreateHitParticles(GameAssets.instance.critColor, transform.position);
 		}
 
+		toTake *= sm.damageMultiplier;
+
+		// Actually take the damage here
 		currentHealth -= toTake;
 		onHit.Invoke();
+
+		// Create damage number text
+		Vector2 topOfEnemy = GetTopOfEnemy();
+		string damageAmount = Mathf.RoundToInt(toTake * 10f).ToString();
+		ObjectPooler.instance.CreateTextObject(topOfEnemy, Quaternion.identity, damageTextColor, 6.5f, damageAmount);		
 
 		if (currentHealth <= 0)
 		{
@@ -69,6 +81,11 @@ public class EnemyHealth : MonoBehaviour
 
 			onDeath.Invoke();
 		}
+	}
+
+	public Vector2 GetTopOfEnemy()
+	{
+		return (Vector2)myColl.bounds.center + new Vector2(0, myColl.bounds.extents.y + 0.35f);
 	}
 
 	public void DestroySelf()

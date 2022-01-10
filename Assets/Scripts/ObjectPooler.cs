@@ -124,9 +124,20 @@ public class ObjectPooler : MonoBehaviour
 		return objectToSpawn;
 	}
 
-	public GameObject CreateTextObject(Vector3 position, Quaternion rotation, Color color, float fontSize, string text)
+	public GameObject CreateUITextObject(Vector3 position, Quaternion rotation, Color color, float fontSize, string text)
 	{
 		GameObject created = Create(Tag.TextObject, position, rotation);
+		TextMeshPro textMesh = created.GetComponent<TextMeshPro>();
+		textMesh.color = color;
+		textMesh.fontSize = fontSize;
+		textMesh.text = text;
+
+		return created;
+	}
+
+	public GameObject CreateTextObject(Vector3 position, Quaternion rotation, Color color, float fontSize, string text)
+	{
+		GameObject created = Create(Tag.GameTextObject, position, rotation);
 		TextMeshPro textMesh = created.GetComponent<TextMeshPro>();
 		textMesh.color = color;
 		textMesh.fontSize = fontSize;
@@ -193,5 +204,23 @@ public class ObjectPooler : MonoBehaviour
 		effect.CreateElectricEffect(start, end, time: time, startWidth: startWidth);
 
 		return electricity;
+	}
+
+	// isPlayerProjectile: true if player projectile. False if enemy projectile
+	public GameObject CreatePlayerLaserProjectile(Vector2 position, Quaternion rotation, float damage, bool canCrit, bool onHitEffects, 
+		float circleSize = 1.75f, float beamSize = 0.5f)
+	{
+		GameObject laser = Create(Tag.PlayerLaserProjectile, position, rotation);
+
+		laser.GetComponent<LaserProjectile>().ActivateLaser(damage, canCrit, onHitEffects, circleEffectScale: circleSize, beamSize: beamSize);
+
+		return laser;
+	}
+
+	public GameObject CreateEnemyLaserProjectile()
+	{
+		// Do something here when if or when needed.
+		// Note: GetComponent<LaserProjectile().SetProjectile ...
+		return null;
 	}
 }

@@ -61,6 +61,15 @@ public class CameraShake : MonoBehaviour
 		StartCoroutine(ShakeInstance(duration, magnitude));
 	}
 
+	/// <summary>
+	/// Cannot be interrupted by anything!
+	/// </summary>
+	public void ShakeCameraRealtime(float duration, float magnitude)
+	{
+		// TODO: Fix this, it doesn't work as intended (doesn't shake during pause, only shakes after pause ends...)
+		StartCoroutine(ShakeInstanceRealtime(duration, magnitude));
+	}
+
 	public void CancelShake()
 	{
 		StopAllCoroutines();
@@ -190,6 +199,62 @@ public class CameraShake : MonoBehaviour
 						yield return null;
 
 					counter += Time.deltaTime;
+					decreaseSpeed = Mathf.Lerp(magnitude, 0, counter / decreasePoint);
+					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / decreasePoint);
+
+					// Shake camera
+					tempPos = defaultPos + Random.insideUnitSphere * decreaseSpeed;
+					tempPos.z = defaultPos.z;
+					cam.position = tempPos;
+
+					cam.rotation = defaultRot * Quaternion.AngleAxis(Random.Range(-decreaseAngle, decreaseAngle), new Vector3(0f, 0f, 1f));
+
+					yield return null;
+				}
+
+				//Break from the outer loop
+				break;
+			}
+		}
+		cam.position = defaultPos; //Reset to original postion
+		cam.rotation = defaultRot; //Reset to original rotation
+		isShaking = false;
+	}
+
+	// Same as ShakeInstance() but works when game is paused as well.
+	private IEnumerator ShakeInstanceRealtime(float duration, float magnitude)
+	{
+		float counter = 0f;
+
+		//Angle Rotation
+		const float angleRot = 0.05f;
+
+		float decreasePoint = duration / 2;
+
+		isShaking = true;
+		//Do the actual shaking
+		while (counter < duration)
+		{
+			counter += Time.unscaledDeltaTime;
+			float decreaseSpeed = magnitude;
+			float decreaseAngle = angleRot;
+
+			//Shake camera
+			Vector3 tempPos = defaultPos + Random.insideUnitSphere * decreaseSpeed * 0.5f;
+			tempPos.z = defaultPos.z;
+			cam.position = tempPos;
+
+			cam.rotation = defaultRot * Quaternion.AngleAxis(Random.Range(-angleRot, angleRot), new Vector3(0f, 0f, 1f));
+			yield return null;
+
+			//Check if we have reached the decreasePoint then start decreasing  decreaseSpeed value
+			if (counter >= decreasePoint)
+			{
+				//Reset counter to 0 
+				counter = 0f;
+				while (counter <= decreasePoint)
+				{
+					counter += Time.unscaledDeltaTime;
 					decreaseSpeed = Mathf.Lerp(magnitude, 0, counter / decreasePoint);
 					decreaseAngle = Mathf.Lerp(angleRot, 0, counter / decreasePoint);
 

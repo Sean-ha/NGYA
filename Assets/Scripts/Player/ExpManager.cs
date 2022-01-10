@@ -11,7 +11,7 @@ public class ExpManager : MonoBehaviour
 
 	private float expBarXScale;
 
-	private int level = 1;
+	public int level { get; set; } = 1; 
 	private int expToLevelUp;
 	private int currentExp;
 	// Amount of exp currently in the UI bar

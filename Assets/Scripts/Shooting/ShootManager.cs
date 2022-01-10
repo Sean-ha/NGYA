@@ -14,6 +14,7 @@ public class ShootManager : MonoBehaviour
 	public Transform dotHolder;
 
 	public float damage;
+	public float damageMultiplier = 1f;
 
 	public float bulletDistance = 6.5f;
 	public float BulletDistance 
@@ -41,6 +42,7 @@ public class ShootManager : MonoBehaviour
 	public UnityEvent<float, float, int> onShoot { get; set; } = new UnityEvent<float, float, int>();
 
 	private PlayerController pc;
+	private HealthSystem hs;
 
 	private void Awake()
 	{
@@ -56,6 +58,7 @@ public class ShootManager : MonoBehaviour
 	private void Start()
 	{
 		pc = PlayerController.instance;
+		hs = HealthSystem.instance;
 	}
 
 	private void Update()
@@ -87,7 +90,7 @@ public class ShootManager : MonoBehaviour
 
 	[NonSerialized] public float sinisterCharmChance;
 	[NonSerialized] public float sinisterCharmDM;
-	public GameObject sinisterCharmProjectile;
+	[SerializeField] private GameObject sinisterCharmProjectile;
 
 	[NonSerialized] public float bananaChance;
 	[NonSerialized] public float bananaDM;
@@ -99,6 +102,14 @@ public class ShootManager : MonoBehaviour
 
 	[NonSerialized] public float voltHammerChance;
 	[NonSerialized] public float voltHammerDM;
+
+	[NonSerialized] public float weirdEyeballChance;
+	[NonSerialized] public float weirdEyeballDM;
+	[SerializeField] private GameObject weirdEyeballProjectile;
+
+	[NonSerialized] public float moonlightScytheChance;
+	[NonSerialized] public float moonlightScytheDM;
+	[SerializeField] private GameObject moonlightScytheProjectile;
 	#endregion
 
 	// Call whenever a main player projectile (DIRECTLY shot by player) hits an enemy to invoke on hit effects
@@ -112,7 +123,7 @@ public class ShootManager : MonoBehaviour
 		if (MyRandom.RollProbability(bustedToasterChance))
 		{
 			GameObject expl = Instantiate(bustedToasterExplosion, enemy.position, Quaternion.identity);
-			expl.GetComponent<BustedToasterExplosion>().ActivateExplosion(damage * bustedToasterDM);
+			expl.GetComponent<Explosion>().ActivateExplosion(damage * bustedToasterDM, true);
 			// TODO: SFX here
 		}
 		if (MyRandom.RollProbability(sinisterCharmChance))
@@ -147,7 +158,6 @@ public class ShootManager : MonoBehaviour
 		{
 			HashSet<Transform> targets = SpawnManager.instance.GetRandomEnemies(15);
 
-			// If targets.Count is 1, then the hit enemy is the only one alive. No electricity is activated
 			CameraShake.instance.ShakeCamera(0.3f, 0.4f);
 			Transform curr = enemy;
 			foreach (Transform target in targets)
@@ -157,24 +167,34 @@ public class ShootManager : MonoBehaviour
 				target.GetComponent<EnemyHealth>().TakeDamage(damage * voltHammerDM, true);
 			}
 		}
+		if (MyRandom.RollProbability(weirdEyeballChance))
+		{
+			Vector2 pos = pc.GetRandomNearbyPosition(minDistance: 1.6f, maxDistance: 3f);
+			GameObject proj = Instantiate(weirdEyeballProjectile, pos, Quaternion.identity);
+			proj.GetComponent<WeirdEyeball>().Setup(damage * weirdEyeballDM);
+		}
+		if (MyRandom.RollProbability(moonlightScytheChance))
+		{
+			GameObject scythe = Instantiate(moonlightScytheProjectile, enemy.position, Quaternion.identity);
+			scythe.GetComponent<CollideWithEnemy>().damage = damage * moonlightScytheDM;
+		}
 	}
 
 	// NOTE: ShotCount means the number of shots for this upgrade to activate
-	[NonSerialized] public int jumboGeorgeShotCount = 10;
-	private int jumboGeorgeShotCountCurr;
-	[NonSerialized] public float jumboGeorgeDM = 1f;
-	public GameObject jumboGeorgeProjectile;
+	[NonSerialized] public int jumboGeorgeShotCount;
+	[NonSerialized] public int jumboGeorgeShotCountCurr;
+	[NonSerialized] public float jumboGeorgeDM;
+	[SerializeField] private GameObject jumboGeorgeProjectile;
 
 	// Call whenever you shoot. Angle is towards mouse. Source is position of DotShooter
 	public void OnShoot(float dangle, Vector2 source)
 	{
 		jumboGeorgeShotCountCurr++;
 
-		if (jumboGeorgeShotCountCurr == jumboGeorgeShotCount && jumboGeorgeShotCount != 0)
+		if (jumboGeorgeShotCountCurr >= jumboGeorgeShotCount && jumboGeorgeShotCount != 0)
 		{
 			GameObject proj = Instantiate(jumboGeorgeProjectile, source, Quaternion.identity);
 			proj.GetComponent<JumboGeorgeProjectile>().SetProjectile(8f, dangle, damage * jumboGeorgeDM, 12f, true, false);
-			// Create jumbo george projectile here
 			jumboGeorgeShotCountCurr = 0;
 		}
 	}
@@ -206,13 +226,14 @@ public class ShootManager : MonoBehaviour
 		}
 	}
 
+	[NonSerialized] public float healthRestorePerCrit;
 	// Called from the enemy that was critted
 	public void OnCrit(Transform enemy, Collider2D collider)
 	{
+		hs.RestoreHealth(healthRestorePerCrit);
+
 		// TODO: Crit fx
-		Vector2 topOfEnemy = (Vector2)collider.bounds.center + new Vector2(0, collider.bounds.extents.y + 0.35f);
-		ObjectPooler.instance.Create(Tag.CritText, topOfEnemy, Quaternion.identity);
-		ObjectPooler.instance.CreateHitParticles(GameAssets.instance.blueColor, enemy.position);
+		
 	}
 
 	[NonSerialized] public int lastRegardsBulletCount;

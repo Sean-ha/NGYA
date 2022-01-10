@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 
-public class CritText : MonoBehaviour
+public class DamageText : MonoBehaviour
 {
 	public TextMeshPro tmp;
 
@@ -24,16 +24,17 @@ public class CritText : MonoBehaviour
 	{
 		ResetToDefault();
 
-		moveUpTween = transform.DOMoveY(transform.position.y + 0.5f, 0.4f).SetEase(Ease.OutQuad);
+		float duration = 0.45f;
+		moveUpTween = transform.DOMoveY(transform.position.y + 0.5f, duration).SetEase(Ease.OutQuad);
 		// shrinkTween = transform.DOScaleY(0, 0.5f).SetEase(Ease.OutQuad).OnComplete(() => gameObject.SetActive(false));
 		DOVirtual.DelayedCall(0.25f, () =>
 		{
-			fadeTween = DOTween.To(() => tmp.color, (Color value) => tmp.color = value, transparentColor, 0.4f).SetEase(Ease.InQuad)
+			fadeTween = DOTween.To(() => tmp.color, (Color value) => tmp.color = value, transparentColor, duration - 0.1f).SetEase(Ease.InQuad)
 			.OnComplete(() => gameObject.SetActive(false));
 		});
 
 		float rotation = Random.Range(-15f, 15f);
-		rotateTween = transform.DOLocalRotate(new Vector3(0, 0, rotation), 0.4f);
+		rotateTween = transform.DOLocalRotate(new Vector3(0, 0, rotation), duration);
 	}
 
 	// Resets object to default state (include rotation, color, anything else)

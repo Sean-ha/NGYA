@@ -51,4 +51,13 @@ public class MyRandom : MonoBehaviour
       }
       return result;
    }
+
+   // Returns -1 or 1 with a 50% chance for either outcome
+   public static int FlipCoin()
+	{
+      int rand = Random.Range(0, 2);
+      if (rand == 0)
+         rand = -1;
+      return rand;
+	}
 }

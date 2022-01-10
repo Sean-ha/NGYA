@@ -16,6 +16,6 @@ MonoBehaviour:
   upgradeName: fanny pack
   upgradeSprite: {fileID: 21300000, guid: 0d80e2a75596b1840b17ed00ea279a31, type: 3}
   rarity: 0
-  upgradeDescriptionFirst: +max ammo
-  upgradeDescriptionSecond: +max ammo
+  upgradeDescriptionFirst: increased max ammo
+  upgradeDescriptionSecond: increased max ammo
   maxCount: 14

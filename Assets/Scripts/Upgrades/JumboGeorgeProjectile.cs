@@ -59,25 +59,8 @@ public class JumboGeorgeProjectile : MonoBehaviour
 
 	private void CreateExplosion()
 	{
-		float randomDangle = Random.Range(0, 359);
-		GameObject expl = Instantiate(explosion, transform.position, Quaternion.Euler(0, 0, randomDangle));
-		Transform circle = expl.transform.GetChild(0);
-		SpriteRenderer circleSR = circle.GetComponent<SpriteRenderer>();
-
-		CollideWithEnemy damager = expl.GetComponent<CollideWithEnemy>();
-		damager.damage = damage;
-		damager.canCrit = canCrit;
-
-		// expl.transform.DORotate(new Vector3(0, 0, -300f), 1f, RotateMode.FastBeyond360).SetEase(Ease.OutSine).OnComplete(() => Destroy(expl));
-		DOVirtual.DelayedCall(0.1f, () => {
-			expl.GetComponent<Collider2D>().enabled = false;
-			circleSR.color = new Color(1, 1, 1, 0.1f);
-			circleSR.sortingLayerID = 0;
-			expl.transform.DOScale(new Vector3(0.97f, 0.97f, 1f), 0.46f);
-			HelperFunctions.BlinkSpriteRenderer(expl.GetComponent<SpriteRenderer>(), 4, 0.06f, 0.06f);
-			HelperFunctions.BlinkSpriteRenderer(circleSR, 4, 0.06f, 0.06f);
-			Destroy(expl, 0.48f);
-		}, ignoreTimeScale: false);
-
+		CameraShake.instance.ShakeCamera(0.3f, 0.4f);
+		GameObject expl = Instantiate(explosion, transform.position, Quaternion.identity);
+		expl.GetComponent<Explosion>().ActivateExplosion(damage, canCrit);
 	}
 }

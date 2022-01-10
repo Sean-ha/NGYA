@@ -21,6 +21,9 @@ public class HealthSystem : MonoBehaviour
 
 	public float healthRegenPerMinute { get; set; }
 	public float damageReduction { get; set; }
+	public float dodgeChance { get; set; }
+
+	private PlayerController pc;
 
 	private const float OUTLINE_BAR_DIFF = 0.07f;
 
@@ -33,6 +36,26 @@ public class HealthSystem : MonoBehaviour
 		UpdateCurrentBar();
 
 		StartCoroutine(RegenerateHealth());
+	}
+
+	private void Start()
+	{
+		pc = PlayerController.instance;
+	}
+
+	// Returns true if dodge was successful, false if not
+	public bool TryDodge()
+	{
+		if (MyRandom.RollProbability(dodgeChance))
+		{
+			// Successfully dodged
+			ObjectPooler.instance.Create(Tag.DodgeText, pc.GetPositionAbove(), Quaternion.identity);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public void TakeDamage(float damage)
@@ -57,7 +80,7 @@ public class HealthSystem : MonoBehaviour
 		if (currentHealth <= 0)
 		{
 			// Die
-
+			// UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
 		}
 	}
 

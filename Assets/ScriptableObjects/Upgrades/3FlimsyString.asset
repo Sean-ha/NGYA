@@ -16,6 +16,6 @@ MonoBehaviour:
   upgradeName: flimsy string
   upgradeSprite: {fileID: 21300000, guid: c1e58a5cb59c8ff40982c1b444598057, type: 3}
   rarity: 0
-  upgradeDescriptionFirst: +reload speed
-  upgradeDescriptionSecond: +reload speed
+  upgradeDescriptionFirst: increased reload speed
+  upgradeDescriptionSecond: increased reload speed
   maxCount: 10

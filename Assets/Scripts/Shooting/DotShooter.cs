@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public class DotShooter : Shooter
 {
+	public ParticleSystem[] onShootParticles;
+
 	private Tween scaleDownTween;
 
 	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
@@ -16,6 +18,10 @@ public class DotShooter : Shooter
 				SoundManager.instance.PlaySound(SoundManager.Sound.FailShoot);
 				return;
 			}
+		}
+		foreach (ParticleSystem ps in onShootParticles)
+		{
+			ps.Play();
 		}
 
 		SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);

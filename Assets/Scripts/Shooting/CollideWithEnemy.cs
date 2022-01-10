@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class CollideWithEnemy : MonoBehaviour
+public class CollideWithEnemy : Damager
 {
-	public float damage;
 	public bool canCrit;
 	[Tooltip("Disable this object after it collides with a single enemy")]
 	public bool disableOnHit;
+	[Tooltip("Create a CircleHitEffect + HitParticles when collision occurs")]
+	public bool createParticlesOnHit = true;
 
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 
 	private void OnEnable()
 	{
-		hitSet.Clear();
+		ClearHitSet();
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -30,13 +31,21 @@ public class CollideWithEnemy : MonoBehaviour
 			{
 				collision.GetComponent<EnemyHealth>().TakeDamage(damage, canCrit: canCrit);
 
-				ObjectPooler.instance.CreateHitParticles(Color.white, transform.position);
-				ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 1f);
+				if (createParticlesOnHit)
+				{
+					ObjectPooler.instance.CreateHitParticles(Color.white, collision.transform.position);
+					ObjectPooler.instance.CreateCircleHitEffect(Color.white, collision.transform.position, 1f);
+				}
 
 				hitSet.Add(collision.gameObject);
 				if (disableOnHit)
 					gameObject.SetActive(false);
 			}
 		}
+	}
+
+	public void ClearHitSet()
+	{
+		hitSet.Clear();
 	}
 }

@@ -30,11 +30,11 @@ public enum Upgrade
 	CloakedDagger = 15,
 	D6 = 16,
 	Thumbtack = 17,
-	/*
 	SwirlyStraw = 18,
-	PilferedFence = 19,
+	RoyalShield = 19,
 	PotLid = 20,
-	*/
+	DopeSunglasses = 21,
+	RadCape = 22,
 
 
 	// Rare upgrades
@@ -42,6 +42,8 @@ public enum Upgrade
 	GentleQuill = 1001,
 	VoltHammer = 1002,
 	JumboGeorge = 1003,
+	WeirdEyeball = 1004,
+	MoonlightScythe = 1005,
 }
 
 // Deprecated
@@ -77,16 +79,21 @@ public enum Tag
 	CircleHitEffect, // Classic circle hit effect that shrinks upon enabling,
 	SmallExpShell, // Exp shell that gives 1 exp
 	CircularEnemyProjectile,   // Circular shaped enemy projectile
-	TextObject, // A text object (not in canvas)
-	LaserProjectile,  // Instant laser projectile attack
+	TextObject, // A text object (not in canvas). Used for UI
+	EnemyLaserProjectile,  // Enemy instant laser projectile attack
 	LaserSight,	// Laser sight to indicate where a laser will shoot from
 	CircleHitEffectBig,	// Like the regular one but bigger
 	PlayerLaserAbility,	// Default character's special ability projectile (giant laser)
 	Tendril,	// Bezier curve
-	CritText,	// Text to appear when you crit an enemy
+	CritText,	// Text to appear when you crit an enemy -- DEPRECATED
 	PlayerProjectileNoCrit_DEPRECATED,	// DEPRECATED
 	HomingProjectile,		// Player projectile that follows enemies.
 	SinisterCharmStart,	// Sinister charm projectile
 	BananaProjectile,	// Homing banana projectile
 	Electricity,	// ElectricityEffect
+	ExplosionSmall,	// Small explosion effect
+	ExplosionLarge,
+	PlayerLaserProjectile,	// Any sort of player laser thing
+	DodgeText,	// Same as crit text but for dodge instead. Doing it this way b/c it's easier
+	GameTextObject,	// Text used for gameplay purposes (e.g. damage numbers) -- on default sorting layer
 }

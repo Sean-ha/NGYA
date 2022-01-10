@@ -13,8 +13,10 @@ public class SpawnManager : MonoBehaviour
 	// Debug purposes only, REMOVE
 	public bool endlessSpawn;
 	[EnableIf("endlessSpawn")]
-	public GameObject endlessSpawnObj;
-	public bool enableSpawn;
+	public List<GameObject> possibleSpawnsList;
+	[EnableIf("endlessSpawn")]
+	public int maxEnemiesAtOnce;
+	public bool enableDefaultSpawn;
 	public int currStageDebug;
 
 	public Transform bottomLeft;
@@ -48,7 +50,7 @@ public class SpawnManager : MonoBehaviour
 	private void Start()
 	{
 		currentStage = currStageDebug;
-		if (enableSpawn)
+		if (enableDefaultSpawn)
 			StartCoroutine(StartCurrentStage());
 		else if (endlessSpawn)
 			StartCoroutine(EndlessMode());
@@ -64,12 +66,13 @@ public class SpawnManager : MonoBehaviour
 	{
 		while (true)
 		{
+			maxEnemiesAtOnce = 10 + ExpManager.instance.level * 4;
+			while (enemySet.Count >= maxEnemiesAtOnce)
+				yield return new WaitForSeconds(0.15f);
+
+			int randIndex = Random.Range(0, possibleSpawnsList.Count);
 			List<GameObject> spawns = new List<GameObject>();
-			spawns.Add(endlessSpawnObj);
-			spawns.Add(endlessSpawnObj);
-			spawns.Add(endlessSpawnObj);
-			spawns.Add(endlessSpawnObj);
-			spawns.Add(endlessSpawnObj);
+			spawns.Add(possibleSpawnsList[randIndex]);
 
 			List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, spawns.Count);
 
@@ -109,7 +112,7 @@ public class SpawnManager : MonoBehaviour
 				});
 			}
 
-			yield return new WaitForSeconds(1.5f);
+			yield return new WaitForSeconds(2f - (ExpManager.instance.level * 0.08f));
 		}
 	}
 

@@ -10,7 +10,8 @@ public class UpgradesManager : MonoBehaviour
 {
 	public static UpgradesManager instance;
 
-	public SpriteRenderer blackScreen;
+	public UpgradeWindow upgradeWindow;
+
 	public GameObject upgradeCardTemplate;
 
 	public GameObject defenderShield;
@@ -18,14 +19,15 @@ public class UpgradesManager : MonoBehaviour
 	public GameObject loveBalloon;
 	public GameObject buddyObject;
 
-	private PauseUpgradeIconBuilder pauseIconBuilder;
+	public GameObject chooseUpgradeText;
 
-	private GameObject chooseUpgradeText;
+	private PauseUpgradeIconBuilder pauseIconBuilder;
+	
 	private int uiLayer;
 	private bool readyToPick;
 	private int previousHoverCardIndex = -1;
 
-	private Transform[] upgradeCards = new Transform[3];
+	private UpgradeCard[] upgradeCards = new UpgradeCard[3];
 
 	private HashSet<Upgrade> availableUpgrades;
 
@@ -60,6 +62,11 @@ public class UpgradesManager : MonoBehaviour
 		// Setup dictionary and rarity hashsets
 		foreach (Upgrade upgrade in availableUpgrades)
 		{
+			if (!GameAssets.instance.upgradeDict.ContainsKey(upgrade))
+			{
+				print(upgrade);
+			}
+
 			if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Common)
 				commonUpgrades.Add(upgrade);
 			else if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Rare)
@@ -109,46 +116,47 @@ public class UpgradesManager : MonoBehaviour
 
 			if (hitInfo)
 			{
-				// Hovering over upgrade card for first time
+				// Hovering over upgrade card
 				if (hitInfo.transform.CompareTag("UpgradeCard"))
 				{
 					// Get index of current upgrade card being hovered
-					int currIndex = Array.FindIndex(upgradeCards, (Transform val) => val == hitInfo.transform);
+					int currIndex = Array.FindIndex(upgradeCards, (UpgradeCard val) => val.transform == hitInfo.transform);
 
 					// Shouldn't happen ever, but just in case...
 					if (currIndex < 0) return;
 
-					// Move up card if it's a brand new card being hovered
+					// Behavior for a new card being hovered
 					if (previousHoverCardIndex != currIndex)
 					{
 						CancelPreviousHoverCardTween();
 
 						SoundManager.instance.PlaySound(SoundManager.Sound.Blip, false);
 						previousHoverCardIndex = currIndex;
-						hitInfo.transform.GetChild(0).DOLocalMoveY(0.5f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+						// hitInfo.transform.GetChild(0).DOLocalMoveY(0.5f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+						hitInfo.transform.GetComponent<UpgradeCard>().DisplayText();
 					}
 
+					// On upgrade card click behavior
 					if (Input.GetMouseButtonDown(0))
 					{
 						TimeManager.instance.canPause = false;
 						SoundManager.instance.PlaySound(SoundManager.Sound.Pickup, false);
+						CameraShake.instance.ShakeCameraRealtime(0.3f, 0.5f);
 						readyToPick = false;
 						previousHoverCardIndex = -1;
 
-						// Tween the non-selected upgrades downwards
+						// Cards do something based on whether or not they were picked
 						for (int i = 0; i < upgradeCards.Length; i++)
 						{
-							Transform currentCard = upgradeCards[i];
+							UpgradeCard currentCard = upgradeCards[i];
 
-							if (i == currIndex)
-								currentCard.DOLocalMoveY(-0.25f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true);
+							if (i != currIndex)
+								currentCard.UnpickedCard();
 							else
-								currentCard.DOLocalMoveY(-18f, 1f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
-								{
-									Destroy(currentCard.gameObject);
-								});
+								currentCard.PickedCard();
 						}
-						StartCoroutine(FinishChoosingUpgrades(currIndex));
+
+						StartCoroutine(HideUpgradeWindow(currIndex));
 
 						Upgrade selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
 						GainUpgradeEffect(selected);
@@ -166,8 +174,9 @@ public class UpgradesManager : MonoBehaviour
 	{
 		if (previousHoverCardIndex != -1)
 		{
-			upgradeCards[previousHoverCardIndex].DOKill();
-			upgradeCards[previousHoverCardIndex].GetChild(0).DOLocalMoveY(0f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
+			upgradeCards[previousHoverCardIndex].HideText();
+			// upgradeCards[previousHoverCardIndex].transform.DOKill();
+			// upgradeCards[previousHoverCardIndex].transform.GetChild(0).DOLocalMoveY(0f, 0.1f).SetUpdate(true).SetEase(Ease.OutQuad);
 			previousHoverCardIndex = -1;
 		}
 	}
@@ -178,6 +187,52 @@ public class UpgradesManager : MonoBehaviour
 	}
 
 	private IEnumerator DisplayUpgradesWindowCR(int currentLevel)
+	{
+		List<Upgrade> chosen;
+		string chooseUpgradeStr = "";
+		bool rareUpgrade = false;
+
+		// If current level is a multiple of 4, choose rare upgrade. Otherwise, choose common upgrade
+		if (currentLevel % 4 == 0)
+		{
+			chosen = rareUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+			chooseUpgradeStr = "choose a <color=#" + GameAssets.instance.blueColorHex + ">rare</color> upgrade";
+			rareUpgrade = true;
+		}
+		else
+		{
+			chosen = commonUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+			chooseUpgradeStr = "choose an upgrade";
+		}
+
+		chooseUpgradeText.SetActive(true);
+		chooseUpgradeText.GetComponent<TextMeshPro>().text = chooseUpgradeStr;
+
+		// Create upgrade cards
+		Transform left = Instantiate(upgradeCardTemplate, new Vector3(-10f, 0, 0), Quaternion.identity).transform;
+		Transform mid = Instantiate(upgradeCardTemplate, new Vector3(0, 0, 0), Quaternion.identity).transform;
+		Transform right = Instantiate(upgradeCardTemplate, new Vector3(10f, 0, 0), Quaternion.identity).transform;
+
+		upgradeCards[0] = left.GetComponent<UpgradeCard>();
+		upgradeCards[1] = mid.GetComponent<UpgradeCard>();
+		upgradeCards[2] = right.GetComponent<UpgradeCard>();
+
+		// Set card values
+		for (int i = 0; i < upgradeCards.Length; i++)
+		{
+			if (rareUpgrade)
+				upgradeCards[i].SetRareUpgrade();
+
+			upgradeCards[i].GetComponent<UpgradeCard>().SetCard(chosen[i], obtainedUpgrades[chosen[i]]);
+		}
+
+		yield return new WaitForSecondsRealtime(0.4f);
+
+		upgradeWindow.DisplayUpgradeWindow(() => readyToPick = true);
+	}
+
+	// Deprecated
+	private IEnumerator DisplayUpgradesWindowCR_Dep(int currentLevel)
 	{
 		List<Upgrade> chosen;
 		string chooseUpgradeStr = "";
@@ -198,13 +253,13 @@ public class UpgradesManager : MonoBehaviour
 
 		// Darken screen
 		float alphaVal = 0.85f;
-		Color darkenedColor = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, alphaVal);
-		blackScreen.DOColor(darkenedColor, 0.5f).SetEase(Ease.OutQuad).SetUpdate(true);
+		// Color darkenedColor = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, alphaVal);
+		// blackScreen.DOColor(darkenedColor, 0.5f).SetEase(Ease.OutQuad).SetUpdate(true);
 
 		yield return new WaitForSecondsRealtime(0.75f);
 
 		// Create "choose an upgrade" text
-		chooseUpgradeText = ObjectPooler.instance.CreateTextObject(new Vector3(0, 7.5f, 0), Quaternion.identity, Color.white, 8, chooseUpgradeStr);
+		chooseUpgradeText = ObjectPooler.instance.CreateUITextObject(new Vector3(0, 7.5f, 0), Quaternion.identity, Color.white, 8, chooseUpgradeStr);
 		TextMeshPro upgradeText = chooseUpgradeText.GetComponent<TextMeshPro>();
 		upgradeText.color = new Color(1, 1, 1, 0);
 
@@ -228,9 +283,9 @@ public class UpgradesManager : MonoBehaviour
 		right.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() => readyToPick = true);
 		SoundManager.instance.PlaySound(SoundManager.Sound.Whoosh);
 
-		upgradeCards[0] = left;
-		upgradeCards[1] = mid;
-		upgradeCards[2] = right;
+		upgradeCards[0] = left.GetComponent<UpgradeCard>();
+		upgradeCards[1] = mid.GetComponent<UpgradeCard>();
+		upgradeCards[2] = right.GetComponent<UpgradeCard>();
 
 		// Set card values
 		for (int i = 0; i < upgradeCards.Length; i++)
@@ -247,23 +302,15 @@ public class UpgradesManager : MonoBehaviour
 			textObj.transform.DORotate(new Vector3(0, 0, -1.5f), 2 * time).SetUpdate(true).SetEase(Ease.InOutQuad).onComplete += () => RotateText(textObj);
 	}
 
-	// Resets text object back to normal for next pooled instance
-	private void ResetText()
+	private IEnumerator HideUpgradeWindow(int chosenUpgrade)
 	{
-		if (chooseUpgradeText == null) return;
+		// TODO: THIS WHOLE METHOD
 
-		chooseUpgradeText.transform.DOKill();
+		yield return new WaitForSecondsRealtime(2f);
 
-		chooseUpgradeText.transform.rotation = Quaternion.Euler(0, 0, 0);
-		chooseUpgradeText.GetComponent<MeshRenderer>().sortingOrder = 0;
-	}
-
-	private IEnumerator FinishChoosingUpgrades(int chosenUpgrade)
-	{
-		yield return new WaitForSecondsRealtime(1f);
-
+		/*
 		// Close remaining card
-		Transform currCard = upgradeCards[chosenUpgrade];
+		Transform currCard = upgradeCards[chosenUpgrade].transform;
 		currCard.DOLocalMoveY(-18f, 0.75f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() =>
 		{
 			Destroy(currCard.gameObject);
@@ -279,19 +326,24 @@ public class UpgradesManager : MonoBehaviour
 			.SetTarget(chooseUpgradeText.transform).SetUpdate(true).OnComplete(() => chooseUpgradeText.SetActive(false));
 
 		yield return new WaitForSecondsRealtime(1f);
+		
 
 		// Undarken the screen
-		Color darkenedColor = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, 0);
-		blackScreen.DOColor(darkenedColor, 0.5f).SetEase(Ease.OutQuad).SetUpdate(true);
+		// Color darkenedColor = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, 0);
+		// blackScreen.DOColor(darkenedColor, 0.5f).SetEase(Ease.OutQuad).SetUpdate(true);
 
 		yield return new WaitForSecondsRealtime(0.75f);
-
+		
 		// Reset text
 		ResetText();
+		*/
 
-		TimeManager.instance.canPause = true;
-		// Unpause game
-		TimeManager.instance.SlowToUnpause();
+		upgradeWindow.HideUpgradeWindow(() =>
+		{
+			TimeManager.instance.canPause = true;
+			// Unpause game
+			TimeManager.instance.SlowToUnpause();
+		});		
 	}
 
 	private void GainUpgradeEffect(Upgrade upgrade)
@@ -427,17 +479,42 @@ public class UpgradesManager : MonoBehaviour
 				ShootManager.instance.critDamage += 0.2f;
 				break;
 
-			/*
 			case Upgrade.SwirlyStraw:
+				ShootManager.instance.healthRestorePerCrit += 0.5f;
 				break;
 
-			case Upgrade.PilferedFence:
+			case Upgrade.RoyalShield:
+				DefenderShield s = defenderShield.GetComponent<DefenderShield>();
+				if (upgradeCount == 1)
+				{
+					defenderShield.SetActive(true);
+					s.ObtainShield();
+					s.cooldown = 30f;
+				}
+				else
+				{
+					s.cooldown -= 5f;
+					s.DecrementRemainingShieldCooldown(5f);
+				}
 				break;
 
 			case Upgrade.PotLid:
+				if (upgradeCount == 1)
+					HealthSystem.instance.damageReduction += 0.1f;
+				else
+					HealthSystem.instance.damageReduction += 0.08f;
 				break;
-				*/
 
+			case Upgrade.DopeSunglasses:
+				ShootManager.instance.damageMultiplier += 0.06f;
+				break;
+
+			case Upgrade.RadCape:
+				HealthSystem.instance.dodgeChance += 0.15f;
+				break;
+
+
+			// Rare upgrades:
 			case Upgrade.StarFragment:
 				ShootManager.instance.starFragmentCount += 1;
 				break;
@@ -460,7 +537,42 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.JumboGeorge:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.jumboGeorgeShotCount = 12;
+					ShootManager.instance.jumboGeorgeDM = 1.5f;
+				}
+				else
+				{
+					ShootManager.instance.jumboGeorgeShotCount--;
+					ShootManager.instance.jumboGeorgeDM += 0.2f;
+				}
+				break;
 
+			case Upgrade.WeirdEyeball:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.weirdEyeballChance = 0.12f;
+					ShootManager.instance.weirdEyeballDM = 1.5f;
+				}
+				else
+				{
+					ShootManager.instance.weirdEyeballChance += 0.1f;
+					ShootManager.instance.weirdEyeballDM += 0.2f;
+				}
+				break;
+
+			case Upgrade.MoonlightScythe:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.moonlightScytheChance = 0.1f;
+					ShootManager.instance.moonlightScytheDM = 0.3f;
+				}
+				else
+				{
+					ShootManager.instance.moonlightScytheChance += 0.05f;
+					ShootManager.instance.moonlightScytheDM += 0.17f;
+				}
 				break;
 		}
 	}

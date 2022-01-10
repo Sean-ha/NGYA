@@ -5,10 +5,13 @@ using UnityEngine;
 public class DefenderShield : MonoBehaviour
 {
 	[Tooltip("Time it takes for the shield to regenerate after being destroyed")]
-	public float cooldown;
+	[System.NonSerialized] public float cooldown;
 
 	private SpriteRenderer sr;
 
+	// Whether or not the upgrade has been obtained yet
+	private bool obtained = false;
+	// Whether or not the shield is active
 	private bool shieldActive = true;
 	private float currCooldown;
 
@@ -34,12 +37,17 @@ public class DefenderShield : MonoBehaviour
 		}
 	}
 
+	public void ObtainShield()
+	{
+		obtained = true;
+	}
+
 	/// <summary>
 	/// Returns true if the shield is active and breaks. Returns false if the shield is not currently active.
 	/// </summary>
 	public bool TryBreakShield()
 	{
-		if (shieldActive)
+		if (shieldActive && obtained)
 		{
 			// Pop shield
 			shieldActive = false;
@@ -55,5 +63,10 @@ public class DefenderShield : MonoBehaviour
 		{
 			return false;
 		}
+	}
+
+	public void DecrementRemainingShieldCooldown(float amount)
+	{
+		currCooldown -= amount;
 	}
 }
