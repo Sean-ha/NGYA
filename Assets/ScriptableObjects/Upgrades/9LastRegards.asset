@@ -18,4 +18,4 @@ MonoBehaviour:
   rarity: 0
   upgradeDescriptionFirst: fire homing bullets after taking damage
   upgradeDescriptionSecond: fire more bullets after taking damage
-  maxCount: 5
+  maxCount: 10

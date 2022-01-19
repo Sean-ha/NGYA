@@ -16,6 +16,6 @@ MonoBehaviour:
   upgradeName: weird eyeball
   upgradeSprite: {fileID: 21300000, guid: cd0639d787cd73341bb2a6f9bbf25da9, type: 3}
   rarity: 1
-  upgradeDescriptionFirst: chance to summon a weird eyeball when hitting enemies
-  upgradeDescriptionSecond: chance to summon a weird eyeball when hitting enemies
+  upgradeDescriptionFirst: it seems to stare at you
+  upgradeDescriptionSecond: it seems to stare at you
   maxCount: 6

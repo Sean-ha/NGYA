@@ -26,11 +26,11 @@ public class AmmoSystem : MonoBehaviour
 	private Stack<GameObject> ammoStack = new Stack<GameObject>();
 
 	// Amount of ammo to get per second
-	private int ammoRegenPerSecond = 3;
+	private float ammoRegenPerSecond = 2.5f;
 
 	private float[] ammoOutlineWidths = { 1.02f, 1.52f, 1.98f, 2.45f, 2.9f, 3.37f, 3.85f, 4.32f, 4.78f, 5.26f, 5.73f, 6.19f, 6.66f, 7.12f, 7.59f };
 
-	public int AmmoRegenPerSecond
+	public float AmmoRegenPerSecond
 	{
 		get { return ammoRegenPerSecond; }
 		set { ammoRegenPerSecond = Mathf.Max(1, value); CalculateAmmoRegenRate(); }

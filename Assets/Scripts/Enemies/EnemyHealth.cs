@@ -12,6 +12,7 @@ public class EnemyHealth : MonoBehaviour
 	public bool isBoss;
 	public UnityEvent onHit;
 	public UnityEvent onDeath;
+	public UnityEvent onWallBump;
 
 	public float currentHealth { get; set; }
 	private bool isDead;
@@ -20,19 +21,37 @@ public class EnemyHealth : MonoBehaviour
 
 	private ShootManager sm;
 	private Collider2D myColl;
+	private Rigidbody2D rb;
 
 	private void Awake()
 	{
 		currentHealth = maxHealth;
 		// Collider2D should be on the same gameobject as EnemyHealth. If not, we might have to change stuff, not sure yet
 		myColl = GetComponent<Collider2D>();
+#if UNITY_EDITOR
 		if (myColl == null)
 			Debug.LogError("Collider and EnemyHealth not on the same object: Object " + gameObject.name);
+#endif
+		rb = GetComponent<Rigidbody2D>();
 	}
 
 	private void Start()
 	{
 		sm = ShootManager.instance;
+		onWallBump.AddListener(() => SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHitWall));
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		// Wall layer
+		if (collision.gameObject.layer == 9)
+		{
+			// Bounce against wall
+			Vector2 bounceForce = collision.GetContact(0).normal * 70;
+			rb.AddForce(bounceForce);
+
+			onWallBump.Invoke();
+		}
 	}
 
 	public void TakeDamage(float toTake, bool canCrit = false)
@@ -41,7 +60,7 @@ public class EnemyHealth : MonoBehaviour
 		if (isDead)
 			return;
 
-		if (currentHealth == maxHealth)
+		if (Mathf.Approximately(currentHealth, maxHealth) || currentHealth >= maxHealth)
 			toTake += sm.cloakedDaggerDM * sm.damage;
 
 		float critChance = sm.critChance;

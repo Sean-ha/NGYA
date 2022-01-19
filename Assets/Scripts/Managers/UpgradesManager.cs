@@ -15,6 +15,9 @@ public class UpgradesManager : MonoBehaviour
 	public GameObject upgradeCardTemplate;
 
 	public GameObject defenderShield;
+	public ShockCollar shockCollar;
+
+	// Unused, Old upgrades
 	public InspireManager inspireManager;
 	public GameObject loveBalloon;
 	public GameObject buddyObject;
@@ -400,10 +403,18 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.VultureClaw:
 				if (upgradeCount == 1)
+				{
+					ShootManager.instance.vultureClawAmount = 1;
+					ShootManager.instance.vultureClawChance = 0.15f;
+				}
+				else
+				{
+					ShootManager.instance.vultureClawChance += 0.09f;
+				}
+				if (upgradeCount == 3 || upgradeCount == 6)
+				{ 
 					ShootManager.instance.vultureClawAmount += 1;
-				if (upgradeCount % 3 == 0)
-					ShootManager.instance.vultureClawAmount += 1;
-				ShootManager.instance.vultureClawChance += 0.15f;
+				}
 				break;
 
 			case Upgrade.BustedToaster:
@@ -420,24 +431,32 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.LastRegards:
-				ShootManager.instance.lastRegardsBulletCount += 8;
-				ShootManager.instance.lastRegardsDM = 1f;
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.lastRegardsBulletCount = 10;
+					ShootManager.instance.lastRegardsDM = 1f;
+				}
+				else
+				{
+					ShootManager.instance.lastRegardsBulletCount += 8;
+					ShootManager.instance.lastRegardsDM += 0.04f;
+				}
 				break;
 
 			case Upgrade.CannedSoup:
 				PlayerController.instance.moveSpeed += 1.5f;
 				break;
 
-			case Upgrade.SquigglyHead:
+			case Upgrade.AbyssalHead:
 				if (upgradeCount == 1)
 				{
-					ShootManager.instance.tendrilDM = 0.7f;
-					ShootManager.instance.tendrilChance = 0.3f;
+					ShootManager.instance.abyssalHeadDM = 0.7f;
+					ShootManager.instance.abyssalHeadChance = 0.3f;
 				}
 				else
 				{
-					ShootManager.instance.tendrilDM += 0.2f;
-					ShootManager.instance.tendrilChance += 0.12f;
+					ShootManager.instance.abyssalHeadDM += 0.2f;
+					ShootManager.instance.abyssalHeadChance += 0.12f;
 				}
 				break;
 
@@ -462,9 +481,15 @@ public class UpgradesManager : MonoBehaviour
 			
 			case Upgrade.Scissors:
 				if (upgradeCount == 1)
+				{
 					ShootManager.instance.scissorsHealthPercent = 0.15f;
+					ShootManager.instance.scissorsCritChanceAddition = 0.15f;
+				}
 				else
-					ShootManager.instance.scissorsHealthPercent += 0.05f;
+				{
+					ShootManager.instance.scissorsHealthPercent += 0.06f;
+					ShootManager.instance.scissorsCritChanceAddition += 0.15f;
+				}
 				break;
 
 			case Upgrade.CloakedDagger:
@@ -476,7 +501,7 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Thumbtack:
-				ShootManager.instance.critDamage += 0.2f;
+				ShootManager.instance.critDamage += 0.12f;
 				break;
 
 			case Upgrade.SwirlyStraw:
@@ -526,38 +551,38 @@ public class UpgradesManager : MonoBehaviour
 			case Upgrade.VoltHammer:
 				if (upgradeCount == 1)
 				{
-					ShootManager.instance.voltHammerChance = 0.1f;
-					ShootManager.instance.voltHammerDM = 1.5f;
+					ShootManager.instance.voltHammerChance = 0.11f;
+					ShootManager.instance.voltHammerDM = 0.65f;
 				}
 				else
 				{
-					ShootManager.instance.voltHammerChance += 0.07f;
-					ShootManager.instance.voltHammerDM += 0.2f;
+					ShootManager.instance.voltHammerChance += 0.05f;
+					ShootManager.instance.voltHammerDM += 0.3f;
 				}
 				break;
 
 			case Upgrade.JumboGeorge:
 				if (upgradeCount == 1)
 				{
-					ShootManager.instance.jumboGeorgeShotCount = 12;
-					ShootManager.instance.jumboGeorgeDM = 1.5f;
+					ShootManager.instance.jumboGeorgeShotCount = 18;
+					ShootManager.instance.jumboGeorgeDM = 0.8f;
 				}
 				else
 				{
 					ShootManager.instance.jumboGeorgeShotCount--;
-					ShootManager.instance.jumboGeorgeDM += 0.2f;
+					ShootManager.instance.jumboGeorgeDM += 0.25f;
 				}
 				break;
 
 			case Upgrade.WeirdEyeball:
 				if (upgradeCount == 1)
 				{
-					ShootManager.instance.weirdEyeballChance = 0.12f;
+					ShootManager.instance.weirdEyeballChance = 0.11f;
 					ShootManager.instance.weirdEyeballDM = 1.5f;
 				}
 				else
 				{
-					ShootManager.instance.weirdEyeballChance += 0.1f;
+					ShootManager.instance.weirdEyeballChance += 0.08f;
 					ShootManager.instance.weirdEyeballDM += 0.2f;
 				}
 				break;
@@ -572,6 +597,35 @@ public class UpgradesManager : MonoBehaviour
 				{
 					ShootManager.instance.moonlightScytheChance += 0.05f;
 					ShootManager.instance.moonlightScytheDM += 0.17f;
+				}
+				break;
+
+			case Upgrade.ThunderWand:
+				if (upgradeCount == 1)
+				{
+					ShootManager.instance.thunderWandChance = 0.1f;
+					ShootManager.instance.thunderWandDM = 1.1f;
+				}
+				else
+				{
+					ShootManager.instance.thunderWandChance += 0.06f;
+					ShootManager.instance.thunderWandDM += 0.2f;
+				}
+				break;
+
+			case Upgrade.ShockCollar:
+				if (upgradeCount == 1)
+				{
+					shockCollar.gameObject.SetActive(true);
+					shockCollar.EnableShockCollar(true);
+					shockCollar.damageMultiplier = 0.25f;
+					shockCollar.timePerShock = 0.8f;
+					shockCollar.SetRadius(3.5f);
+				}
+				else
+				{
+					shockCollar.damageMultiplier += 0.1f;
+					shockCollar.SetRadius(shockCollar.radius + 0.75f);
 				}
 				break;
 		}

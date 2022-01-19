@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2258317027a79748bf77a1eb3a4b762, type: 3}
-  m_Name: 11SquigglyHead
+  m_Name: 1007ShockCollar
   m_EditorClassIdentifier: 
-  upgradeType: 11
-  upgradeName: squiggly head
-  upgradeSprite: {fileID: 21300000, guid: 6111a5c67ecad6748ac85bbed933cda7, type: 3}
-  rarity: 0
-  upgradeDescriptionFirst: chance to create tendrils when hitting enemies
-  upgradeDescriptionSecond: increase tendril chance and damage
-  maxCount: 5
+  upgradeType: 1007
+  upgradeName: shock collar
+  upgradeSprite: {fileID: 21300000, guid: cd0639d787cd73341bb2a6f9bbf25da9, type: 3}
+  rarity: 1
+  upgradeDescriptionFirst: zap any enemies that get too close
+  upgradeDescriptionSecond: zap any enemies that get too close
+  maxCount: 6

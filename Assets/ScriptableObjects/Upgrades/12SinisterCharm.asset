@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: sinister charm
   upgradeSprite: {fileID: 21300000, guid: fa6f22567bc38d24ab60243dc7637d2f, type: 3}
   rarity: 0
-  upgradeDescriptionFirst: chance to create additional bullet on hit which procs
-    on hit effects
-  upgradeDescriptionSecond: increased chance of additional bullet
+  upgradeDescriptionFirst: chance to create a charm on hit which triggers on hit
+    effects
+  upgradeDescriptionSecond: increased chance of charm
   maxCount: 5

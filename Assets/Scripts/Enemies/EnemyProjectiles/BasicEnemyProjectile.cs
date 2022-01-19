@@ -60,8 +60,13 @@ public class BasicEnemyProjectile : EnemyProjectile
 			ObjectPooler.instance.CreateHitParticles(projectileColor, closestPoint);
 			ObjectPooler.instance.CreateCircleHitEffect(projectileColor, closestPoint, 1f);
 			
+			// Player Layer
 			if (collision.gameObject.layer == 8)
-				StartCoroutine(DisableBullet());
+			{
+				if (gameObject.activeInHierarchy)
+					StartCoroutine(DisableBullet());
+			}
+			// Wall layer
 			else
 			{
 				rb.DOKill();

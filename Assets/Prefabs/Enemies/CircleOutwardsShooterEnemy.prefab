@@ -51,7 +51,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944171458009971
 SpriteRenderer:
@@ -155,7 +157,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944172090776272
 SpriteRenderer:
@@ -259,7 +263,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944172158814610
 SpriteRenderer:
@@ -363,7 +369,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944172226165616
 SpriteRenderer:
@@ -467,7 +475,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944172369418507
 SpriteRenderer:
@@ -571,7 +581,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944172680783506
 SpriteRenderer:
@@ -675,7 +687,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &1493944173212604960
 SpriteRenderer:
@@ -1018,7 +1032,9 @@ MonoBehaviour:
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: -1
+  longCooldown: 0
+  shortCooldown: 0
+  shotCount: 0
   shot: 6
 --- !u!212 &3205498463672064223
 SpriteRenderer:
@@ -1337,20 +1353,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8356775718217421750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8356775718217421748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38aff5fa4f490e546848e652c3490309, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  targetType: 0
   onWallBump:
     m_PersistentCalls:
       m_Calls:
@@ -1378,6 +1380,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8356775718217421750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8356775718217421748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38aff5fa4f490e546848e652c3490309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  maxDistance: 0
+  targetType: 0
 --- !u!114 &5924154719697508063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1390,7 +1407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cf843fa0dd7c5c49b2b74f3adf3ada1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expToDrop: 5
+  expToDrop: 7
 --- !u!50 &8356775718217421746
 Rigidbody2D:
   serializedVersion: 4

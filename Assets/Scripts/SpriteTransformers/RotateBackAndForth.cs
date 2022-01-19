@@ -9,6 +9,10 @@ public class RotateBackAndForth : MonoBehaviour
 	public float time;
 	[Tooltip("Angle in degrees which is the max in either direction to rotate")]
 	public float angle;
+	[Tooltip("Should this tween animate when paused?")]
+	public bool ignoreTimeScale;
+	[Tooltip("Is this a physics object that needs to be animated in FixedUpdate?")]
+	public bool useFixedUpdate;
 
 	private void Start()
 	{
@@ -17,7 +21,17 @@ public class RotateBackAndForth : MonoBehaviour
 
 	public void RotateThis()
 	{
-		transform.DORotate(new Vector3(0, 0, angle), 2 * time).SetEase(Ease.InOutQuad).SetUpdate(true).onComplete += () =>
-			transform.DORotate(new Vector3(0, 0, -angle), 2 * time).SetUpdate(true).SetEase(Ease.InOutQuad).onComplete += () => RotateThis();
+		Tween t1 = transform.DORotate(new Vector3(0, 0, angle), 2 * time).SetEase(Ease.InOutQuad).OnComplete(() =>
+		{
+			Tween t2 = transform.DORotate(new Vector3(0, 0, -angle), 2 * time).SetEase(Ease.InOutQuad).OnComplete(() => RotateThis());
+			if (useFixedUpdate)
+				t2.SetUpdate(UpdateType.Fixed, ignoreTimeScale);
+			else
+				t2.SetUpdate(ignoreTimeScale);
+		});
+		if (useFixedUpdate)
+			t1.SetUpdate(UpdateType.Fixed, ignoreTimeScale);
+		else
+			t1.SetUpdate(ignoreTimeScale);
 	}
 }

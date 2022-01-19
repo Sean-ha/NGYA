@@ -73,4 +73,17 @@ public class HelperFunctions
 		}
 		s.Play();
 	}
+
+	// Returns true if the given position is outside of the game bounds (i.e. outside of the edges of the arena)
+	public static bool IsOutOfBounds(Vector2 pos)
+	{
+		if (pos.x > 20.1f || pos.x < -20.1f || pos.y > 11.3f || pos.y < -11.3f)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

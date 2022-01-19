@@ -139,14 +139,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 4.5
+  shotSpeed: 5
   bulletDistance: 25
   damage: 10
   shootSound: 14
   onShoot:
     m_PersistentCalls:
       m_Calls: []
-  shotCooldown: 1
+  longCooldown: 0.8
+  shortCooldown: 0
+  shotCount: 1
   shot: 3
 --- !u!212 &1025652899228609796
 SpriteRenderer:
@@ -466,6 +468,33 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onWallBump:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4533211979592324843}
+        m_TargetAssemblyTypeName: FlashWhite, Assembly-CSharp
+        m_MethodName: InitiateWhiteFlash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5890379573145675381}
+        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
+        m_MethodName: PlayOnHitScale
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8663615451154410009}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

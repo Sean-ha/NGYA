@@ -90,7 +90,14 @@ public class HomingProjectile : MonoBehaviour
       CheckRotation();
 
       t1 = DOVirtual.DelayedCall(timeToEnable, () => active = true, false);
-      t2 = DOVirtual.DelayedCall(2f, () => canHitWalls = true, false);
+		t2 = DOVirtual.DelayedCall(2f, () =>
+		{
+         // If bullet is still out of bounds at this point, then disable it
+         if (HelperFunctions.IsOutOfBounds(transform.position))
+            DisableBullet();
+         else
+			   canHitWalls = true;
+		}, false);
 	}
 
 	// Acts like a "FixedUpdate" for this bullet but in Coroutine form
@@ -158,6 +165,7 @@ public class HomingProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+      // Wall layer
       if (collision.gameObject.layer == 9 && canHitWalls)
       {
          Vector2 closestPoint = collision.ClosestPoint(transform.position);
@@ -166,9 +174,14 @@ public class HomingProjectile : MonoBehaviour
          ObjectPooler.instance.CreateCircleHitEffect(Color.white, closestPoint, 1f);
          SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHit);
 
-         t1.Kill();
-         t2.Kill();
-         transform.gameObject.SetActive(false);
+         DisableBullet();
       }
+   }
+
+   private void DisableBullet()
+	{
+      t1.Kill();
+      t2.Kill();
+      transform.gameObject.SetActive(false);
    }
 }

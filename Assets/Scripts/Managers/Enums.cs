@@ -23,7 +23,7 @@ public enum Upgrade
 	BustedToaster = 8,
 	LastRegards = 9,
 	CannedSoup = 10,
-	SquigglyHead = 11,
+	AbyssalHead = 11,
 	SinisterCharm = 12,
 	DeadlyBananas = 13,
 	Scissors = 14,
@@ -44,6 +44,8 @@ public enum Upgrade
 	JumboGeorge = 1003,
 	WeirdEyeball = 1004,
 	MoonlightScythe = 1005,
+	ThunderWand = 1006,
+	ShockCollar = 1007,
 }
 
 // Deprecated

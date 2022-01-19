@@ -74,13 +74,6 @@ public class PlayerController : MonoBehaviour
 	{
 		healthSystem = HealthSystem.instance;
 		sm = ShootManager.instance;
-		StartCoroutine(LevelUpAuto());
-	}
-
-	IEnumerator LevelUpAuto()
-	{
-		yield return new WaitForSeconds(0.1f);
-		LevelUp();
 	}
 
 	private void Update()

@@ -17,5 +17,5 @@ MonoBehaviour:
   upgradeSprite: {fileID: 21300000, guid: 4864249c911605148818ef5ac5dc584d, type: 3}
   rarity: 0
   upgradeDescriptionFirst: increase crit rate against low health enemies
-  upgradeDescriptionSecond: increase health threshold
+  upgradeDescriptionSecond: increase crit rate against low health enemies
   maxCount: 4

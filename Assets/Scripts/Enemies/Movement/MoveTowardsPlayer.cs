@@ -8,8 +8,9 @@ using UnityEngine.Events;
 public class MoveTowardsPlayer : MonoBehaviour
 {
 	public float speed;
+	[Tooltip("Enemy will move towards player if distance between them is less than this value")]
+	public float maxDistance;
 	public TowardsPlayerTargetType targetType;
-	public UnityEvent onWallBump;
 
 	private PlayerController player;
 	private Rigidbody2D rb;
@@ -24,7 +25,6 @@ public class MoveTowardsPlayer : MonoBehaviour
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
-		onWallBump.AddListener(() => SoundManager.instance.PlaySound(SoundManager.Sound.EnemyHitWall));
 	}
 
 	private void Start()
@@ -41,20 +41,11 @@ public class MoveTowardsPlayer : MonoBehaviour
 			playerPos = player.GetForwardPosition(2);
 		else if (targetType == TowardsPlayerTargetType.Behind)
 			playerPos = player.GetBackwardPosition(.5f);
-		Vector2 diff = playerPos - (Vector2)transform.position;
-		rb.AddForce(diff.normalized * speed);
-	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		// Wall layer
-		if (collision.gameObject.layer == 9)
+		if (Vector2.Distance(playerPos, transform.position) > maxDistance)
 		{
-			// Bounce against wall
-			Vector2 bounceForce = collision.GetContact(0).normal * 70;
-			rb.AddForce(bounceForce);
-
-			onWallBump.Invoke();
+			Vector2 diff = playerPos - (Vector2)transform.position;
+			rb.AddForce(diff.normalized * speed);
 		}
 	}
 }

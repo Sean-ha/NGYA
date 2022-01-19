@@ -81,8 +81,8 @@ public class ShootManager : MonoBehaviour
 	// Note: DM stands for "Damage Multiplier" :)
 	#region UPGRADE_VARS
 	// UPGRADE VARIABLES
-	[NonSerialized] public float tendrilChance;
-	[NonSerialized] public float tendrilDM;
+	[NonSerialized] public float abyssalHeadChance;
+	[NonSerialized] public float abyssalHeadDM;
 
 	[NonSerialized] public float bustedToasterChance;
 	[NonSerialized] public float bustedToasterDM;
@@ -96,12 +96,12 @@ public class ShootManager : MonoBehaviour
 	[NonSerialized] public float bananaDM;
 
 	[NonSerialized] public float scissorsHealthPercent;
-	[NonSerialized] public float scissorsCritChanceAddition = 0.5f;
+	[NonSerialized] public float scissorsCritChanceAddition;
 
 	[NonSerialized] public float cloakedDaggerDM;
 
-	[NonSerialized] public float voltHammerChance;
-	[NonSerialized] public float voltHammerDM;
+	[NonSerialized] public float thunderWandChance;
+	[NonSerialized] public float thunderWandDM;
 
 	[NonSerialized] public float weirdEyeballChance;
 	[NonSerialized] public float weirdEyeballDM;
@@ -110,15 +110,25 @@ public class ShootManager : MonoBehaviour
 	[NonSerialized] public float moonlightScytheChance;
 	[NonSerialized] public float moonlightScytheDM;
 	[SerializeField] private GameObject moonlightScytheProjectile;
+
+	[NonSerialized] public float voltHammerChance;
+	[NonSerialized] public float voltHammerDM;
+	[SerializeField] private GameObject voltHammerProjectile;
 	#endregion
 
 	// Call whenever a main player projectile (DIRECTLY shot by player) hits an enemy to invoke on hit effects
 	public void OnMainProjectileHitEnemy(Transform projectile, Transform enemy, Collider2D collider)
 	{
-		if (MyRandom.RollProbability(tendrilChance))
+		if (MyRandom.RollProbability(abyssalHeadChance))
 		{
-			ObjectPooler.instance.CreateTendril(pc.transform.position, enemy.position);
-			enemy.GetComponent<EnemyHealth>().TakeDamage(damage * tendrilDM);
+			DOVirtual.DelayedCall(0.1f, () =>
+			{
+				if (enemy != null)
+				{
+					ObjectPooler.instance.CreateTendril(pc.transform.position, enemy.position);
+					enemy.GetComponent<EnemyHealth>().TakeDamage(damage * abyssalHeadDM);
+				}
+			}, ignoreTimeScale: false);
 		}
 		if (MyRandom.RollProbability(bustedToasterChance))
 		{
@@ -154,7 +164,7 @@ public class ShootManager : MonoBehaviour
 			ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage * bananaDM, true,
 			randomDir, banana: true);
 		}
-		if (MyRandom.RollProbability(voltHammerChance))
+		if (MyRandom.RollProbability(thunderWandChance))
 		{
 			HashSet<Transform> targets = SpawnManager.instance.GetRandomEnemies(15);
 
@@ -164,7 +174,7 @@ public class ShootManager : MonoBehaviour
 			{
 				ObjectPooler.instance.CreateElectricity(curr.position, target.position);
 				curr = target;
-				target.GetComponent<EnemyHealth>().TakeDamage(damage * voltHammerDM, true);
+				target.GetComponent<EnemyHealth>().TakeDamage(damage * thunderWandDM, true);
 			}
 		}
 		if (MyRandom.RollProbability(weirdEyeballChance))
@@ -177,6 +187,13 @@ public class ShootManager : MonoBehaviour
 		{
 			GameObject scythe = Instantiate(moonlightScytheProjectile, enemy.position, Quaternion.identity);
 			scythe.GetComponent<CollideWithEnemy>().damage = damage * moonlightScytheDM;
+		}
+		if (MyRandom.RollProbability(voltHammerChance))
+		{
+			Vector2 pos = pc.GetRandomNearbyPosition(minDistance: 1.6f, maxDistance: 3f);
+			GameObject voltHammer = Instantiate(voltHammerProjectile, pos, Quaternion.identity);
+			float dangle = HelperFunctions.GetDAngleTowards(voltHammer.transform.position, enemy.position);
+			voltHammer.GetComponent<VoltHammerProjectile>().SetProjectile(damage * voltHammerDM, 10f, dangle, true, false);
 		}
 	}
 
@@ -239,7 +256,7 @@ public class ShootManager : MonoBehaviour
 	[NonSerialized] public int lastRegardsBulletCount;
 	[NonSerialized] public float lastRegardsDM;
 
-	// 2 arguments: player transform and the transform of the thing that hit you. Can be an enemy or a projectile or whatever
+	// 2 arguments: player transform and the transform of the thing that hit you (can be an enemy or a projectile or whatever)
 	public void OnTakeDamage(Transform player, Transform enemy)
 	{
 		if (lastRegardsBulletCount != 0)
