@@ -40,6 +40,10 @@ public class SoundManager : MonoBehaviour
       EnemyHitWall = 28,
       BigShoot = 29,
       PauseMenuClick = 30,
+      WaterSplash1 = 31,
+      WaterSplash2 = 32,
+      FleshyHit = 33,
+      Zap = 34,
    }
 
    [System.Serializable]
@@ -58,7 +62,7 @@ public class SoundManager : MonoBehaviour
    private float expPickupPitch = 0.9f; // Unused, i think
    private Coroutine currentPickupExpCR; // Unused, i think
 
-   private float sfxVolume = 0.25f;
+   private float sfxVolume = 0.20f;
 
    private void Awake()
    {

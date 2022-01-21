@@ -73,6 +73,7 @@ public class ShockCollar : MonoBehaviour
             ObjectPooler.instance.CreateCircleHitEffect(Color.white, collision.transform.position, 1.5f);
             ObjectPooler.instance.CreateElectricity(transform.position, collision.transform.position);
             collision.GetComponent<EnemyHealth>().TakeDamage(sm.damage * damageMultiplier, canCrit: canCrit);
+            SoundManager.instance.PlaySound(SoundManager.Sound.Zap);
          }
 
          yield return new WaitForSeconds(timePerShock);

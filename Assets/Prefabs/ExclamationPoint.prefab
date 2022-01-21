@@ -50,7 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a16224019653084887ebddffe9dd09e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dynamicText: 0
+  dynamicText: 1
+  overrideSortingLayer: 0
+  newSortingLayer: 0
 --- !u!23 &3439166150394839768
 MeshRenderer:
   m_ObjectHideFlags: 0

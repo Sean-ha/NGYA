@@ -56,7 +56,7 @@ public class SpawnManager : MonoBehaviour
 			StartCoroutine(EndlessMode());
 
 #if UNITY_EDITOR
-		// Test for nulls in enemySet. Only for testing purposes; only in editor
+		// DEBUG: Test for nulls in enemySet. Only for testing purposes; only in editor
 		InvokeRepeating(nameof(TestNulls), 1f, 1f);
 #endif
 	}
@@ -171,23 +171,44 @@ public class SpawnManager : MonoBehaviour
 	{
 		List<WaveAndTime> possibleWaves = spawnsList[currentStage].waves;
 
-		List<GameObject> spawns = new List<GameObject>();
+		List<List<GameObject>> spawns = new List<List<GameObject>>();
 
+		// Collect all waves chained together by a zero timeUntilNextWave
 		WaveAndTime chosenWave;
 		do
 		{
 			chosenWave = possibleWaves[currentWave];
-			spawns.Add(chosenWave.spawn);
+			spawns.Add(chosenWave.spawns);
 			currentWave++;
 		} while (Mathf.Approximately(chosenWave.timeUntilNextWave, 0f) && currentWave < possibleWaves.Count);
 		currentWave--;
 
-		List<Vector2> positions = PoissonDiscSampling.GeneratePoints(2.5f, topRight.position - bottomLeft.position, spawns.Count);
+		List<Vector2> positions = PoissonDiscSampling.GeneratePoints(5f, topRight.position - bottomLeft.position, spawns.Count);
 
 		for (int i = 0; i < spawns.Count; i++)
 		{
 			Vector2 pos = positions[i] + (Vector2)bottomLeft.position;
 
+			GameObject exclaPoint = Instantiate(exclamationPoint, pos, Quaternion.Euler(0, 0, Random.Range(-15f, 15f)));
+			RectTransform epRt = exclaPoint.GetComponent<RectTransform>();
+			SoundManager.instance.PlaySound(SoundManager.Sound.WaterSplash2);
+
+			int a = i;
+			epRt.localScale = new Vector3(0f, 0f, 1);
+			epRt.DOScale(new Vector3(2f, 2f, 1), 0.12f).SetEase(Ease.InOutQuad).onComplete += () =>
+			{
+				epRt.DOScale(new Vector3(1.6f, 1.6f, 1), 0.05f).SetEase(Ease.InOutQuad).onComplete += () => 
+				{
+					DOVirtual.DelayedCall(1.2f, () =>
+					{
+						StartCoroutine(SpawnEnemyList(pos, spawns[a]));
+						Destroy(exclaPoint);
+					}, ignoreTimeScale: false);
+				};
+			};
+			
+
+			/*
 			List<Transform> enemies = CreateSpawn(spawns[i], pos);
 
 			GameObject exclaPoint = Instantiate(exclamationPoint, pos, Quaternion.identity);
@@ -218,11 +239,31 @@ public class SpawnManager : MonoBehaviour
 					enemySet.Add(enemy.GetComponentInChildren<EnemyHealth>().transform);
 				}
 			});
+			*/
 		}
 
 		// Don't start Coroutine for next wave if last wave has been reached.
 		if (currentWave != possibleWaves.Count - 1)
 			currentWaitingToSpawnCR = StartCoroutine(WaitingToSpawnNextWave());
+	}
+
+	// Given a list of enemies and a center position, spawn them all around that center position 1 by 1
+	private IEnumerator SpawnEnemyList(Vector2 spawnPos, List<GameObject> enemies)
+	{
+		enemiesInCurrentStage += enemies.Count;
+		foreach (GameObject enemy in enemies)
+		{
+			Vector2 randomizedPos = spawnPos + Random.insideUnitCircle * 1.5f;
+
+			GameObject createdEnemy = Instantiate(enemy, randomizedPos, Quaternion.identity);
+			enemySet.Add(createdEnemy.GetComponentInChildren<EnemyHealth>().transform);
+
+			ObjectPooler.instance.CreateHitParticles(Color.red, randomizedPos);
+			ObjectPooler.instance.CreateCircleHitEffect(Color.red, randomizedPos, 1.5f);
+			SoundManager.instance.PlaySound(SoundManager.Sound.WaterSplash1, false);
+
+			yield return new WaitForSeconds(0.05f);
+		}
 	}
 
 	private IEnumerator WaitingToSpawnNextWave()
@@ -233,6 +274,7 @@ public class SpawnManager : MonoBehaviour
 		SpawnWave();
 	}
 
+	// DEPRECATED -- replaced by the coroutine SpawnEnemyList() 
 	// Instantiates a spawn at a position. Properly increments enemiesInCurrentStage. Returns a list of transforms of the enemy objects that were created.
 	// All enemies are set as inactive. They must be enabled elsewhere (i.e. after circle load completes)
 	private List<Transform> CreateSpawn(GameObject spawn, Vector2 position)
@@ -242,6 +284,7 @@ public class SpawnManager : MonoBehaviour
 		Transform holder = Instantiate(spawn, position, Quaternion.identity).transform;
 
 		// Unparent enemies and destroy holder
+		/*
 		while (holder.childCount > 0)
 		{
 			Transform child = holder.GetChild(0);
@@ -252,6 +295,7 @@ public class SpawnManager : MonoBehaviour
 		}
 
 		Destroy(holder.gameObject);
+		*/
 
 		return createdEnemies;
 	}
@@ -266,7 +310,6 @@ public class SpawnManager : MonoBehaviour
 			if (currentWaitingToSpawnCR != null)
 				StopCoroutine(currentWaitingToSpawnCR);
 
-
 			// All enemies in final wave were defeated, move on to next stage.
 			if (currentWave >= spawnsList[currentStage].waves.Count - 1)
 			{
@@ -276,7 +319,7 @@ public class SpawnManager : MonoBehaviour
 			else
 			{
 				currentWave += 1;
-				Invoke(nameof(SpawnWave), 0.75f);
+				Invoke(nameof(SpawnWave), 1f);
 			}
 		}
 	}
@@ -330,7 +373,7 @@ public class Stage
 [System.Serializable]
 public class WaveAndTime
 {
-	public GameObject spawn;
+	public List<GameObject> spawns;
 	[Tooltip("The time until the next wave in the list will be spawned")]
 	public float timeUntilNextWave;
 }

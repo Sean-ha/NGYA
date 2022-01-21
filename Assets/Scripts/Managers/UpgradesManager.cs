@@ -103,6 +103,7 @@ public class UpgradesManager : MonoBehaviour
 		GainUpgradeEffect(Upgrade.DeadlyBananas);
 		GainUpgradeEffect(Upgrade.DeadlyBananas);
 		*/
+		GainUpgradeEffect(Upgrade.ShockCollar);
 	}
 
 	private void Update()
