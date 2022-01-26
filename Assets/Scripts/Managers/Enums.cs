@@ -98,4 +98,5 @@ public enum Tag
 	PlayerLaserProjectile,	// Any sort of player laser thing
 	DodgeText,	// Same as crit text but for dodge instead. Doing it this way b/c it's easier
 	GameTextObject,	// Text used for gameplay purposes (e.g. damage numbers) -- on default sorting layer
+	ExpandingExplosion,	// Circular explosion with a mask in the center
 }

@@ -79,6 +79,7 @@ public class VoltHammerProjectile : MonoBehaviour
 		collision.GetComponent<EnemyHealth>().TakeDamage(damage, canCrit: canCrit);
 		ObjectPooler.instance.CreateHitParticles(Color.white, collision.transform.position);
 		ObjectPooler.instance.CreateCircleHitEffect(Color.white, collision.transform.position, 1f);
+		SoundManager.instance.PlaySound(SoundManager.Sound.Zap);
 	}
 
 	public void SetProjectile(float damage, float speed, float dangle, bool canCrit, bool enableOnHitEffects)
@@ -97,6 +98,9 @@ public class VoltHammerProjectile : MonoBehaviour
 		// Play summon animation
 		ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 2f);
 		ObjectPooler.instance.CreateElectricity(transform.position, transform.position + new Vector3(0, 2f, 0f));
+
+		SoundManager.instance.PlaySound(SoundManager.Sound.Zap);
+		SoundManager.instance.PlaySound(SoundManager.Sound.BalloonPop);
 
 		DOVirtual.DelayedCall(0.3f, () =>
 		{

@@ -35,7 +35,7 @@ Transform:
 --- !u!198 &2656483890060228572
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 5316625980315019952, guid: 646950437f7864b4f88a4385bea2b482, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2656483890060228575}
@@ -4878,6 +4878,7 @@ GameObject:
   - component: {fileID: 6298174267003595243}
   - component: {fileID: 6298174267003595242}
   - component: {fileID: 6298174267003595245}
+  - component: {fileID: 2222518626170570872}
   m_Layer: 6
   m_Name: MoonlightScythe
   m_TagString: Untagged
@@ -5041,3 +5042,30 @@ MonoBehaviour:
   canCrit: 1
   disableOnHit: 0
   createParticlesOnHit: 1
+  onCollide:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6298174267003595245}
+        m_TargetAssemblyTypeName: CollideWithEnemy, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 33
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2222518626170570872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6298174267003595236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3e3fa9a668c5fd41babeea8eeda592b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

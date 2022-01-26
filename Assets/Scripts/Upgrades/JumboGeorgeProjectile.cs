@@ -60,6 +60,7 @@ public class JumboGeorgeProjectile : MonoBehaviour
 	private void CreateExplosion()
 	{
 		CameraShake.instance.ShakeCamera(0.3f, 0.4f);
+		SoundManager.instance.PlaySound(SoundManager.Sound.Explosion3);
 		GameObject expl = Instantiate(explosion, transform.position, Quaternion.identity);
 		expl.GetComponent<Explosion>().ActivateExplosion(damage, canCrit);
 	}

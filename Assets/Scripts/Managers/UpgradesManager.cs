@@ -103,7 +103,6 @@ public class UpgradesManager : MonoBehaviour
 		GainUpgradeEffect(Upgrade.DeadlyBananas);
 		GainUpgradeEffect(Upgrade.DeadlyBananas);
 		*/
-		GainUpgradeEffect(Upgrade.ShockCollar);
 	}
 
 	private void Update()
@@ -285,7 +284,7 @@ public class UpgradesManager : MonoBehaviour
 		left.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true);
 		mid.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true);
 		right.transform.DOLocalMoveY(-1f, 1f).SetEase(Ease.OutQuart).SetUpdate(true).OnComplete(() => readyToPick = true);
-		SoundManager.instance.PlaySound(SoundManager.Sound.Whoosh);
+		// SoundManager.instance.PlaySound(SoundManager.Sound.Whoosh);
 
 		upgradeCards[0] = left.GetComponent<UpgradeCard>();
 		upgradeCards[1] = mid.GetComponent<UpgradeCard>();
@@ -543,6 +542,7 @@ public class UpgradesManager : MonoBehaviour
 			// Rare upgrades:
 			case Upgrade.StarFragment:
 				ShootManager.instance.starFragmentCount += 1;
+				ShootManager.instance.starFragmentDM = 0.65f;
 				break;
 
 			case Upgrade.GentleQuill:

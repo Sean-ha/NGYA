@@ -32,7 +32,7 @@ public class BuddyShooter : Shooter
 		}
 		float angle = GetAngle();
 
-		SoundManager.instance.PlaySound(SoundManager.Sound.BuddyShoot);
+		// SoundManager.instance.PlaySound(SoundManager.Sound.BuddyShoot);
 		ObjectPooler.instance.CreateCircleHitEffect(Color.white, transform.position, 0.6f);
 
 		// Create bullet

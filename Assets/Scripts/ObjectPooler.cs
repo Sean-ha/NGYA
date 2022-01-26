@@ -223,4 +223,12 @@ public class ObjectPooler : MonoBehaviour
 		// Note: GetComponent<LaserProjectile().SetProjectile ...
 		return null;
 	}
+
+	public GameObject CreateExpandingExplosion(Vector2 position, Color color, float radius)
+	{
+		GameObject explosion = Create(Tag.ExpandingExplosion, position, Quaternion.identity);
+		explosion.GetComponent<ExpandingExplosion>().SetExplosion(color, radius);
+
+		return explosion;
+	}
 }

@@ -100,7 +100,7 @@ public class SpawnManager : MonoBehaviour
 
 				circleBarComponent.BeginBar(1.5f, () =>
 				{
-					SoundManager.instance.PlaySound(SoundManager.Sound.EnemySpawn, false);
+					// SoundManager.instance.PlaySound(SoundManager.Sound.EnemySpawn, false);
 					foreach (Transform enemy in enemies)
 					{
 						enemy.gameObject.SetActive(true);
@@ -127,7 +127,7 @@ public class SpawnManager : MonoBehaviour
 
 		yield return new WaitForSeconds(1f);
 
-		string toType = "stage " + (currentStage + 1);
+		string toType = "" + (currentStage + 1);
 
 		foreach (char letter in toType)
 		{
@@ -187,6 +187,8 @@ public class SpawnManager : MonoBehaviour
 
 		for (int i = 0; i < spawns.Count; i++)
 		{
+			enemiesInCurrentStage += spawns[i].Count;
+
 			Vector2 pos = positions[i] + (Vector2)bottomLeft.position;
 
 			GameObject exclaPoint = Instantiate(exclamationPoint, pos, Quaternion.Euler(0, 0, Random.Range(-15f, 15f)));
@@ -250,7 +252,6 @@ public class SpawnManager : MonoBehaviour
 	// Given a list of enemies and a center position, spawn them all around that center position 1 by 1
 	private IEnumerator SpawnEnemyList(Vector2 spawnPos, List<GameObject> enemies)
 	{
-		enemiesInCurrentStage += enemies.Count;
 		foreach (GameObject enemy in enemies)
 		{
 			Vector2 randomizedPos = spawnPos + Random.insideUnitCircle * 1.5f;

@@ -75,7 +75,6 @@ public class EnemyHealth : MonoBehaviour
 			toTake = toTake + (toTake * sm.critDamage);
 			damageTextColor = GameAssets.instance.critColor;
 			ObjectPooler.instance.CreateHitParticles(GameAssets.instance.critColor, transform.position);
-			SoundManager.instance.PlaySound(SoundManager.Sound.FleshyHit);
 		}
 
 		toTake *= sm.damageMultiplier;

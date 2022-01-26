@@ -90,6 +90,7 @@ public class ShootManager : MonoBehaviour
 
 	[NonSerialized] public float sinisterCharmChance;
 	[NonSerialized] public float sinisterCharmDM;
+	[SerializeField] private GameObject sinisterCharmStarter;
 	[SerializeField] private GameObject sinisterCharmProjectile;
 
 	[NonSerialized] public float bananaChance;
@@ -127,6 +128,7 @@ public class ShootManager : MonoBehaviour
 				{
 					ObjectPooler.instance.CreateTendril(pc.transform.position, enemy.position);
 					enemy.GetComponent<EnemyHealth>().TakeDamage(damage * abyssalHeadDM);
+					SoundManager.instance.PlaySound(SoundManager.Sound.PaperRip);
 				}
 			}, ignoreTimeScale: false);
 		}
@@ -134,16 +136,17 @@ public class ShootManager : MonoBehaviour
 		{
 			GameObject expl = Instantiate(bustedToasterExplosion, enemy.position, Quaternion.identity);
 			expl.GetComponent<Explosion>().ActivateExplosion(damage * bustedToasterDM, true);
-			// TODO: SFX here
+			ObjectPooler.instance.CreateExpandingExplosion(enemy.position, Color.white, 1f);
+			SoundManager.instance.PlaySound(SoundManager.Sound.Explosion2);
 		}
 		if (MyRandom.RollProbability(sinisterCharmChance))
 		{
-			Vector2 pos = pc.GetRandomNearbyPosition(minDistance: 1.6f, maxDistance: 3f);
-			GameObject charmStarter = Instantiate(sinisterCharmProjectile, pc.transform.position, Quaternion.identity);
+			Vector2 pos = pc.GetRandomNearbyPosition(minDistance: 1.8f, maxDistance: 3f);
+			GameObject charmStarter = Instantiate(sinisterCharmStarter, pos, Quaternion.identity);
+			SoundManager.instance.PlaySound(SoundManager.Sound.PageTurn);
 
 			Sequence seq = DOTween.Sequence();
-			seq.Append(charmStarter.transform.DOMove(pos, Random.Range(.6f, .8f)).SetEase(Ease.OutExpo));
-			seq.AppendInterval(0.1f);
+			seq.AppendInterval(0.6f);
 			seq.AppendCallback(() =>
 			{
 				Destroy(charmStarter);
@@ -151,8 +154,10 @@ public class ShootManager : MonoBehaviour
 				if (target == null) return;
 
 				float dAngle = HelperFunctions.GetDAngleTowards(pos, target);
-				ObjectPooler.instance.CreatePlayerProjectile(pos, dAngle, 20f, damage * sinisterCharmDM,
-					1, 40f, true, true);
+				GameObject charmProj = Instantiate(sinisterCharmProjectile, pos, Quaternion.AngleAxis(dAngle, Vector3.forward));
+				charmProj.GetComponent<BasicProjectile>().SetProjectile(19, dAngle, 
+					damage * sinisterCharmDM, 1, 40f, true, true);
+				SoundManager.instance.PlaySound(SoundManager.Sound.Whoosh, volumeDelta: -0.1f);
 			});
 
 			seq.Play();
@@ -163,12 +168,15 @@ public class ShootManager : MonoBehaviour
 			Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
 			ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage * bananaDM, true,
 			randomDir, banana: true);
+			// TODO: Adjust this sound
+			SoundManager.instance.PlaySound(SoundManager.Sound.TestSound);
 		}
 		if (MyRandom.RollProbability(thunderWandChance))
 		{
 			HashSet<Transform> targets = SpawnManager.instance.GetRandomEnemies(15);
 
 			CameraShake.instance.ShakeCamera(0.3f, 0.4f);
+			SoundManager.instance.PlaySound(SoundManager.Sound.Thunder);
 			Transform curr = enemy;
 			foreach (Transform target in targets)
 			{
@@ -210,6 +218,7 @@ public class ShootManager : MonoBehaviour
 
 		if (jumboGeorgeShotCountCurr >= jumboGeorgeShotCount && jumboGeorgeShotCount != 0)
 		{
+			SoundManager.instance.PlaySound(SoundManager.Sound.CannonFire);
 			GameObject proj = Instantiate(jumboGeorgeProjectile, source, Quaternion.identity);
 			proj.GetComponent<JumboGeorgeProjectile>().SetProjectile(8f, dangle, damage * jumboGeorgeDM, 12f, true, false);
 			jumboGeorgeShotCountCurr = 0;
@@ -221,7 +230,7 @@ public class ShootManager : MonoBehaviour
 	[NonSerialized] public int vultureClawAmount;
 
 	[NonSerialized] public int starFragmentCount = 0;
-	[NonSerialized] public float starFragmentDM = 0.65f;
+	[NonSerialized] public float starFragmentDM;
 
 	// Call whenever an enemy dies to invoke on death effects
 	public void OnProjectileKillEnemy(Transform enemy)
@@ -250,7 +259,6 @@ public class ShootManager : MonoBehaviour
 		hs.RestoreHealth(healthRestorePerCrit);
 
 		// TODO: Crit fx
-		
 	}
 
 	[NonSerialized] public int lastRegardsBulletCount;
@@ -270,13 +278,29 @@ public class ShootManager : MonoBehaviour
 
 	private IEnumerator LastRegardsShoot(Vector2 direction)
 	{
-		int lastRegardsUpgradeCount = lastRegardsBulletCount / 8;
-		for (int i = 0; i < lastRegardsBulletCount; i++)
+		float totalShootTime = 0.8f;
+		int numberOfWaves = 8;
+		int shotsPerWave = Mathf.RoundToInt((float)lastRegardsBulletCount / numberOfWaves);
+		int shotsOnLastWave = lastRegardsBulletCount - (shotsPerWave * (numberOfWaves - 1));
+		int counter = 0;
+		for (int i = 0; i < numberOfWaves; i++)
 		{
-			Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
-			ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage, true,
-			randomDir);
-			yield return new WaitForSeconds(Random.Range(0.04f, 0.1f) / lastRegardsUpgradeCount);
+			int shotsOnThisWave;
+			if (i == numberOfWaves - 1)
+				shotsOnThisWave = shotsOnLastWave;
+			else
+				shotsOnThisWave = shotsPerWave;
+
+			for (int j = 0; j < shotsOnThisWave; j++)
+			{
+				counter++;
+				Vector2 randomDir = Quaternion.AngleAxis(Random.Range(-40f, 40f), Vector3.forward) * direction;
+				ObjectPooler.instance.CreateHomingProjectile(pc.transform.position, Quaternion.identity, damage * lastRegardsDM, true,
+				randomDir);
+			}
+
+			SoundManager.instance.PlaySound(SoundManager.Sound.TestSound);
+			yield return new WaitForSeconds(totalShootTime / numberOfWaves);
 		}
 	}
 }

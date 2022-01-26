@@ -47,5 +47,6 @@ public class WeirdEyeball : MonoBehaviour
 		GetComponent<SpriteRenderer>().DOColor(new Color(1, 1, 1, 0), 0.4f).OnComplete(() => Destroy(gameObject));
 
 		CameraShake.instance.ShakeCamera(0.2f, 0.2f);
+		SoundManager.instance.PlaySound(SoundManager.Sound.LaserShoot);
 	}
 }

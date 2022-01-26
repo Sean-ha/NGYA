@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider2D))]
 public class CollideWithEnemy : Damager
@@ -10,6 +11,8 @@ public class CollideWithEnemy : Damager
 	public bool disableOnHit;
 	[Tooltip("Create a CircleHitEffect + HitParticles when collision occurs")]
 	public bool createParticlesOnHit = true;
+
+	public UnityEvent onCollide;
 
 	private HashSet<GameObject> hitSet = new HashSet<GameObject>();
 
@@ -29,6 +32,7 @@ public class CollideWithEnemy : Damager
 
 			if (!hitSet.Contains(collision.gameObject))
 			{
+				onCollide.Invoke();
 				collision.GetComponent<EnemyHealth>().TakeDamage(damage, canCrit: canCrit);
 
 				if (createParticlesOnHit)
@@ -47,5 +51,10 @@ public class CollideWithEnemy : Damager
 	public void ClearHitSet()
 	{
 		hitSet.Clear();
+	}
+
+	public void PlaySound(int sound)
+	{
+		SoundManager.instance.PlaySound((SoundManager.Sound)sound);
 	}
 }
