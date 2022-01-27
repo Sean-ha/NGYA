@@ -9,6 +9,11 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
 		_ShadowColor("Shadow", Color) = (0,0,0,1)
 		_ShadowOffset("ShadowOffset", Vector) = (0,-0.1,0,0)
+		// NOTE: This parameter is funky, probably don't use it. Messes with other shaders (e.g. TMPro shader). It was made to sort shadows on the same layer
+		// But a better alternative to that is to create a shadow only shader, and attach it to a second SpriteRenderer on a lower sorting layer;
+		// especially so if this particular effect (shadows on same layer) is only necessary sometimes...
+		// Maybe in the future you can come up with a better solution that actually works. I don't really understand shaders right now
+		_VertexZ("VertexZ", float) = 0
 
 		// C.A.
 		/*
@@ -142,6 +147,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 				 fixed4 _Color;
 				 fixed4 _FlashColor;
 				 float _FlashAmount;
+				 float _VertexZ;
 
 				 v2f vert(appdata_t IN)
 				 {
@@ -153,7 +159,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 					  OUT.vertex = UnityPixelSnap(OUT.vertex);
 					  #endif
 
-					  OUT.vertex.z = 1;
+					  OUT.vertex.z = _VertexZ;
 
 					  return OUT;
 				 }
