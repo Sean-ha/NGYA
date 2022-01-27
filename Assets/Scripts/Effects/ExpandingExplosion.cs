@@ -23,7 +23,7 @@ public class ExpandingExplosion : MonoBehaviour
 		transform.localScale = new Vector3(radius, radius, 1f);
 
 		ongoingTweens.Add(transform.DOScale(new Vector3(radius + radiusOffset, radius + radiusOffset, 1f), 0.15f));
-		ongoingTweens.Add(explosionMask.DOScale(new Vector3(1f, 1f, 1f), 0.15f).OnComplete(() =>
+		ongoingTweens.Add(explosionMask.DOScale(new Vector3(1f, 1f, 1f), 0.15f).SetEase(Ease.InOutQuad).OnComplete(() =>
 		{
 			gameObject.SetActive(false);
 		}));

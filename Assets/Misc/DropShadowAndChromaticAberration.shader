@@ -11,6 +11,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 		_ShadowOffset("ShadowOffset", Vector) = (0,-0.1,0,0)
 
 		// C.A.
+		/*
 		_OffsetBlueX("Blue Offset X", Range(-.1,.1)) = 0
 		_OffsetBlueY("Blue Offset Y", Range(-.1,.1)) = 0
 
@@ -20,6 +21,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 
 		_OffsetGreenX("Green Offset X", Range(-.1,.1)) = 0
 		_OffsetGreenY("Green Offset Y", Range(-.1,.1)) = 0
+		*/
 
 		// White sprite
 		_FlashColor("Flash Color", Color) = (1,1,1,1)
@@ -39,7 +41,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 
 			Cull Off
 			Lighting Off
-			ZWrite Off
+			ZWrite On
 			Blend One OneMinusSrcAlpha
 
 			// draw shadow
@@ -81,6 +83,9 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 					OUT.vertex = UnityPixelSnap(OUT.vertex);
 #endif
 					OUT.vertex = UnityObjectToClipPos(OUT.vertex);
+
+					OUT.vertex.z = 0;
+
 					return OUT;
 				}
 
@@ -111,7 +116,76 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 			ENDCG
 			}
 
+			// draw real sprite (with white flash if applicable)
+			Pass
+			{
+			CGPROGRAM
+				 #pragma vertex vert
+				 #pragma fragment frag
+				 #pragma multi_compile DUMMY PIXELSNAP_ON
+				 #include "UnityCG.cginc"
+
+				 struct appdata_t
+				 {
+					  float4 vertex   : POSITION;
+					  float4 color    : COLOR;
+					  float2 texcoord : TEXCOORD0;
+				 };
+
+				 struct v2f
+				 {
+					  float4 vertex   : SV_POSITION;
+					  fixed4 color : COLOR;
+					  half2 texcoord  : TEXCOORD0;
+				 };
+
+				 fixed4 _Color;
+				 fixed4 _FlashColor;
+				 float _FlashAmount;
+
+				 v2f vert(appdata_t IN)
+				 {
+					  v2f OUT;
+					  OUT.vertex = UnityObjectToClipPos(IN.vertex);
+					  OUT.texcoord = IN.texcoord;
+					  OUT.color = IN.color * _Color;
+					  #ifdef PIXELSNAP_ON
+					  OUT.vertex = UnityPixelSnap(OUT.vertex);
+					  #endif
+
+					  OUT.vertex.z = 1;
+
+					  return OUT;
+				 }
+
+				 sampler2D _MainTex;
+
+				 fixed4 SampleSpriteTexture(float2 uv)
+				 {
+					 fixed4 color = tex2D(_MainTex, uv);
+
+#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
+					 if (_AlphaSplitEnabled)
+						 color.a = tex2D(_AlphaTex, uv).r;
+#endif //UNITY_TEXTURE_ALPHASPLIT_ALLOWED
+
+					 return color;
+				 }
+
+				 fixed4 frag(v2f IN) : COLOR
+				 {
+					  fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
+					  c.rgb = lerp(c.rgb,_FlashColor.rgb,_FlashAmount);
+					  clip(c.a - 1.0 / 255.0);
+					  c.rgb *= c.a;
+
+					  return c;
+				 }
+			ENDCG
+			}
+
 			// draw real sprite
+			/*
 			Pass
 			{
 			CGPROGRAM
@@ -173,8 +247,10 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 				}
 			ENDCG
 			}
+			*/
 
 			// draw chromatic aberration
+			/*
 			Pass
 			{
 			CGPROGRAM
@@ -253,58 +329,6 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 			}
 			 ENDCG
 			}
-
-			// draw white sprite
-			Pass
-			{
-			CGPROGRAM
-				 #pragma vertex vert
-				 #pragma fragment frag
-				 #pragma multi_compile DUMMY PIXELSNAP_ON
-				 #include "UnityCG.cginc"
-
-				 struct appdata_t
-				 {
-					  float4 vertex   : POSITION;
-					  float4 color    : COLOR;
-					  float2 texcoord : TEXCOORD0;
-				 };
-
-				 struct v2f
-				 {
-					  float4 vertex   : SV_POSITION;
-					  fixed4 color : COLOR;
-					  half2 texcoord  : TEXCOORD0;
-				 };
-
-				 fixed4 _Color;
-				 fixed4 _FlashColor;
-				 float _FlashAmount;
-
-				 v2f vert(appdata_t IN)
-				 {
-					  v2f OUT;
-					  OUT.vertex = UnityObjectToClipPos(IN.vertex);
-					  OUT.texcoord = IN.texcoord;
-					  OUT.color = IN.color * _Color;
-					  #ifdef PIXELSNAP_ON
-					  OUT.vertex = UnityPixelSnap(OUT.vertex);
-					  #endif
-
-					  return OUT;
-				 }
-
-				 sampler2D _MainTex;
-
-				 fixed4 frag(v2f IN) : COLOR
-				 {
-					  fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
-					  c.rgb = lerp(c.rgb,_FlashColor.rgb,_FlashAmount);
-					  c.rgb *= c.a;
-
-					  return c;
-				 }
-			ENDCG
-			}
+			*/
 		}
 }

@@ -24,7 +24,6 @@ public class ExploderEnemy : MonoBehaviour
 		// Disable spinning
 		GetComponent<Spin>().enabled = false;
 
-		mySprite.transform.DOPunchScale(new Vector3(0.3f, 0.3f, 0f), 1f, vibrato: 7);
 		StartCoroutine(ExplodeCR());
 	}
 
@@ -35,7 +34,9 @@ public class ExploderEnemy : MonoBehaviour
 		colliderObject.transform.localScale = new Vector3(explosionRadius, explosionRadius, 1f);
 		colliderObject.GetComponent<Damager>().damage = GetComponent<Damager>().damage;
 
-		yield return new WaitForSeconds(1f);
+		mySprite.transform.DOPunchScale(new Vector3(0.3f, 0.3f, 0f), 1.4f, vibrato: 7);
+
+		yield return new WaitForSeconds(1.4f);
 
 		colliderObject.SetActive(true);
 		explosionParticles.SetActive(true);

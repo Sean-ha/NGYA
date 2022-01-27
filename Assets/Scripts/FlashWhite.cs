@@ -7,13 +7,16 @@ public class FlashWhite : MonoBehaviour
 {
 	private Renderer rend;
 	private MaterialPropertyBlock block;
+	private SpriteRenderer sr;
 
 	private Coroutine stopFlashCR;
+	private Coroutine spriteRendererFlashCR;
 
 	private void Awake()
 	{
 		rend = GetComponent<Renderer>();
 		block = new MaterialPropertyBlock();
+		sr = GetComponent<SpriteRenderer>();
 	}
 
 	private void OnEnable()
@@ -53,5 +56,26 @@ public class FlashWhite : MonoBehaviour
 		rend.GetPropertyBlock(block);
 		block.SetFloat("_FlashAmount", 0f);
 		rend.SetPropertyBlock(block);
+	}
+
+
+
+	// Good for making sprites flash white if the object does not have the DropShadow shader AND is colored differently using SpriteRenderer.color
+	public void ChangeSpriteColorToWhite()
+	{
+		if (spriteRendererFlashCR != null)
+			StopCoroutine(spriteRendererFlashCR);
+
+		Color originalColor = sr.color;
+		sr.color = Color.white;
+		if (gameObject.activeInHierarchy)
+			spriteRendererFlashCR = StartCoroutine(ChangeSpriteColorToWhiteCR(0.1f, originalColor));
+	}
+
+	private IEnumerator ChangeSpriteColorToWhiteCR(float whiteTime, Color originalColor)
+	{
+		yield return new WaitForSeconds(whiteTime);
+
+		sr.color = originalColor;
 	}
 }

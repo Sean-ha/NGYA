@@ -102,6 +102,11 @@ public class EnemyHealth : MonoBehaviour
 		}
 	}
 
+	public void SetCurrHealth()
+	{
+		currentHealth = maxHealth;
+	}
+
 	public Vector2 GetTopOfEnemy()
 	{
 		return (Vector2)myColl.bounds.center + new Vector2(0, myColl.bounds.extents.y + 0.35f);
@@ -127,7 +132,7 @@ public class EnemyHealth : MonoBehaviour
 		scaleDownTween.Complete();
 
 		float currScale = toScale.localScale.x;
-		toScale.localScale = new Vector3(currScale + 0.5f, currScale + 0.5f, 1);
+		toScale.localScale = new Vector3(currScale + 0.35f, currScale + 0.35f, 1);
 		scaleDownTween = toScale.DOScale(new Vector3(currScale, currScale, 1), 0.2f);
 	}
 

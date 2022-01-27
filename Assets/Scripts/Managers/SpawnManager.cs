@@ -187,7 +187,7 @@ public class SpawnManager : MonoBehaviour
 
 		for (int i = 0; i < spawns.Count; i++)
 		{
-			enemiesInCurrentStage += spawns[i].Count;
+			enemiesInCurrentStage += GetEnemiesInCurrentStage(spawns[i]);
 
 			Vector2 pos = positions[i] + (Vector2)bottomLeft.position;
 
@@ -247,6 +247,21 @@ public class SpawnManager : MonoBehaviour
 		// Don't start Coroutine for next wave if last wave has been reached.
 		if (currentWave != possibleWaves.Count - 1)
 			currentWaitingToSpawnCR = StartCoroutine(WaitingToSpawnNextWave());
+	}
+
+	// Number of EnemyHealths that player must kill in this stage.
+	public int GetEnemiesInCurrentStage(List<GameObject> spawnList)
+	{
+		int counter = 0;
+		foreach (GameObject spawn in spawnList)
+		{
+			if (spawn.GetComponentInChildren<SplitterEnemy>() != null)
+				counter += 5;
+			else
+				counter++;
+		}
+
+		return counter;
 	}
 
 	// Given a list of enemies and a center position, spawn them all around that center position 1 by 1
