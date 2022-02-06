@@ -58,6 +58,26 @@ public class FlashWhite : MonoBehaviour
 		rend.SetPropertyBlock(block);
 	}
 
+	public void InitiateWhiteFlashAllChildren()
+	{
+		InitiateWhiteFlashAllChildren(0.1f);
+	}
+
+	// Initiates the white flash for this object and all of its children
+	public void InitiateWhiteFlashAllChildren(float whiteTime = 0.1f)
+	{
+		InitiateWhiteFlash(whiteTime);
+
+		foreach (Transform child in transform)
+		{
+			FlashWhite flasher = child.GetComponent<FlashWhite>();
+			if (flasher != null)
+			{
+				flasher.InitiateWhiteFlash(whiteTime);
+			}
+		}
+	}
+
 
 
 	// Good for making sprites flash white if the object does not have the DropShadow shader AND is colored differently using SpriteRenderer.color

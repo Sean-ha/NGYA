@@ -202,6 +202,8 @@ public class UpgradeCard : MonoBehaviour
 			}
 		});
 
+		SoundManager.instance.PlaySound(SoundManager.Sound.Squish);
+
 		DOVirtual.DelayedCall(2.0f, () => Destroy(gameObject), ignoreTimeScale: true);
 	}
 
@@ -212,6 +214,8 @@ public class UpgradeCard : MonoBehaviour
 		{
 			t.Complete();
 		}
+
+		SoundManager.instance.PlaySound(SoundManager.Sound.UpgradeChoose1, false);
 
 		float duration = 0.35f;
 		// Left side
@@ -231,6 +235,8 @@ public class UpgradeCard : MonoBehaviour
 		DOTween.To(() => 0f, (float val) => topLR.SetPosition(1, new Vector3(-val, 0, 0)), endpoint,
 			duration).SetEase(Ease.OutQuad).SetUpdate(true).OnComplete(() =>
 			{
+				SoundManager.instance.PlaySound(SoundManager.Sound.UpgradeChoose2, false);
+
 				float ySize = Mathf.Abs(leftLR.transform.position.y - rightLR.transform.position.y);
 				float yCenter = leftLR.transform.position.y - (ySize / 2f);
 				foreach (ParticleSystem ps in chosenParticles)

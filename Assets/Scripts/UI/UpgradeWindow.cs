@@ -36,6 +36,8 @@ public class UpgradeWindow : MonoBehaviour
 	{
 		transform.position = initialPos;
 
+		SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
+
 		transform.DOMoveY(0, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true);
 
 		yield return new WaitForSecondsRealtime(0.45f);
@@ -47,6 +49,7 @@ public class UpgradeWindow : MonoBehaviour
 		yield return new WaitForSecondsRealtime(0.26f);
 
 		// Expand window: move the 4 corners while scaling up the fill
+		SoundManager.instance.PlaySound(SoundManager.Sound.Maximize, randomizePitch: false);
 		float expandDur = 0.35f;
 		// Tween x vals
 		DOTween.To(() => 0f, (float val) =>
@@ -90,6 +93,7 @@ public class UpgradeWindow : MonoBehaviour
 	private IEnumerator AnimateHideUpgradeWindow(Action onComplete)
 	{
 		// Shrink window: move the 4 corners while scaling down the fill
+		SoundManager.instance.PlaySound(SoundManager.Sound.Minimize, randomizePitch: false);
 		float expandDur = 0.35f;
 		// Tween x vals
 		DOTween.To(() => cornerX, (float val) =>
@@ -115,6 +119,8 @@ public class UpgradeWindow : MonoBehaviour
 		transform.DORotate(new Vector3(0, 0, 45), 0.2f).SetEase(Ease.InOutQuad).SetUpdate(true);
 
 		yield return new WaitForSecondsRealtime(0.25f);
+
+		SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
 
 		transform.DOMoveY(initialPos.y, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true).OnComplete(() =>
 		{

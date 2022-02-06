@@ -36,12 +36,9 @@ public class SpecialAbilityManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (currCooldown <= 0)
+		if (Input.GetKeyDown(KeyCode.Space) && currCooldown <= 0 && !TimeManager.IsPaused)
 		{
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				onAbilityCast.Invoke();
-			}
+			onAbilityCast.Invoke();
 		}
 		else
 		{

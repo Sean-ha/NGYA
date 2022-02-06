@@ -35,8 +35,8 @@ public class SoundManager : MonoBehaviour
       // Thump = 23,
       // InspireBannerExit = 24,
       // Thump2 = 25,
-      Pickup = 26,
-      // BuddyShoot = 27,
+      UpgradeChoose1 = 26,
+      UpgradeChoose2 = 27,
       EnemyHitWall = 28,
       BigShoot = 29,
       PauseMenuClick = 30,
@@ -53,6 +53,13 @@ public class SoundManager : MonoBehaviour
       PageTurn = 41,
       PianoNote = 42,
       EnemyExplosion1 = 43,
+      Fuse = 44,
+      Squish = 45,
+      Maximize = 46,
+      Minimize = 47,
+      MultipleClicks = 48,
+      SwitchClick = 49,
+      SingleClick = 50,
    }
 
    [System.Serializable]

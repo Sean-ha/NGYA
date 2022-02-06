@@ -293,6 +293,10 @@ public class PlayerController : MonoBehaviour
 		levelUpSquare.SetActive(true);
 		levelUpParticles.SetActive(true);
 		levelUpParticles2.SetActive(true);
+
+		levelUpParticles.GetComponent<ParticleSystem>().Play();
+		levelUpParticles2.GetComponent<ParticleSystem>().Play();
+
 		Instantiate(levelUpText, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
 		SoundManager.instance.PlaySound(SoundManager.Sound.LevelUp);
 

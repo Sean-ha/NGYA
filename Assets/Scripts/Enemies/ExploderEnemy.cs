@@ -24,6 +24,8 @@ public class ExploderEnemy : MonoBehaviour
 		// Disable spinning
 		GetComponent<Spin>().enabled = false;
 
+		SoundManager.instance.PlaySound(SoundManager.Sound.Fuse);
+
 		StartCoroutine(ExplodeCR());
 	}
 

@@ -143,7 +143,7 @@ public class UpgradesManager : MonoBehaviour
 					if (Input.GetMouseButtonDown(0))
 					{
 						TimeManager.instance.canPause = false;
-						SoundManager.instance.PlaySound(SoundManager.Sound.Pickup, false);
+						
 						CameraShake.instance.ShakeCameraRealtime(0.3f, 0.5f);
 						readyToPick = false;
 						previousHoverCardIndex = -1;

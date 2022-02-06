@@ -13,7 +13,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 		// But a better alternative to that is to create a shadow only shader, and attach it to a second SpriteRenderer on a lower sorting layer;
 		// especially so if this particular effect (shadows on same layer) is only necessary sometimes...
 		// Maybe in the future you can come up with a better solution that actually works. I don't really understand shaders right now
-		_VertexZ("VertexZ", float) = 0
+		// _VertexZ("VertexZ", float) = 0
 
 		// C.A.
 		/*
@@ -46,7 +46,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 
 			Cull Off
 			Lighting Off
-			ZWrite On
+			ZWrite Off
 			Blend One OneMinusSrcAlpha
 
 			// draw shadow
@@ -89,7 +89,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 #endif
 					OUT.vertex = UnityObjectToClipPos(OUT.vertex);
 
-					OUT.vertex.z = 0;
+					// OUT.vertex.z = 0;
 
 					return OUT;
 				}
@@ -147,7 +147,6 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 				 fixed4 _Color;
 				 fixed4 _FlashColor;
 				 float _FlashAmount;
-				 float _VertexZ;
 
 				 v2f vert(appdata_t IN)
 				 {
@@ -159,7 +158,7 @@ Shader "UnityCommunity/Sprites/SpriteDropShadow"
 					  OUT.vertex = UnityPixelSnap(OUT.vertex);
 					  #endif
 
-					  OUT.vertex.z = _VertexZ;
+					  // OUT.vertex.z = _VertexZ;
 
 					  return OUT;
 				 }
