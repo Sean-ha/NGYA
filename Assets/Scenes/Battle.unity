@@ -7454,6 +7454,8 @@ GameObject:
   - component: {fileID: 399675363}
   - component: {fileID: 399675361}
   - component: {fileID: 399675365}
+  - component: {fileID: 399675367}
+  - component: {fileID: 399675368}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -7622,6 +7624,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whiteScreen: {fileID: 1382690389}
   ability: 0
+--- !u!114 &399675367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399675359}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a1bbc6c01a99f4881a5c8d0d85fc32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &399675368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399675359}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71486187b51e1c04396a6c2812f6a83f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &426667274
 GameObject:
   m_ObjectHideFlags: 0
@@ -17009,6 +17035,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotTemplate: {fileID: 7342867524720299279, guid: 670655f31f3f949408e8c872392528bf, type: 3}
   dotCount: 3
+  angledDots: 0
+  dotAngle: 0
+  straightDots: 1
+  dotDistance: 0.5
 --- !u!1 &1223386348
 GameObject:
   m_ObjectHideFlags: 0

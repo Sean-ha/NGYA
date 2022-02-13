@@ -5,7 +5,7 @@ using UnityEngine;
 public class PauseUpgradeIcon : MonoBehaviour
 {
 	public PauseUpgradeDescriptionBox descriptionBox;
-	public Upgrade upgrade { get; set; }
+	public Upgrade_OLD2 upgrade { get; set; }
 
 	public void OnMouseEnter()
 	{

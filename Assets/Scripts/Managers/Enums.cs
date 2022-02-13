@@ -9,7 +9,7 @@ public enum EnemyType
 	RedTriangleFlyer
 }
 
-public enum Upgrade
+public enum Upgrade_OLD2
 {
 	// Common upgrades
 	MagicBullet = 0,

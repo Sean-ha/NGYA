@@ -32,6 +32,9 @@ public class ShootManager : MonoBehaviour
 		set { shootCooldown = Mathf.Max(0.05f, value); }
 	}
 
+	// Amount of ammo to consume per shot
+	public float ammoPerShot;
+
 	public float critChance { get; set; } = .05f;
 	// Percentage damage increase. E.g. 0.5 means crits deal 50% more damage, or 1.5x dmg
 	public float critDamage { get; set; } = 0.5f;
@@ -71,6 +74,12 @@ public class ShootManager : MonoBehaviour
 		{
 			if (currShootCooldown <= 0)
 			{
+				if (!AmmoSystem.instance.RemoveAmmo(1)) // TODO: replace with ammoPerShot
+				{
+					SoundManager.instance.PlaySound(SoundManager.Sound.FailShoot);
+					return;
+				}
+
 				CursorManager.instance.AnimateCursorShoot();
 				onShoot.Invoke(damage, bulletDistance, pierceCount);
 				currShootCooldown = shootCooldown;

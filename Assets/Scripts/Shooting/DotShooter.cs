@@ -5,20 +5,15 @@ using DG.Tweening;
 
 public class DotShooter : Shooter
 {
+	[Tooltip("If true, bullets will shoot away from player center. If false, bullets will shoot straight ahead.")]
+	public bool angledBullets;
+
 	public ParticleSystem[] onShootParticles;
 
 	private Tween scaleDownTween;
 
 	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
 	{
-		if (!MyRandom.RollProbability(ChanceToNotConsumeAmmo))
-		{
-			if (!AmmoSystem.instance.RemoveAmmo(ammoPerShot))
-			{
-				SoundManager.instance.PlaySound(SoundManager.Sound.FailShoot);
-				return;
-			}
-		}
 		foreach (ParticleSystem ps in onShootParticles)
 		{
 			ps.Play();
@@ -26,8 +21,17 @@ public class DotShooter : Shooter
 
 		SoundManager.instance.PlaySound(SoundManager.Sound.PlayerShoot);
 
-		// Get angle (degrees) between player and mouse location
-		float dangle = GetAngle();
+		float dangle;
+		if (angledBullets)
+		{
+			// Get angle (degrees) of dot relative to player
+			dangle = GetAngle();
+		}
+		else
+		{
+			// Get angle (degrees) of parent object relative to player
+			dangle = transform.parent.rotation.eulerAngles.z;
+		}
 
 		ShootManager.instance.OnShoot(dangle, transform.position);
 
@@ -39,8 +43,12 @@ public class DotShooter : Shooter
 
 		ObjectPooler.instance.CreatePlayerProjectile(transform.position, dangle, HelperFunctions.shotSpeed, damage, 
 			numberOfTargets, bulletDistance, true, true);
+	}
 
+	private void CreateAmmoShell()
+	{
 		// Ammo shell
+		/*
 		GameObject shell = ObjectPooler.instance.Create(Tag.AmmoShell, transform.position, Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward));
 		float shellAngle = dangle + Random.Range(80, 130f);
 		float shellForce = Random.Range(1.4f, 2f);
@@ -52,5 +60,6 @@ public class DotShooter : Shooter
 
 		shell.transform.DOMove(shellDestination, shellTime).SetEase(Ease.OutQuad);
 		shell.transform.DORotate(new Vector3(0, 0, shellSpinAmount), shellSpinTime, RotateMode.FastBeyond360).SetEase(Ease.OutQuad).onComplete += () => shell.SetActive(false);
+	*/
 	}
 }

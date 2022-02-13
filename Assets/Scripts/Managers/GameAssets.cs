@@ -22,7 +22,7 @@ public class GameAssets : MonoBehaviour
 	{
       LoadingDone = false;
       enemyDict = new Dictionary<EnemyType, GameObject>();
-      upgradeDict = new Dictionary<Upgrade, UpgradeObject>();
+      upgradeDict = new Dictionary<Upgrade_OLD2, UpgradeObject>();
 
       foreach (EnemyPair pair in enemyList)
 		{
@@ -78,9 +78,9 @@ public class GameAssets : MonoBehaviour
 
    private Dictionary<EnemyType, GameObject> enemyDict;
 
-   public HashSet<Upgrade> currentUpgrades { get; set; }
+   public HashSet<Upgrade_OLD2> currentUpgrades { get; set; }
 
-   public Dictionary<Upgrade, UpgradeObject> upgradeDict { get; set; }
+   public Dictionary<Upgrade_OLD2, UpgradeObject> upgradeDict { get; set; }
 
    public GameObject blowbackExplosion;
 
