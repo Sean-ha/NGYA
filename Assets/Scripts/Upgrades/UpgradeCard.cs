@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class UpgradeCard : MonoBehaviour
 {
-	public Upgrade_OLD2 upgrade { get; set; }
+	public Upgrade upgrade { get; set; }
 
 	[SerializeField] private TextMeshPro upgradeName;
 	[SerializeField] private SpriteRenderer upgradeSprite;
@@ -57,7 +57,7 @@ public class UpgradeCard : MonoBehaviour
 	}
 
 	// Params: amount is the number of this upgrade the player currently has
-	public void SetCard(Upgrade_OLD2 upgrade, int amount)
+	public void SetCard(Upgrade upgrade, int amount)
 	{
 		// Get upgrade object from upgrade
 		UpgradeObject obj = GameAssets.instance.upgradeDict[upgrade];

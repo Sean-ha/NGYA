@@ -6,7 +6,7 @@ using NaughtyAttributes;
 [CreateAssetMenu(menuName = "ScriptableObjects/Upgrade", order = 1)]
 public class UpgradeObject : ScriptableObject
 {
-	public Upgrade_OLD2 upgradeType;
+	public Upgrade upgradeType;
 	public string upgradeName;
 	[ShowAssetPreview]
 	public Sprite upgradeSprite;

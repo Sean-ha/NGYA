@@ -12,7 +12,7 @@ public class PauseUpgradeIconBuilder : MonoBehaviour
 
 	private float originalPosX;
 
-	private Dictionary<Upgrade_OLD2, PauseUpgradeObject> upgradeCounts = new Dictionary<Upgrade_OLD2, PauseUpgradeObject>();
+	private Dictionary<Upgrade, PauseUpgradeObject> upgradeCounts = new Dictionary<Upgrade, PauseUpgradeObject>();
 
 	private void Awake()
 	{
@@ -23,7 +23,7 @@ public class PauseUpgradeIconBuilder : MonoBehaviour
 		iconTemplate.transform.position = new Vector3(100, 100, iconTemplate.transform.position.z);
 	}
 
-	public void AddUpgradeIcon(Upgrade_OLD2 upgrade)
+	public void AddUpgradeIcon(Upgrade upgrade)
 	{
 		// Add 1 to existing upgrade
 		if (upgradeCounts.ContainsKey(upgrade))

@@ -9,6 +9,24 @@ public enum EnemyType
 	RedTriangleFlyer
 }
 
+public enum Upgrade
+{
+	Vitality = 0,
+	Wisdom = 1,
+	Serenity = 2,
+	Haste = 3,
+	Ironskin = 4,
+	ManaMastery = 5,
+	FocusMind = 6,
+	Barrier = 7,
+	PowerRune = 8,	// idk if this should exist or not but we'll see
+	MagicDice = 9,
+	ArcaneMight = 10,
+	LastRegards = 11,
+	Vampirism = 12,
+}
+
+// Deprecated
 public enum Upgrade_OLD2
 {
 	// Common upgrades

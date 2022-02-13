@@ -93,39 +93,4 @@ public class DotBuilder : MonoBehaviour
 		}
 #endif
 	}
-
-	public void BuildBackboneDot()
-	{
-		Transform newDot = Instantiate(dotTemplate, transform, false);
-		newDot.localPosition = new Vector3(-1, 0) * distance;
-		Shooter shooter = newDot.GetComponent<Shooter>();
-		shooter.ammoPerShot = 0;
-		ShootManager.instance.onShoot.AddListener(shooter.Shoot);
-
-		ObjectPooler.instance.CreateHitParticles(Color.white, newDot.position);
-		ObjectPooler.instance.CreateCircleHitEffect(Color.white, newDot.position, 0.4f);
-	}
-
-	/// <summary>
-	/// Change amount of bullets each shooter consumes. adjustmentValue is the amount to be added.
-	/// </summary>
-	/// <param name="adjustmentValue"></param>
-	public void ChangeBulletAmmoCost(int adjustmentValue)
-	{
-		Shooter[] shooters = GetComponentsInChildren<Shooter>();
-		foreach (Shooter shooter in shooters)
-		{
-			if (shooter.ammoPerShot != 0)
-				shooter.ammoPerShot += adjustmentValue;
-		}
-	}
-
-	public void ChangeBulletAmmoConsumptionChance(float adjustmentValue)
-	{
-		Shooter[] shooters = GetComponentsInChildren<Shooter>();
-		foreach (Shooter shooter in shooters)
-		{
-			shooter.ChanceToNotConsumeAmmo += adjustmentValue;
-		}
-	}
 }

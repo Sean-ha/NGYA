@@ -32,14 +32,14 @@ public class UpgradesManager : MonoBehaviour
 
 	private UpgradeCard[] upgradeCards = new UpgradeCard[3];
 
-	private HashSet<Upgrade_OLD2> availableUpgrades;
+	private HashSet<Upgrade> availableUpgrades;
 
 	// Contains only the currently available upgrades. When max count is reached, the upgrade will be deleted from this set!!
-	private HashSet<Upgrade_OLD2> commonUpgrades = new HashSet<Upgrade_OLD2>();
-	private HashSet<Upgrade_OLD2> rareUpgrades = new HashSet<Upgrade_OLD2>();
+	private HashSet<Upgrade> commonUpgrades = new HashSet<Upgrade>();
+	private HashSet<Upgrade> rareUpgrades = new HashSet<Upgrade>();
 
 	// Key: upgrade; value: number of that upgrade currently held
-	public Dictionary<Upgrade_OLD2, int> obtainedUpgrades { get; set; } = new Dictionary<Upgrade_OLD2, int>();
+	public Dictionary<Upgrade, int> obtainedUpgrades { get; set; } = new Dictionary<Upgrade, int>();
 
 	private System.Random rand;
 
@@ -52,7 +52,7 @@ public class UpgradesManager : MonoBehaviour
 		pauseIconBuilder = FindObjectOfType<PauseUpgradeIconBuilder>();
 
 		// Initialize available upgrades set
-		availableUpgrades = new HashSet<Upgrade_OLD2>(Enum.GetValues(typeof(Upgrade_OLD2)).Cast<Upgrade_OLD2>());
+		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
 
 		StartCoroutine(LoadUpgrades());
 	}
@@ -63,7 +63,7 @@ public class UpgradesManager : MonoBehaviour
 			yield return null;
 
 		// Setup dictionary and rarity hashsets
-		foreach (Upgrade_OLD2 upgrade in availableUpgrades)
+		foreach (Upgrade upgrade in availableUpgrades)
 		{
 			if (!GameAssets.instance.upgradeDict.ContainsKey(upgrade))
 			{
@@ -161,7 +161,7 @@ public class UpgradesManager : MonoBehaviour
 
 						StartCoroutine(HideUpgradeWindow(currIndex));
 
-						Upgrade_OLD2 selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
+						Upgrade selected = upgradeCards[currIndex].GetComponent<UpgradeCard>().upgrade;
 						GainUpgradeEffect(selected);
 					}
 				}
@@ -191,7 +191,7 @@ public class UpgradesManager : MonoBehaviour
 
 	private IEnumerator DisplayUpgradesWindowCR(int currentLevel)
 	{
-		List<Upgrade_OLD2> chosen;
+		List<Upgrade> chosen;
 		string chooseUpgradeStr = "";
 		bool rareUpgrade = false;
 
@@ -237,7 +237,7 @@ public class UpgradesManager : MonoBehaviour
 	// Deprecated
 	private IEnumerator DisplayUpgradesWindowCR_Dep(int currentLevel)
 	{
-		List<Upgrade_OLD2> chosen;
+		List<Upgrade> chosen;
 		string chooseUpgradeStr = "";
 
 		// If current level is a multiple of 4, choose rare upgrade. Otherwise, choose common upgrade
@@ -349,7 +349,7 @@ public class UpgradesManager : MonoBehaviour
 		});		
 	}
 
-	private void GainUpgradeEffect(Upgrade_OLD2 upgrade)
+	private void GainUpgradeEffect(Upgrade upgrade)
 	{
 		UpgradeObject uo = GameAssets.instance.upgradeDict[upgrade];
 
@@ -371,37 +371,95 @@ public class UpgradesManager : MonoBehaviour
 
 		switch (upgrade)
 		{
-			case Upgrade_OLD2.MagicBullet:
-				DotBuilder.instance.ChangeBulletAmmoConsumptionChance(0.15f);
-				break;
-
-			case Upgrade_OLD2.FingerlessGloves:
-				ShootManager.instance.ShootCooldown -= 0.03f;
-				break;
-
-			case Upgrade_OLD2.Lipstick:
+			case Upgrade.Vitality:
 				HealthSystem.instance.healthUpgradeCount += 5;
 				HealthSystem.instance.UpdateMaxBar();
 				HealthSystem.instance.RestoreToMaxHealth();
 				break;
 
-			case Upgrade_OLD2.FlimsyString:
+			case Upgrade.Wisdom:
+				// TODO
+				break;
+
+			case Upgrade.Serenity:
+				AmmoSystem.instance.AmmoRegenPerSecond += 2f;
+				break;
+
+			case Upgrade.Haste:
+				PlayerController.instance.moveSpeed += 1.5f;
+				break;
+
+			case Upgrade.Ironskin:
+				HealthSystem.instance.damageReduction += 0.1f;
+				break;
+
+			case Upgrade.ManaMastery:
+				// TODO
+				break;
+
+			case Upgrade.FocusMind:
+				// TODO
+				break;
+
+			case Upgrade.Barrier:
+				// TODO
+				break;
+
+			case Upgrade.PowerRune:
+				// TODO
+				break;
+
+			case Upgrade.MagicDice:
+				ShootManager.instance.critChance += 0.1f;
+				break;
+
+			case Upgrade.ArcaneMight:
+				ShootManager.instance.critDamage += 0.1f;
+				break;
+
+			case Upgrade.LastRegards:
+				ShootManager.instance.lastRegardsDM = 1f;
+				ShootManager.instance.lastRegardsBulletCount += 9;
+				break;
+
+			case Upgrade.Vampirism:
+				// TODO
+				break;
+		}
+	}
+
+	/*
+			case Upgrade.MagicBullet:
+				DotBuilder.instance.ChangeBulletAmmoConsumptionChance(0.15f);
+				break;
+
+			case Upgrade.FingerlessGloves:
+				ShootManager.instance.ShootCooldown -= 0.03f;
+				break;
+
+			case Upgrade.Lipstick:
+				HealthSystem.instance.healthUpgradeCount += 5;
+				HealthSystem.instance.UpdateMaxBar();
+				HealthSystem.instance.RestoreToMaxHealth();
+				break;
+
+			case Upgrade.FlimsyString:
 				AmmoSystem.instance.AmmoRegenPerSecond += 2;
 				break;
 
-			case Upgrade_OLD2.FannyPack:
+			case Upgrade.FannyPack:
 				AmmoSystem.instance.AmmoUpgrades += 1;
 				break;
 
-			case Upgrade_OLD2.Goggles:
+			case Upgrade.Goggles:
 				ShootManager.instance.BulletDistance += 1.6f;
 				break;
 
-			case Upgrade_OLD2.LoveJar:
+			case Upgrade.LoveJar:
 				HealthSystem.instance.healthRegenPerMinute += 6f;
 				break;
 
-			case Upgrade_OLD2.VultureClaw:
+			case Upgrade.VultureClaw:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.vultureClawAmount = 1;
@@ -417,7 +475,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.BustedToaster:
+			case Upgrade.BustedToaster:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.bustedToasterChance = 0.25f;
@@ -430,7 +488,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.LastRegards:
+			case Upgrade.LastRegards:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.lastRegardsBulletCount = 10;
@@ -443,11 +501,11 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.CannedSoup:
+			case Upgrade.CannedSoup:
 				PlayerController.instance.moveSpeed += 1.5f;
 				break;
 
-			case Upgrade_OLD2.AbyssalHead:
+			case Upgrade.AbyssalHead:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.abyssalHeadDM = 0.7f;
@@ -460,12 +518,12 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.SinisterCharm:
+			case Upgrade.SinisterCharm:
 				ShootManager.instance.sinisterCharmDM = 0.5f;
 				ShootManager.instance.sinisterCharmChance += 0.12f;
 				break;
 
-			case Upgrade_OLD2.DeadlyBananas:
+			case Upgrade.DeadlyBananas:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.bananaChance = 0.3f;
@@ -479,7 +537,7 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			
-			case Upgrade_OLD2.Scissors:
+			case Upgrade.Scissors:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.scissorsHealthPercent = 0.15f;
@@ -492,23 +550,23 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.CloakedDagger:
+			case Upgrade.CloakedDagger:
 				ShootManager.instance.cloakedDaggerDM += 0.5f;
 				break;
 
-			case Upgrade_OLD2.D6:
+			case Upgrade.D6:
 				ShootManager.instance.critChance += 0.1f;
 				break;
 
-			case Upgrade_OLD2.Thumbtack:
+			case Upgrade.Thumbtack:
 				ShootManager.instance.critDamage += 0.12f;
 				break;
 
-			case Upgrade_OLD2.SwirlyStraw:
+			case Upgrade.SwirlyStraw:
 				ShootManager.instance.healthRestorePerCrit += 0.5f;
 				break;
 
-			case Upgrade_OLD2.RoyalShield:
+			case Upgrade.RoyalShield:
 				DefenderShield s = defenderShield.GetComponent<DefenderShield>();
 				if (upgradeCount == 1)
 				{
@@ -523,33 +581,33 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.PotLid:
+			case Upgrade.PotLid:
 				if (upgradeCount == 1)
 					HealthSystem.instance.damageReduction += 0.1f;
 				else
 					HealthSystem.instance.damageReduction += 0.08f;
 				break;
 
-			case Upgrade_OLD2.DopeSunglasses:
+			case Upgrade.DopeSunglasses:
 				ShootManager.instance.damageMultiplier += 0.06f;
 				break;
 
-			case Upgrade_OLD2.RadCape:
+			case Upgrade.RadCape:
 				HealthSystem.instance.dodgeChance += 0.15f;
 				break;
 
 
 			// Rare upgrades:
-			case Upgrade_OLD2.StarFragment:
+			case Upgrade.StarFragment:
 				ShootManager.instance.starFragmentCount += 1;
 				ShootManager.instance.starFragmentDM = 0.65f;
 				break;
 
-			case Upgrade_OLD2.GentleQuill:
+			case Upgrade.GentleQuill:
 				ShootManager.instance.pierceCount += 1;
 				break;
 
-			case Upgrade_OLD2.VoltHammer:
+			case Upgrade.VoltHammer:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.voltHammerChance = 0.11f;
@@ -562,7 +620,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.JumboGeorge:
+			case Upgrade.JumboGeorge:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.jumboGeorgeShotCount = 18;
@@ -575,7 +633,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.WeirdEyeball:
+			case Upgrade.WeirdEyeball:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.weirdEyeballChance = 0.11f;
@@ -588,7 +646,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.MoonlightScythe:
+			case Upgrade.MoonlightScythe:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.moonlightScytheChance = 0.1f;
@@ -601,7 +659,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.ThunderWand:
+			case Upgrade.ThunderWand:
 				if (upgradeCount == 1)
 				{
 					ShootManager.instance.thunderWandChance = 0.1f;
@@ -614,7 +672,7 @@ public class UpgradesManager : MonoBehaviour
 				}
 				break;
 
-			case Upgrade_OLD2.ShockCollar:
+			case Upgrade.ShockCollar:
 				if (upgradeCount == 1)
 				{
 					shockCollar.gameObject.SetActive(true);
@@ -629,8 +687,9 @@ public class UpgradesManager : MonoBehaviour
 					shockCollar.SetRadius(shockCollar.radius + 0.75f);
 				}
 				break;
-		}
-	}
+			*/
+
+
 
 	/*  Old stuff
 	private void GainUpgradeEffect(Upgrade upgrade)

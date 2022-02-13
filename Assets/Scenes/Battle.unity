@@ -7587,6 +7587,7 @@ MonoBehaviour:
   damageMultiplier: 1
   bulletDistance: 7.5
   pierceCount: 1
+  ammoPerShot: 0
   bustedToasterExplosion: {fileID: 3483782353390380529, guid: 61714d953bf418f4685800f5886d82dd, type: 3}
   sinisterCharmStarter: {fileID: 3201781917995035087, guid: 6cf88ffa7aaa5a54f91e42523336da10, type: 3}
   sinisterCharmProjectile: {fileID: 6184579664269794269, guid: 3a14690d10f78e8419c16e4a97dccf2f, type: 3}
@@ -8177,7 +8178,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.14117648, g: 0.14117648, b: 0.18039216, a: 1}
+  m_BackGroundColor: {r: 0.20392157, g: 0.20392157, b: 0.29411766, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -17487,7 +17488,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d62c35d88fa970e4eba42537f1a4d541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammoPerShot: 1
   shotSpeed: 10.5
 --- !u!1001 &1244701358
 PrefabInstance:
