@@ -10,7 +10,7 @@ public class PauseUpgradeIcon : MonoBehaviour
 	public void OnMouseEnter()
 	{
 		UpgradeObject currUpgrade = GameAssets.instance.upgradeDict[upgrade];
-		descriptionBox.SetDescriptionBox(currUpgrade.upgradeName, currUpgrade.upgradeDescriptionFirst, transform.position);
+		descriptionBox.SetDescriptionBox(currUpgrade.upgradeName, currUpgrade.upgradeDescriptions[0], transform.position);
 	}
 
 	public void OnMouseExit()

@@ -2,17 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using UnityEditor;
+using System.IO;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Upgrade", order = 1)]
 public class UpgradeObject : ScriptableObject
 {
+	[OnValueChanged(nameof(ChangeUpgradeName))]
 	public Upgrade upgradeType;
 	public string upgradeName;
 	[ShowAssetPreview]
 	public Sprite upgradeSprite;
 
-	public UpgradeRarity rarity;
+	[Tooltip("The description of the upgrade for each level. Length of list defines max # of this upgrade that can be obtained")]
+	[TextArea(2, 5)]
+	public string[] upgradeDescriptions;
 
+	[ReadOnly]
+	public string debug;
+
+	// Set name of asset to be based on the upgradeType
+	private void ChangeUpgradeName()
+	{
+		string assetPath = AssetDatabase.GetAssetPath(GetInstanceID());
+		debug = AssetDatabase.RenameAsset(assetPath, (int)upgradeType + upgradeType.ToString());
+	}
+
+	/*
 	[Tooltip("Text description of item when it's first picked up")]
 	[TextArea(2, 5)]
 	public string upgradeDescriptionFirst;
@@ -23,10 +39,5 @@ public class UpgradeObject : ScriptableObject
 
 	[Tooltip("Total number of this upgrade that the user can possibly acquire")]
 	public int maxCount;
-}
-
-public enum UpgradeRarity
-{
-	Common,
-	Rare
+	*/
 }

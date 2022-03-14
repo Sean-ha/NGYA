@@ -11,25 +11,20 @@ public class GiantCircleBoss : MonoBehaviour
 	public Collider2D myCollider;
 	public GameObject bombObject;
 
-	/*
-	 * Phase 2 and 3 are scrapped; only 1st phase. No longer a boss, but just a big enemy
 	[BoxGroup("Stats")]
 	public float phase2HealthThreshold;
 	[BoxGroup("Stats")]
 	public float phase3HealthThreshold;
-	*/
 
 	[BoxGroup("Stats")]
 	public float phase1BulletDamage;
 	[BoxGroup("Stats")]
 	public float phase1LaserDamage;
 
-	/*
 	[BoxGroup("Stats")]
 	public float phase2BombDamage;
 	[BoxGroup("Stats")]
 	public float phase3BombDamage;
-	*/
 
 	private Transform playerTransform;
 
@@ -175,8 +170,6 @@ public class GiantCircleBoss : MonoBehaviour
 	}
 
 
-	/* NO LONGER IN USE...
-
 	// Called whenever boss takes damage. Determine whether or not to move to next phase based on current hp.
 	public void CheckPhaseProgress()
 	{
@@ -270,5 +263,4 @@ public class GiantCircleBoss : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 		}
 	}
-	*/
 }

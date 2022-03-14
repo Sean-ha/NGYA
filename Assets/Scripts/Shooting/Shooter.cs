@@ -14,5 +14,5 @@ public abstract class Shooter : MonoBehaviour
 		return Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 	}
 
-	public abstract void Shoot(float damage, float bulletDistance, int numberOfTargets);
+	public abstract void Shoot(float damage, float speed, float bulletDistance, int numberOfTargets);
 }

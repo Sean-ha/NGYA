@@ -20,7 +20,7 @@ public class BuddyShooter : Shooter
 		return angle;
 	}
 
-	public override void Shoot(float damage, float bulletDistance, int numberOfTargets)
+	public override void Shoot(float damage, float shotSpeed, float bulletDistance, int numberOfTargets)
 	{
 		float roll = Random.Range(0f, 1f);
 

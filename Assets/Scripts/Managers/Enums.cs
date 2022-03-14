@@ -24,6 +24,12 @@ public enum Upgrade
 	ArcaneMight = 10,
 	LastRegards = 11,
 	Vampirism = 12,
+
+	// Opal upgrades
+	QuickBolts = 100,
+	MagicBolt = 101,
+	CondensedMagic = 102,
+	MoreBolts = 103,
 }
 
 // Deprecated

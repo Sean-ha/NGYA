@@ -82,8 +82,16 @@ public class SoundManager : MonoBehaviour
 
    private void Awake()
    {
-      instance = this;
-      InitializeDictionary();
+      if (instance == null)
+		{
+         instance = this;
+         InitializeDictionary();
+         DontDestroyOnLoad(gameObject);
+      }
+      else
+		{
+         Destroy(gameObject);
+		}
    }
 
    // Each sound gets one object with multiple AudioSource components
@@ -97,6 +105,8 @@ public class SoundManager : MonoBehaviour
       {
          Queue<AudioSource> audioPool = new Queue<AudioSource>();
          GameObject soundObject = new GameObject(clip.sound.ToString());
+         // All audio sources are persistent through scenes
+         DontDestroyOnLoad(soundObject);
 
          for (int i = 0; i < clip.quantity; i++)
 			{

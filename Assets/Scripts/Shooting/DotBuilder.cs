@@ -37,7 +37,10 @@ public class DotBuilder : MonoBehaviour
 	private void BuildStraightDots()
 	{
 		foreach (Transform child in transform)
-			Destroy(child.gameObject);
+		{
+			if (child.GetComponent<DotShooter>() != null)
+				Destroy(child.gameObject);
+		}
 
 		Vector2 startingDotPos;
 		float distanceFromCenter = 0.6f;

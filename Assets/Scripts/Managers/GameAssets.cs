@@ -12,7 +12,15 @@ public class GameAssets : MonoBehaviour
 
    private void Awake()
    {
-      instance = this;
+      if (instance == null)
+		{
+         instance = this;
+         DontDestroyOnLoad(gameObject);
+      }
+      else
+		{
+         Destroy(gameObject);
+		}
 
       InitializeDictionaries();
       blueColorHex = ColorUtility.ToHtmlStringRGB(blueColor);

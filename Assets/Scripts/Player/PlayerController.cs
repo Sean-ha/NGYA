@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
 		levelUpParticles2.GetComponent<ParticleSystem>().Play();
 
 		Instantiate(levelUpText, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
-		SoundManager.instance.PlaySound(SoundManager.Sound.LevelUp);
+		SoundManager.instance.PlaySound(SoundManager.Sound.LevelUp, randomizePitch: false);
 
 		TimeManager.instance.SlowToPause(() =>
 		{

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class HelperFunctions
 {
-	readonly public static float shotSpeed = 15f;
-
 	readonly static Vector2 topRight = new Vector2(19.8f, 11f);
 	readonly static Vector2 bottomLeft = new Vector2(-19.8f, -11f);
 

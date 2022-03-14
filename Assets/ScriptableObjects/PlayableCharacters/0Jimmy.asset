@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfc83f79aceb49b47a9e634e20eb1006, type: 3}
+  m_Name: 0Jimmy
+  m_EditorClassIdentifier: 
+  character: 0
+  displayName: jimmy
+  title: the cool dude
+  specificUpgrades: 64000000650000006600000067000000
+  superUpgrades: 

@@ -34,10 +34,6 @@ public class UpgradesManager : MonoBehaviour
 
 	private HashSet<Upgrade> availableUpgrades;
 
-	// Contains only the currently available upgrades. When max count is reached, the upgrade will be deleted from this set!!
-	private HashSet<Upgrade> commonUpgrades = new HashSet<Upgrade>();
-	private HashSet<Upgrade> rareUpgrades = new HashSet<Upgrade>();
-
 	// Key: upgrade; value: number of that upgrade currently held
 	public Dictionary<Upgrade, int> obtainedUpgrades { get; set; } = new Dictionary<Upgrade, int>();
 
@@ -52,7 +48,14 @@ public class UpgradesManager : MonoBehaviour
 		pauseIconBuilder = FindObjectOfType<PauseUpgradeIconBuilder>();
 
 		// Initialize available upgrades set
-		availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
+		// TODO: initialize availableUpgrades based on which character is being played
+		// availableUpgrades = new HashSet<Upgrade>(Enum.GetValues(typeof(Upgrade)).Cast<Upgrade>());
+		availableUpgrades = new HashSet<Upgrade>();
+		// TOOD: Don't hardcode this value, probably!!!
+		for (int i = 0; i <= 12; i++)
+		{
+			availableUpgrades.Add((Upgrade)i);
+		}
 
 		StartCoroutine(LoadUpgrades());
 	}
@@ -62,47 +65,15 @@ public class UpgradesManager : MonoBehaviour
 		while (!GameAssets.LoadingDone)
 			yield return null;
 
-		// Setup dictionary and rarity hashsets
+		// Setup dictionary
 		foreach (Upgrade upgrade in availableUpgrades)
 		{
 			if (!GameAssets.instance.upgradeDict.ContainsKey(upgrade))
 			{
 				print(upgrade);
 			}
-
-			if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Common)
-				commonUpgrades.Add(upgrade);
-			else if (GameAssets.instance.upgradeDict[upgrade].rarity == UpgradeRarity.Rare)
-				rareUpgrades.Add(upgrade);
 			obtainedUpgrades.Add(upgrade, 0);
 		}
-
-		/*
-		GainUpgradeEffect(Upgrade.VoltHammer);
-		GainUpgradeEffect(Upgrade.VoltHammer);
-		GainUpgradeEffect(Upgrade.VoltHammer);
-		GainUpgradeEffect(Upgrade.GentleQuill);
-		GainUpgradeEffect(Upgrade.FlimsyString);
-		GainUpgradeEffect(Upgrade.FlimsyString);
-		GainUpgradeEffect(Upgrade.FlimsyString);
-		GainUpgradeEffect(Upgrade.FlimsyString);
-		GainUpgradeEffect(Upgrade.FlimsyString);
-		GainUpgradeEffect(Upgrade.FingerlessGloves);
-		GainUpgradeEffect(Upgrade.FingerlessGloves);
-		GainUpgradeEffect(Upgrade.FingerlessGloves);
-		GainUpgradeEffect(Upgrade.FingerlessGloves);
-		GainUpgradeEffect(Upgrade.SquigglyHead);
-		GainUpgradeEffect(Upgrade.SquigglyHead);
-		GainUpgradeEffect(Upgrade.SquigglyHead);
-		GainUpgradeEffect(Upgrade.SquigglyHead);
-		GainUpgradeEffect(Upgrade.SinisterCharm);
-		GainUpgradeEffect(Upgrade.SinisterCharm);
-		GainUpgradeEffect(Upgrade.SinisterCharm);
-		GainUpgradeEffect(Upgrade.SinisterCharm);
-		GainUpgradeEffect(Upgrade.DeadlyBananas);
-		GainUpgradeEffect(Upgrade.DeadlyBananas);
-		GainUpgradeEffect(Upgrade.DeadlyBananas);
-		*/
 	}
 
 	private void Update()
@@ -196,17 +167,8 @@ public class UpgradesManager : MonoBehaviour
 		bool rareUpgrade = false;
 
 		// If current level is a multiple of 4, choose rare upgrade. Otherwise, choose common upgrade
-		if (currentLevel % 4 == 0)
-		{
-			chosen = rareUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
-			chooseUpgradeStr = "choose a <color=#" + GameAssets.instance.blueColorHex + ">rare</color> upgrade";
-			rareUpgrade = true;
-		}
-		else
-		{
-			chosen = commonUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
-			chooseUpgradeStr = "choose an upgrade";
-		}
+		chosen = availableUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+		chooseUpgradeStr = "choose an upgrade";
 
 		chooseUpgradeText.SetActive(true);
 		chooseUpgradeText.GetComponent<TextMeshPro>().text = chooseUpgradeStr;
@@ -241,16 +203,8 @@ public class UpgradesManager : MonoBehaviour
 		string chooseUpgradeStr = "";
 
 		// If current level is a multiple of 4, choose rare upgrade. Otherwise, choose common upgrade
-		if (currentLevel % 4 == 0)
-		{
-			chosen = rareUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
-			chooseUpgradeStr = "choose a <color=#" + GameAssets.instance.blueColorHex + ">rare</color> upgrade";
-		}
-		else
-		{
-			chosen = commonUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
-			chooseUpgradeStr = "choose an upgrade";
-		}		
+		chosen = availableUpgrades.OrderBy(x => rand.Next()).Take(3).ToList();
+		chooseUpgradeStr = "choose an upgrade";
 
 		yield return new WaitForSecondsRealtime(0.5f);
 
@@ -358,13 +312,8 @@ public class UpgradesManager : MonoBehaviour
 		int upgradeCount = obtainedUpgrades[upgrade];
 
 		// Max number of this upgrade has been reached; remove it from the available pool
-		if (obtainedUpgrades[upgrade] >= uo.maxCount)
+		if (obtainedUpgrades[upgrade] >= uo.upgradeDescriptions.Length)
 		{
-			if (uo.rarity == UpgradeRarity.Common)
-				commonUpgrades.Remove(upgrade);
-			else if (uo.rarity == UpgradeRarity.Rare)
-				rareUpgrades.Remove(upgrade);
-
 			availableUpgrades.Remove(upgrade);
 		}
 		pauseIconBuilder.AddUpgradeIcon(upgrade);
@@ -424,6 +373,22 @@ public class UpgradesManager : MonoBehaviour
 
 			case Upgrade.Vampirism:
 				// TODO
+				break;
+
+			case Upgrade.QuickBolts:
+
+				break;
+
+			case Upgrade.MagicBolt:
+
+				break;
+
+			case Upgrade.CondensedMagic:
+
+				break;
+
+			case Upgrade.MoreBolts:
+
 				break;
 		}
 	}

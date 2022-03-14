@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2258317027a79748bf77a1eb3a4b762, type: 3}
-  m_Name: 0MagicBullet
+  m_Name: 100QuickBolts
   m_EditorClassIdentifier: 
-  upgradeType: 0
-  upgradeName: magic bullet
-  upgradeSprite: {fileID: 21300000, guid: e9592de9f7939f840a57bf622e36b549, type: 3}
-  rarity: 0
-  upgradeDescriptionFirst: +15% chance to not consume ammo when shooting
-  upgradeDescriptionSecond: +15% chance to not consume ammo when shooting
-  maxCount: 5
+  upgradeType: 100
+  upgradeName: quick bolts
+  upgradeSprite: {fileID: 21300000, guid: cd0639d787cd73341bb2a6f9bbf25da9, type: 3}
+  upgradeDescriptions:
+  - shoot faster
+  debug: 

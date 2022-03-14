@@ -65,21 +65,13 @@ public class UpgradeCard : MonoBehaviour
 		this.upgrade = obj.upgradeType;
 
 		string upgradeTxt = "";
-		if (obj.rarity == UpgradeRarity.Rare)
-			upgradeTxt += "<color=#" + GameAssets.instance.blueColorHex + ">";
 
 		upgradeTxt += obj.upgradeName + " " + (amount + 1);
-
-		if (obj.rarity == UpgradeRarity.Rare)
-			upgradeTxt += "</color>";
 
 		upgradeName.text = upgradeTxt;
 		upgradeSprite.sprite = obj.upgradeSprite;
 
-		if (amount == 0)
-			upgradeDescription.text = obj.upgradeDescriptionFirst;
-		else
-			upgradeDescription.text = obj.upgradeDescriptionSecond;
+		upgradeDescription.text = obj.upgradeDescriptions[amount];
 
 		upgradeDescription.ForceMeshUpdate();
 	}

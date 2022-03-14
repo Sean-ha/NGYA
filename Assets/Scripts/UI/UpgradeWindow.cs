@@ -120,7 +120,7 @@ public class UpgradeWindow : MonoBehaviour
 
 		yield return new WaitForSecondsRealtime(0.25f);
 
-		SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
+		// SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
 
 		transform.DOMoveY(initialPos.y, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true).OnComplete(() =>
 		{

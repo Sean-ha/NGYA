@@ -16,6 +16,8 @@ public class ShootManager : MonoBehaviour
 	public float damage;
 	public float damageMultiplier = 1f;
 
+	public float shotSpeed;
+
 	public float bulletDistance = 6.5f;
 	public float BulletDistance 
 	{ 
@@ -42,7 +44,7 @@ public class ShootManager : MonoBehaviour
 	private float currShootCooldown;
 
 	// Parameters: damage, distance, pierce
-	public UnityEvent<float, float, int> onShoot { get; set; } = new UnityEvent<float, float, int>();
+	public UnityEvent<float, float, float, int> onShoot { get; set; } = new UnityEvent<float, float, float, int>();
 
 	private PlayerController pc;
 	private HealthSystem hs;
@@ -81,7 +83,7 @@ public class ShootManager : MonoBehaviour
 				}
 
 				CursorManager.instance.AnimateCursorShoot();
-				onShoot.Invoke(damage, bulletDistance, pierceCount);
+				onShoot.Invoke(damage, shotSpeed, bulletDistance, pierceCount);
 				currShootCooldown = shootCooldown;
 			}
 		}
@@ -255,7 +257,7 @@ public class ShootManager : MonoBehaviour
 			for (int i = 0; i < starFragmentCount; i++)
 			{
 				float currDangle = startDangle + angleDiff * i;
-				ObjectPooler.instance.CreatePlayerProjectile(enemy.position, currDangle, HelperFunctions.shotSpeed,
+				ObjectPooler.instance.CreatePlayerProjectile(enemy.position, currDangle, shotSpeed,
 					damage * starFragmentDM, pierceCount, bulletDistance, true, false);
 			}
 		}
