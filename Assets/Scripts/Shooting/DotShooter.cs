@@ -38,7 +38,7 @@ public class DotShooter : Shooter
 		// Tweening dot
 		scaleDownTween.Complete();
 		float currentSize = transform.localScale.x;
-		transform.localScale = new Vector3(currentSize + 0.4f, currentSize + 0.4f, 1);
+		transform.localScale = new Vector3(currentSize + 1f, currentSize + 1f, 1);
 		scaleDownTween = transform.DOScale(new Vector3(currentSize, currentSize, 1), 0.1f);
 
 		ObjectPooler.instance.CreatePlayerProjectile(transform.position, dangle, speed, damage, 

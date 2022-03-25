@@ -100,7 +100,7 @@ public class ObjectPooler : MonoBehaviour
 		return objectToSpawn;
 	}
 
-	public GameObject CreateCircleHitEffect(Color color, Vector3 position, float startSize, float timeToShrink = 0.2f, bool large = false)
+	public GameObject CreateCircleHitEffect(Color color, Vector3 position, float startSize, float timeToShrink = 0.25f, bool large = false, bool startWhite = false)
 	{
 		GameObject objectToSpawn;
 		if (large)
@@ -117,7 +117,7 @@ public class ObjectPooler : MonoBehaviour
 		objectToSpawn.SetActive(true);
 
 		CircleHitEffect hitEffect = objectToSpawn.GetComponent<CircleHitEffect>();
-		hitEffect.SetHitEffect(color, startSize, timeToShrink);
+		hitEffect.SetHitEffect(color, startSize, timeToShrink, startWhite: startWhite);
 
 		objectToSpawn.transform.position = position;
 

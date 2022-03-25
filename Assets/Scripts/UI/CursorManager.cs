@@ -21,7 +21,7 @@ public class CursorManager : MonoBehaviour
 	private Transform[] crosshairPieces = new Transform[4];
 
 	// Hardcoded vector positions of the cursor piece original locations
-	private Vector2[] defaultPositions = { new Vector2(0, 0.2f), new Vector2(0, -0.2f), new Vector2(-0.2f, 0), new Vector2(0.2f, 0) };
+	private Vector2[] defaultPositions = { new Vector2(0, 2.5f), new Vector2(0, -2.5f), new Vector2(-2.5f, 0), new Vector2(2.5f, 0) };
 
 	private void Awake()
 	{
@@ -46,10 +46,9 @@ public class CursorManager : MonoBehaviour
 		transform.localRotation = Quaternion.Euler(0, 0, currAngle);
 
 		Vector3 mousePos = Input.mousePosition;
-		Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-		worldPos.z = 0;
+		mousePos.z = 10f;
 
-		transform.position = worldPos;
+		transform.position = Camera.main.ScreenToWorldPoint(mousePos);
 		// customCursor.anchoredPosition = mousePos;
 	}
 

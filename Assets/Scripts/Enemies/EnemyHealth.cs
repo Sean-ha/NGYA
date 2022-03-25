@@ -138,12 +138,12 @@ public class EnemyHealth : MonoBehaviour
 
 	public void PlayDeathHitCircleEffect()
 	{
-		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, 1.5f);
+		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, 1.25f, startWhite: true);
 	}
 
 	public void PlayDeathHitCircleEffect(float size)
 	{
-		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, size);
+		ObjectPooler.instance.CreateCircleHitEffect(hitParticlesColor, transform.position, size, startWhite: true);
 	}
 
 	public void PlaySound(int sound)

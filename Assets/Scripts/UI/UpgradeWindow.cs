@@ -34,11 +34,11 @@ public class UpgradeWindow : MonoBehaviour
 
 	private IEnumerator AnimateDisplayUpgradeWindow(Action onComplete)
 	{
-		transform.position = initialPos;
+		transform.localPosition= initialPos;
 
 		SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
 
-		transform.DOMoveY(0, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true);
+		transform.DOLocalMoveY(0, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true);
 
 		yield return new WaitForSecondsRealtime(0.45f);
 
@@ -122,7 +122,7 @@ public class UpgradeWindow : MonoBehaviour
 
 		// SoundManager.instance.PlaySound(SoundManager.Sound.MultipleClicks, randomizePitch: false);
 
-		transform.DOMoveY(initialPos.y, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true).OnComplete(() =>
+		transform.DOLocalMoveY(initialPos.y, 0.4f).SetEase(Ease.InOutQuad).SetUpdate(true).OnComplete(() =>
 		{
 			if (onComplete != null)
 				onComplete.Invoke();

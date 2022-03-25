@@ -17,3 +17,6 @@ MonoBehaviour:
   upgradeSprite: {fileID: 21300000, guid: cd0639d787cd73341bb2a6f9bbf25da9, type: 3}
   upgradeDescriptions:
   - increase max health
+  - increase max health
+  - increase max health
+  debug: 

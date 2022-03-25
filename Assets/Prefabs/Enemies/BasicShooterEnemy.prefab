@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 5
+  shotSpeed: 10
   bulletDistance: 25
   damage: 10
   shootSound: 14
@@ -270,7 +270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5890379573132986031}
   m_Layer: 0
-  m_Name: StationaryShooterEnemyHolder
+  m_Name: BasicShooterEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

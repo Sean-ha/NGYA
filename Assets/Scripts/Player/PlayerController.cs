@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
 	public static PlayerController instance;
 
+	public Animator myAnimator;
 	public GameObject levelUpText;
 	public float moveSpeed;
 
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour
 	public float knockBackForce { get; set; } = 500f;
 
 	// Duration of invincibility in seconds
-	public float invincibilityDuration { get; set; } = 1f;
+	public float invincibilityDuration { get; set; } = 0.4f;
 	// Duration of current invincibility. <=0 means player can be hit.
 	private float currentInvincibility;
 
@@ -98,6 +99,8 @@ public class PlayerController : MonoBehaviour
 		{
 			CancelStandStill();
 		}
+
+		myAnimator.SetBool("IsMoving", horizontal != 0 || vertical != 0);
 
 #if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -192,7 +195,7 @@ public class PlayerController : MonoBehaviour
 
 				healthSystem.TakeDamage(toTake);
 				SoundManager.instance.PlaySound(SoundManager.Sound.PlayerHit);
-				CameraShake.instance.ShakeCamera(0.2f, 0.3f);
+				CameraShake.instance.ShakeCamera(0.3f, 0.75f);
 
 				if (!Mathf.Approximately(0, knockBackForce))
 				{

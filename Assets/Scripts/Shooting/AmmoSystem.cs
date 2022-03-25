@@ -7,26 +7,25 @@ public class AmmoSystem : MonoBehaviour
 {
 	public static AmmoSystem instance;
 
-	public GameObject bulletTemplate;
 	public SpriteRenderer ammoOutline;
 	public SpriteRenderer ammoBackground;
+	public SpriteRenderer ammoBar;
 
 	private float firstBulletPosition;
 
-	// Each ammo upgrade gives 10 additional max ammo
-	private int ammoUpgrades;
-	public int AmmoUpgrades 
+	// Each ammo upgrade gives 5 additional max ammo
+	private int ammoUpgradeCount;
+	public int AmmoUpgradeCount 
 	{
-		get { return ammoUpgrades; }
-		set { ammoUpgrades = value; CalculateMaxAmmo(); UpdateMaxAmmoBar(); FillCurrentAmmo(); }
+		get { return ammoUpgradeCount; }
+		set { ammoUpgradeCount = value; UpdateMaxAmmoBar(); FillCurrentAmmo(); }
 	}
 
 	private int maxAmmo;
-	private int currentAmmo;
-	private Stack<GameObject> ammoStack = new Stack<GameObject>();
+	private float currentAmmo;
 
 	// Amount of ammo to get per second
-	private float ammoRegenPerSecond = 2.5f;
+	private float ammoRegenPerSecond = 4f;
 
 	private float[] ammoOutlineWidths = { 1.02f, 1.52f, 1.98f, 2.45f, 2.9f, 3.37f, 3.85f, 4.32f, 4.78f, 5.26f, 5.73f, 6.19f, 6.66f, 7.12f, 7.59f };
 
@@ -36,158 +35,81 @@ public class AmmoSystem : MonoBehaviour
 		set { ammoRegenPerSecond = Mathf.Max(1, value); CalculateAmmoRegenRate(); }
 	}
 
+	// Amount of ammo to get per frame
 	private float ammoRegenRate;
-	private float currentAmmoRegen;
+
+	// Spells cost 100% of their cost
+	public float ammoCostPercentage { get; set; } = 1f;
+
+	private const float OUTLINE_BAR_DIFF = 0.07f;
 
 	private void Awake()
 	{
 		instance = this;
+	}
 
+	private void Start()
+	{
 		CalculateAmmoRegenRate();
-		CalculateMaxAmmo();
-
-		firstBulletPosition = bulletTemplate.transform.position.x;
-
-		for (int i = 0; i < maxAmmo; i++)
-		{
-			GameObject bulletUI = Instantiate(bulletTemplate, bulletTemplate.transform.position, Quaternion.identity);
-
-			Vector2 pos = new Vector2(
-			 Mathf.Round((bulletUI.transform.position.x + 0.09375f * i) * 32) / 32,
-			 bulletTemplate.transform.position.y
-			);
-
-			bulletUI.transform.position = pos;
-			ammoStack.Push(bulletUI);
-		}
-		bulletTemplate.transform.position = new Vector2(100, bulletTemplate.transform.position.y);
-		currentAmmo = maxAmmo;
 
 		UpdateMaxAmmoBar();
+		FillCurrentAmmo();
 	}
 
 	// Updates max ammo (outline)
 	private void UpdateMaxAmmoBar()
 	{
-		ammoOutline.size = new Vector2(ammoOutlineWidths[ammoUpgrades], ammoOutline.size.y);
-		ammoBackground.size = new Vector2(ammoOutlineWidths[ammoUpgrades] - 0.04f, ammoBackground.size.y);
+		maxAmmo = 50 + 5 * ammoUpgradeCount;
+		float ySize = 1 + 0.1f * ammoUpgradeCount;
+		ammoBackground.size = new Vector2(ySize - 0.07f, ammoBackground.size.y);
+		ammoOutline.size = new Vector2(ySize, ammoOutline.size.y);
 	}
 
 	/// <summary>
 	/// Removes the specified number of ammo. Returns whether or not the ammo system has at least 'amount' number of bullets currently
 	/// </summary>
-	public bool RemoveAmmo(int amount)
+	public bool RemoveAmmo(float amount)
 	{
-		if (currentAmmo < amount)
+		float newAmount = amount * ammoCostPercentage;
+
+		if (currentAmmo < newAmount)
 			return false;
 
-		for (int i = 0; i < amount; i++)
-		{
-			Destroy(ammoStack.Pop());
-		}
-		currentAmmo -= amount;
+		currentAmmo -= newAmount;
 		return true;
-	}
-
-	[Obsolete]
-	// Returns the number of ammo removed
-	private int TryRemoveAmmo(int amount)
-	{
-		if (currentAmmo < amount)
-		{
-			amount = currentAmmo;
-		}
-
-		for (int i = 0; i < amount; i++)
-		{
-			Destroy(ammoStack.Pop());
-		}
-		currentAmmo -= amount;
-
-		return amount;
 	}
 
 	private void Update()
 	{
+#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.O))
 		{
 			AmmoRegenPerSecond += 2;
 		}
+#endif
 
-		if (currentAmmo < maxAmmo)
-		{
-			currentAmmoRegen -= Time.deltaTime;
-			if (currentAmmoRegen <= 0)
-			{
-				int regenCount = 1;
+		currentAmmo = Mathf.Clamp(currentAmmo + ammoRegenRate, 0f, maxAmmo);
 
-				// Multiple ammo in a single frame
-				if (-currentAmmoRegen / ammoRegenRate > 2)
-				{
-					currentAmmoRegen = -currentAmmoRegen;
-					regenCount = Mathf.RoundToInt(currentAmmoRegen / ammoRegenRate);
-					currentAmmoRegen %= ammoRegenRate;
-				}
-
-				if (currentAmmo + regenCount > maxAmmo)
-					regenCount = maxAmmo - currentAmmo;
-
-				for (int i = 0; i < regenCount; i++)
-				{
-					RegenerateBullet();
-				}
-				currentAmmoRegen += ammoRegenRate;
-			}
-		}
+		// Update current ammo UI every frame
+		UpdateAmmoUI();
 	}
 
-	private void RegenerateBullet()
+	private void UpdateAmmoUI()
 	{
-		// gain an ammo
-		currentAmmo++;
-		GameObject bulletUI = Instantiate(bulletTemplate, new Vector2(firstBulletPosition + 0.0935f * (currentAmmo - 1), bulletTemplate.transform.position.y),
-			Quaternion.identity);
-		ammoStack.Push(bulletUI);
-	}
+		float newSize = Mathf.Max(0, (currentAmmo / maxAmmo) * ammoOutline.size.x - OUTLINE_BAR_DIFF);
 
-	// Only regenerates a bullet if it is possible. Returns whether or not it was successful
-	private bool TryRegenerateBullet()
-	{
-		if (currentAmmo < maxAmmo)
-		{
-			RegenerateBullet();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	public void RegenerateBullet(int amount)
-	{
-		for (int i = 0; i < amount; i++)
-		{
-			if (!TryRegenerateBullet())
-				break;
-		}
+		ammoBar.size = new Vector2(newSize, ammoBar.size.y);
 	}
 
 	private void CalculateAmmoRegenRate()
 	{
-		ammoRegenRate = 1f / ammoRegenPerSecond;
-	}
-
-	private void CalculateMaxAmmo()
-	{
-		maxAmmo = 20 + 10 * ammoUpgrades;
+		ammoRegenRate = AmmoRegenPerSecond / Application.targetFrameRate;
 	}
 
 	public void FillCurrentAmmo()
 	{
-		while(currentAmmo < maxAmmo)
-		{
-			RegenerateBullet();
-		}
+		currentAmmo = maxAmmo;
+
+		UpdateAmmoUI();
 	}
 }

@@ -275,7 +275,7 @@ public class SpawnManager : MonoBehaviour
 			enemySet.Add(createdEnemy.GetComponentInChildren<EnemyHealth>().transform);
 
 			ObjectPooler.instance.CreateHitParticles(Color.red, randomizedPos);
-			ObjectPooler.instance.CreateCircleHitEffect(Color.red, randomizedPos, 1.5f);
+			ObjectPooler.instance.CreateCircleHitEffect(Color.red, randomizedPos, 1f);
 			SoundManager.instance.PlaySound(SoundManager.Sound.WaterSplash1, false);
 
 			yield return new WaitForSeconds(0.05f);

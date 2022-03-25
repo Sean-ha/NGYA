@@ -174,9 +174,13 @@ public class UpgradesManager : MonoBehaviour
 		chooseUpgradeText.GetComponent<TextMeshPro>().text = chooseUpgradeStr;
 
 		// Create upgrade cards
-		Transform left = Instantiate(upgradeCardTemplate, new Vector3(-10f, 0, 0), Quaternion.identity).transform;
-		Transform mid = Instantiate(upgradeCardTemplate, new Vector3(0, 0, 0), Quaternion.identity).transform;
-		Transform right = Instantiate(upgradeCardTemplate, new Vector3(10f, 0, 0), Quaternion.identity).transform;
+		// upgradeWindow.transform.parent is the CameraHolder
+		Transform left = Instantiate(upgradeCardTemplate, upgradeWindow.transform.parent, false).transform;
+		Transform mid = Instantiate(upgradeCardTemplate, upgradeWindow.transform.parent, false).transform;
+		Transform right = Instantiate(upgradeCardTemplate, upgradeWindow.transform.parent, false).transform;
+		left.localPosition = new Vector3(-10f, 0, 0);
+		mid.localPosition = new Vector3(0, 0, 0);
+		right.localPosition = new Vector3(10f, 0, 0);
 
 		upgradeCards[0] = left.GetComponent<UpgradeCard>();
 		upgradeCards[1] = mid.GetComponent<UpgradeCard>();
@@ -327,11 +331,11 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Wisdom:
-				// TODO
+				AmmoSystem.instance.AmmoUpgradeCount += 5;
 				break;
 
 			case Upgrade.Serenity:
-				AmmoSystem.instance.AmmoRegenPerSecond += 2f;
+				AmmoSystem.instance.AmmoRegenPerSecond += 3f;
 				break;
 
 			case Upgrade.Haste:
@@ -343,7 +347,7 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.ManaMastery:
-				// TODO
+				AmmoSystem.instance.ammoCostPercentage -= 0.1f;
 				break;
 
 			case Upgrade.FocusMind:
@@ -351,7 +355,18 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.Barrier:
-				// TODO
+				DefenderShield s = defenderShield.GetComponent<DefenderShield>();
+				if (upgradeCount == 1)
+				{
+					defenderShield.SetActive(true);
+					s.ObtainShield();
+					s.cooldown = 30f;
+				}
+				else
+				{
+					s.cooldown -= 5f;
+					s.DecrementRemainingShieldCooldown(5f);
+				}
 				break;
 
 			case Upgrade.PowerRune:
@@ -366,7 +381,7 @@ public class UpgradesManager : MonoBehaviour
 				ShootManager.instance.critDamage += 0.1f;
 				break;
 
-			case Upgrade.LastRegards:
+			case Upgrade.MagicMissile:
 				ShootManager.instance.lastRegardsDM = 1f;
 				ShootManager.instance.lastRegardsBulletCount += 9;
 				break;
@@ -376,19 +391,22 @@ public class UpgradesManager : MonoBehaviour
 				break;
 
 			case Upgrade.QuickBolts:
-
+				ShootManager.instance.ammoPerShot += 0.15f;
+				ShootManager.instance.ShootCooldown -= 0.025f;
 				break;
 
 			case Upgrade.MagicBolt:
+				ShootManager.instance.shotDamageMultiplier += 0.25f;
+				ShootManager.instance.ammoPerShot += 0.25f;
 
 				break;
 
 			case Upgrade.CondensedMagic:
-
+				// TODO
 				break;
 
 			case Upgrade.MoreBolts:
-
+				// TODO
 				break;
 		}
 	}

@@ -22,7 +22,7 @@ public enum Upgrade
 	PowerRune = 8,	// idk if this should exist or not but we'll see
 	MagicDice = 9,
 	ArcaneMight = 10,
-	LastRegards = 11,
+	MagicMissile = 11,
 	Vampirism = 12,
 
 	// Opal upgrades

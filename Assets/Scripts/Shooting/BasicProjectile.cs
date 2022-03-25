@@ -64,9 +64,9 @@ public class BasicProjectile : Projectile
 		destination = (Vector2)transform.position + (new Vector2(Mathf.Cos(this.angle), Mathf.Sin(this.angle)) * distance);
 		float timeToReachFinal = distance / speed;
 
-		rb.DOMove(destination, timeToReachFinal).SetUpdate(UpdateType.Fixed).onComplete += () =>
+		rb.DOMove(destination, timeToReachFinal).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
 		{
-			projectileSpriteChild.DOScaleX(0, 0.1f).onComplete += () => gameObject.SetActive(false);
+			projectileSpriteChild.DOScaleX(0, 0.075f).onComplete += () => gameObject.SetActive(false);
 		};
 	}
 

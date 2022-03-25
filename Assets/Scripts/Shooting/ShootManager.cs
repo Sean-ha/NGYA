@@ -13,8 +13,13 @@ public class ShootManager : MonoBehaviour
 
 	public Transform dotHolder;
 
-	public float damage;
+	public float damage { get; set; } = 2f;
+	// Shots will deal this percentage as damage. E.g. 1f means shots deal 100% damage (2f)
+	public float shotDamageMultiplier;
+
+	// Overall damage multiplier (for EVERYTHING)
 	public float damageMultiplier = 1f;
+
 
 	public float shotSpeed;
 
@@ -27,7 +32,7 @@ public class ShootManager : MonoBehaviour
 
 	public int pierceCount;
 
-	private float shootCooldown = 0.25f;
+	[SerializeField] private float shootCooldown = 0.25f;
 	public float ShootCooldown
 	{
 		get { return shootCooldown; }
@@ -76,14 +81,14 @@ public class ShootManager : MonoBehaviour
 		{
 			if (currShootCooldown <= 0)
 			{
-				if (!AmmoSystem.instance.RemoveAmmo(1)) // TODO: replace with ammoPerShot
+				if (!AmmoSystem.instance.RemoveAmmo(ammoPerShot))
 				{
 					SoundManager.instance.PlaySound(SoundManager.Sound.FailShoot);
 					return;
 				}
 
 				CursorManager.instance.AnimateCursorShoot();
-				onShoot.Invoke(damage, shotSpeed, bulletDistance, pierceCount);
+				onShoot.Invoke(damage * shotDamageMultiplier, shotSpeed, bulletDistance, pierceCount);
 				currShootCooldown = shootCooldown;
 			}
 		}
@@ -246,10 +251,6 @@ public class ShootManager : MonoBehaviour
 	// Call whenever an enemy dies to invoke on death effects
 	public void OnProjectileKillEnemy(Transform enemy)
 	{
-		if (MyRandom.RollProbability(vultureClawChance))
-		{
-			AmmoSystem.instance.RegenerateBullet(vultureClawAmount);
-		}
 		if (starFragmentCount > 0)
 		{
 			float startDangle = Random.Range(0f, 90f);
