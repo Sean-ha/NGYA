@@ -139,9 +139,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3536c1f129a4d4d84740eb45ce204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotSpeed: 10
+  shotSpeed: 8
   bulletDistance: 25
-  damage: 10
+  damage: 6
   shootSound: 14
   onShoot:
     m_PersistentCalls:
@@ -357,7 +357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c38b902d9f549f42816b02a78f3e375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 6
 --- !u!114 &5890379573145675382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitParticlesColor: {r: 1, g: 0, b: 0, a: 1}
-  maxHealth: 8
+  maxHealth: 3.5
   isBoss: 0
   onHit:
     m_PersistentCalls:
@@ -527,7 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cf843fa0dd7c5c49b2b74f3adf3ada1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expToDrop: 2
+  expToDrop: 1
 --- !u!50 &5890379573145675369
 Rigidbody2D:
   serializedVersion: 4
